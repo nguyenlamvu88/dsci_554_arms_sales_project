@@ -21,14 +21,14 @@
 
 - **Source**: SIPRI Military Expenditure Database
 - **Raw File**: `SIPRI-Milex-data-1948-2023.xls`
-- **Processed File**: `arms_expenditure_by_regions.csv`
+- **Processed File**: `processed_arms_expenditure_by_regions.csv`
 - **Description**: This dataset captures military spending by regions over decades, facilitating the study of regional spending trends and comparative analysis between different parts of the world.
 
 ### Top \(100\) Arms Companies Revenue \(2002\)–\(2022\)
 
 - **Source**: SIPRI Arms Industry Database
 - **Raw File**: `SIPRI-Top-100-2002-2022.xls`
-- **Processed File**: `top_100_arms_companies_consolidated.csv`
+- **Processed File**: `processed_top_100_arms_companies_consolidated.csv`
 - **Description**: This dataset consolidates revenue data for the top \(100\) arms companies, making it suitable for analyzing industry revenue trends, key players, and their performance over time.
 
 ### Global Total Arms Revenue \(2002\)–\(2022\)
