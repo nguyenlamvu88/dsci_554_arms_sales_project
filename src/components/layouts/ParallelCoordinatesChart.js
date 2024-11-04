@@ -48,8 +48,10 @@ const ParallelCoordinatesChart = ({ data }) => {
       .domain(dimensions)
       .range([0, width]);
 
-    // Color scale
-    const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+    // Harmonized color scale
+    const colorScale = d3.scaleOrdinal()
+      .domain(topDestinations)
+      .range(d3.schemeTableau10);
 
     // Select the SVG element and clear previous content
     const svg = d3.select(svgRef.current)
@@ -82,7 +84,9 @@ const ParallelCoordinatesChart = ({ data }) => {
       .style("fill", "none")
       .style("stroke", d => colorScale(d.destination_country))
       .style("opacity", 0.7)
+      .style("stroke-width", 1.5)
       .on("mouseover", (event, d) => {
+        d3.select(event.currentTarget).style("opacity", 1); // Highlight line
         tooltip.style("display", "block")
           .html(`
             <strong>Destination Country:</strong> ${d.destination_country}<br>
@@ -96,7 +100,8 @@ const ParallelCoordinatesChart = ({ data }) => {
         tooltip.style("top", `${event.pageY - 10}px`)
           .style("left", `${event.pageX + 10}px`);
       })
-      .on("mouseout", () => {
+      .on("mouseout", (event) => {
+        d3.select(event.currentTarget).style("opacity", 0.7); // Reset opacity
         tooltip.style("display", "none");
       });
 
@@ -106,14 +111,14 @@ const ParallelCoordinatesChart = ({ data }) => {
         .attr("transform", `translate(${xScale(dim)}, 0)`);
 
       // Add Y-axis for each dimension
-      axisGroup.call(d3.axisLeft(yScales[dim]));
+      axisGroup.call(d3.axisLeft(yScales[dim]).ticks(5).tickSizeOuter(0));
 
       // Axis label
       axisGroup.append("text")
         .attr("y", -9)
         .attr("x", -5)
         .attr("text-anchor", "middle")
-        .text(dim)
+        .text(dim.replace(/_/g, " ")) // Make labels more readable
         .style("fill", "#0db4de")
         .style("font-size", "12px")
         .style("font-weight", "bold");

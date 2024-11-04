@@ -10,6 +10,7 @@ const MigrationMap = () => {
   const [worldGeoJSON, setWorldGeoJSON] = useState(null);
   const [countryCentroids, setCountryCentroids] = useState({});
   const [tradeData, setTradeData] = useState([]);
+  const [selectedFilter, setSelectedFilter] = useState("Both");
 
   const tradeDataUrl = 'https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_arms_trade_hierarchical_map.json';
   const geoJSONUrl = 'https://unpkg.com/world-atlas@2/countries-110m.json';
@@ -122,69 +123,71 @@ const MigrationMap = () => {
       .style("pointer-events", "none")
       .style("display", "none");
 
-    // Draw export lines (solid) and import lines (dashed)
-    mapContainer.selectAll("line.export")
-      .data(topTrades)
-      .enter()
-      .append("line")
-      .attr("class", "export")
-      .attr("x1", d => d.originX)
-      .attr("y1", d => d.originY)
-      .attr("x2", d => d.destX)
-      .attr("y2", d => d.destY)
-      .attr("stroke", "rgba(30, 144, 255, 0.2)") // Blue for exports
-      .attr("stroke-width", d => strokeScale(d.totalExport))
-      .on("mouseover", (event, d) => {
-        d3.select(event.currentTarget).attr("stroke", "blue").attr("stroke-width", 2); // Highlight
-        tooltip.style("display", "block")
-          .html(`<strong>Export:</strong> ${d.originCountry} → ${d.destCountry}<br/><strong>Value:</strong> ${d.totalExport.toFixed(2)}B USD`);
-      })
-      .on("mousemove", (event) => tooltip.style("left", `${event.pageX + 10}px`).style("top", `${event.pageY - 28}px`))
-      .on("mouseout", (event) => {
-        d3.select(event.currentTarget).attr("stroke", "rgba(30, 144, 255, 0.2)").attr("stroke-width", d => strokeScale(d.totalExport)); // Remove highlight
-        tooltip.style("display", "none");
-      });
+    // Draw lines based on filter selection
+    if (selectedFilter === "Exports" || selectedFilter === "Both") {
+      // Export lines (solid blue)
+      mapContainer.selectAll("line.export")
+        .data(topTrades)
+        .enter()
+        .append("line")
+        .attr("class", "export")
+        .attr("x1", d => d.originX)
+        .attr("y1", d => d.originY)
+        .attr("x2", d => d.destX)
+        .attr("y2", d => d.destY)
+        .attr("stroke", "rgba(30, 144, 255, 0.5)") // Blue for exports
+        .attr("stroke-width", d => strokeScale(d.totalExport))
+        .on("mouseover", (event, d) => {
+          d3.select(event.currentTarget).attr("stroke", "blue").attr("stroke-width", 2); // Highlight
+          tooltip.style("display", "block")
+            .html(`<strong>Export:</strong> ${d.originCountry} → ${d.destCountry}<br/><strong>Value:</strong> ${d.totalExport.toFixed(2)}B USD`);
+        })
+        .on("mousemove", (event) => tooltip.style("left", `${event.pageX + 10}px`).style("top", `${event.pageY - 28}px`))
+        .on("mouseout", (event) => {
+          d3.select(event.currentTarget).attr("stroke", "rgba(30, 144, 255, 0.5)").attr("stroke-width", d => strokeScale(d.totalExport)); // Remove highlight
+          tooltip.style("display", "none");
+        });
+    }
 
-    mapContainer.selectAll("line.import")
-      .data(topTrades)
-      .enter()
-      .append("line")
-      .attr("class", "import")
-      .attr("x1", d => d.destX)
-      .attr("y1", d => d.destY)
-      .attr("x2", d => d.originX)
-      .attr("y2", d => d.originY)
-      .attr("stroke", "rgba(255, 165, 0, 0.2)") // Orange for imports
-      .attr("stroke-dasharray", "4,2") // Dashed lines for imports
-      .attr("stroke-width", d => strokeScale(d.totalImport))
-      .on("mouseover", (event, d) => {
-        d3.select(event.currentTarget).attr("stroke", "orange").attr("stroke-width", 2); // Highlight
-        tooltip.style("display", "block")
-          .html(`<strong>Import:</strong> ${d.destCountry} ← ${d.originCountry}<br/><strong>Value:</strong> ${d.totalImport.toFixed(2)}B USD`);
-      })
-      .on("mousemove", (event) => tooltip.style("left", `${event.pageX + 10}px`).style("top", `${event.pageY - 28}px`))
-      .on("mouseout", (event) => {
-        d3.select(event.currentTarget).attr("stroke", "rgba(255, 165, 0, 0.2)").attr("stroke-width", d => strokeScale(d.totalImport)); // Remove highlight
-        tooltip.style("display", "none");
-      });
-
-    // Legend
-    const legend = svg.append("g").attr("class", "legend").attr("transform", "translate(20, 20)");
-    legend.append("text").text("Legend").attr("font-size", 14).attr("font-weight", "bold");
-    legend.append("line")
-      .attr("x1", 0).attr("y1", 20).attr("x2", 20).attr("y2", 20)
-      .attr("stroke", "rgba(30, 144, 255, 0.2)").attr("stroke-width", 2);
-    legend.append("text").attr("x", 25).attr("y", 24).text("Exports (Blue - Solid)");
-    legend.append("line")
-      .attr("x1", 0).attr("y1", 40).attr("x2", 20).attr("y2", 40)
-      .attr("stroke", "rgba(255, 165, 0, 0.2)").attr("stroke-width", 2).attr("stroke-dasharray", "4,2");
-    legend.append("text").attr("x", 25).attr("y", 44).text("Imports (Orange - Dashed)");
+    if (selectedFilter === "Imports" || selectedFilter === "Both") {
+      // Import lines (dashed orange)
+      mapContainer.selectAll("line.import")
+        .data(topTrades)
+        .enter()
+        .append("line")
+        .attr("class", "import")
+        .attr("x1", d => d.destX)
+        .attr("y1", d => d.destY)
+        .attr("x2", d => d.originX)
+        .attr("y2", d => d.originY)
+        .attr("stroke", "rgba(255, 165, 0, 0.5)") // Orange for imports
+        .attr("stroke-dasharray", "4,2") // Dashed lines for imports
+        .attr("stroke-width", d => strokeScale(d.totalImport))
+        .on("mouseover", (event, d) => {
+          d3.select(event.currentTarget).attr("stroke", "orange").attr("stroke-width", 2); // Highlight
+          tooltip.style("display", "block")
+            .html(`<strong>Import:</strong> ${d.destCountry} ← ${d.originCountry}<br/><strong>Value:</strong> ${d.totalImport.toFixed(2)}B USD`);
+        })
+        .on("mousemove", (event) => tooltip.style("left", `${event.pageX + 10}px`).style("top", `${event.pageY - 28}px`))
+        .on("mouseout", (event) => {
+          d3.select(event.currentTarget).attr("stroke", "rgba(255, 165, 0, 0.5)").attr("stroke-width", d => strokeScale(d.totalImport)); // Remove highlight
+          tooltip.style("display", "none");
+        });
+    }
 
     return () => tooltip.remove();
-  }, [worldGeoJSON, tradeData, countryCentroids]);
+  }, [worldGeoJSON, tradeData, countryCentroids, selectedFilter]);
 
   return (
-    <svg ref={svgRef} width={width} height={height} style={{ backgroundColor: '#333' }}></svg>
+    <div>
+      <label htmlFor="filter">Select Trade Type: </label>
+      <select id="filter" value={selectedFilter} onChange={(e) => setSelectedFilter(e.target.value)}>
+        <option value="Both">Both</option>
+        <option value="Exports">Exports</option>
+        <option value="Imports">Imports</option>
+      </select>
+      <svg ref={svgRef} width={width} height={height} style={{ backgroundColor: '#333' }}></svg>
+    </div>
   );
 };
 
