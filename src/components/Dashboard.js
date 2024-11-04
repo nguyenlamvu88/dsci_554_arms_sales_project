@@ -77,14 +77,13 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <h1>Interactive Arms Data Dashboard</h1>
+      <h1>Global Arms Trade Dashboard</h1>
 
       <nav className="navbar">
         <button onClick={() => handleMapSelection('DotMap')}>Dot Map (Conflict Hotspots)</button>
         <button onClick={() => handleMapSelection('ProportionalSymbolMap')}>Proportional Symbol Map (Arms Trade by Region)</button>
         <button onClick={() => handleMapSelection('ChoroplethMap')}>Choropleth Map (Military Expenditure Intensity)</button>
         <button onClick={() => handleMapSelection('MigrationMap')}>Migration Map (Arms Suppliers)</button>
-        {/* Removed Line Chart from top buttons */}
       </nav>
 
       <div className="content-area">
@@ -102,9 +101,10 @@ const Dashboard = () => {
                   max="2023"
                   value={selectedYear}
                   onChange={(e) => setSelectedYear(+e.target.value)}
-                  style={{ width: '60%' }}
+                  style={{ width: '100%' }}
                 />
               </div>
+              <PieChart data={tradeData} selectedYear={selectedYear} />
             </>
           )}
           {selectedMap === 'MigrationMap' && <MigrationMap data={migrationData} />}
@@ -112,7 +112,7 @@ const Dashboard = () => {
           <div className="layout-display">
             {selectedLayout === 'Treemap' && <Treemap data={hierarchicalData} highlightedCity={hoveredCity} />}
             {selectedLayout === 'PieChart' && (
-              healthData.length > 0 ? <PieChart data={healthData} highlightedCity={hoveredCity} /> : <p>No data available for Pie Chart</p>
+              tradeData.length > 0 ? <PieChart data={tradeData} selectedYear={selectedYear} /> : <p>No data available for Pie Chart</p>
             )}
             {selectedLayout === 'StackedBarChart' && <StackedBarChart data={forceDirectedData} />}
             {selectedLayout === 'DifferenceChart' && (
@@ -121,11 +121,11 @@ const Dashboard = () => {
               </div>
             )}
             {selectedLayout === 'ZoomableCirclePacking' && hierarchicalData && <ZoomableCirclePacking data={hierarchicalData} />}
-            {selectedLayout === 'Sunburst' && <Sunburst dataUrl={armsRecipientsDataUrl} />} {/* Render Sunburst */}
+            {selectedLayout === 'Sunburst' && <Sunburst dataUrl={armsRecipientsDataUrl} />}
             {selectedLayout === 'ForceDirectedGraph' && <ForceDirectedGraph data={forceDirectedData} />}
             {selectedLayout === 'ParallelCoordinatesChart' && <ParallelCoordinatesChart data={migrationData} />}
             {selectedLayout === 'ChordDiagram' && <ChordDiagram data={regionalTransfersDataUrl} />}
-            {selectedLayout === 'LineChart' && <LineChart dataUrl={armsRecipientsDataUrl} />} {/* Render LineChart */}
+            {selectedLayout === 'LineChart' && <LineChart dataUrl={armsRecipientsDataUrl} />}
           </div>
         </main>
 
@@ -135,14 +135,13 @@ const Dashboard = () => {
             {selectedMap === 'DotMap' && (
               <>
                 <button onClick={() => setSelectedLayout('Treemap')}>Treemap (Arms Market by Company)</button>
-                {/* Removed Sunburst from Dot Map layout options */}
                 <button onClick={() => setSelectedLayout('ZoomableCirclePacking')}>Zoomable Circle Packing (Supplier Hierarchy)</button>
               </>
             )}
             {selectedMap === 'ProportionalSymbolMap' && (
               <>
                 <button onClick={() => setSelectedLayout('PieChart')}>Pie Chart (Military Expenditure by Region)</button>
-                <button onClick={() => setSelectedLayout('LineChart')}>Line Chart (Arms Imports Over Time)</button> {/* Moved LineChart here */}
+                <button onClick={() => setSelectedLayout('LineChart')}>Line Chart (Arms Imports Over Time)</button>
               </>
             )}
             {selectedMap === 'ChoroplethMap' && (
@@ -153,8 +152,7 @@ const Dashboard = () => {
             )}
             {selectedMap === 'MigrationMap' && (
               <>
-              
-              <button onClick={() => setSelectedLayout('ForceDirectedGraph')}>Force-Directed Graph (Conflict Relationships)</button>
+                <button onClick={() => setSelectedLayout('ForceDirectedGraph')}>Force-Directed Graph (Conflict Relationships)</button>
                 <button onClick={() => setSelectedLayout('ParallelCoordinatesChart')}>Parallel Coordinates Chart (Supplier Data)</button>
                 <button onClick={() => setSelectedLayout('ChordDiagram')}>Chord Diagram (Trade Dependencies)</button>
               </>
