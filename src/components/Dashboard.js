@@ -12,7 +12,7 @@ import DifferenceChart from './layouts/DifferenceChart';
 import ZoomableCirclePacking from './layouts/ZoomableCirclePacking';
 import Sunburst from './layouts/Sunburst';
 import ForceDirectedGraph from './layouts/ForceDirectedGraph';
-import LineChart from './layouts/LineChart';  // Import for LineChart
+import LineChart from './layouts/LineChart';
 import ParallelCoordinatesChart from './layouts/ParallelCoordinatesChart';
 import ChordDiagram from './layouts/ChordDiagram';
 import '../index.css';
@@ -104,7 +104,6 @@ const Dashboard = () => {
                   style={{ width: '100%' }}
                 />
               </div>
-              <PieChart data={tradeData} selectedYear={selectedYear} />
             </>
           )}
           {selectedMap === 'MigrationMap' && <MigrationMap data={migrationData} />}
@@ -112,7 +111,7 @@ const Dashboard = () => {
           <div className="layout-display">
             {selectedLayout === 'Treemap' && <Treemap data={hierarchicalData} highlightedCity={hoveredCity} />}
             {selectedLayout === 'PieChart' && (
-              tradeData.length > 0 ? <PieChart data={tradeData} selectedYear={selectedYear} /> : <p>No data available for Pie Chart</p>
+              tradeData.length > 0 ? <PieChart selectedYear={selectedYear} /> : <p>No data available for Pie Chart</p>
             )}
             {selectedLayout === 'StackedBarChart' && <StackedBarChart data={forceDirectedData} />}
             {selectedLayout === 'DifferenceChart' && (
@@ -152,7 +151,7 @@ const Dashboard = () => {
             )}
             {selectedMap === 'MigrationMap' && (
               <>
-                <button onClick={() => setSelectedLayout('ForceDirectedGraph')}>Force-Directed Graph (Conflict Relationships)</button>
+                                <button onClick={() => setSelectedLayout('ForceDirectedGraph')}>Force-Directed Graph (Conflict Relationships)</button>
                 <button onClick={() => setSelectedLayout('ParallelCoordinatesChart')}>Parallel Coordinates Chart (Supplier Data)</button>
                 <button onClick={() => setSelectedLayout('ChordDiagram')}>Chord Diagram (Trade Dependencies)</button>
               </>

@@ -11,7 +11,7 @@ const PieChart = ({ selectedYear }) => {
 
   useEffect(() => {
     const width = 500;
-    const height = 500;
+    const height = 600;
     const radius = Math.min(width, height) / 2;
 
     const svg = d3.select(svgRef.current).attr('width', width).attr('height', height);
@@ -24,7 +24,7 @@ const PieChart = ({ selectedYear }) => {
       .attr('font-size', '20px')
       .attr('font-weight', 'bold')
       .attr('fill', '#0db4de')
-      .text(`Arms Trade by Region (${selectedYear})`);
+      .text(`Arms Imports by Region (${selectedYear})`);
 
     d3.csv(dataUrl).then(data => {
       data.forEach(d => {
@@ -33,8 +33,13 @@ const PieChart = ({ selectedYear }) => {
         }
       });
 
+      // Filter out the "World total" and "International organizations" rows
+      const filteredData = data.filter(d => 
+        d['Imports by Regions'] !== 'World total' && d['Imports by Regions'] !== 'International organizations'
+      );
+
       const regionArmsData = Array.from(
-        d3.group(data, d => d['Imports by Regions']),
+        d3.group(filteredData, d => d['Imports by Regions']),
         ([region, values]) => ({
           region,
           armsTrade: values[0][selectedYear] || 0
@@ -82,7 +87,7 @@ const PieChart = ({ selectedYear }) => {
             visible: true,
             x: event.pageX,
             y: event.pageY,
-            content: `${d.data.region}\nArms Trade: ${d.data.armsTrade.toLocaleString()} billion USD (${regionPercentage}%)`,
+            content: `${d.data.region}\nArms Imports: ${d.data.armsTrade.toLocaleString()} billion USD (${regionPercentage}%)`,
           });
 
           d3.select(event.currentTarget)
@@ -148,14 +153,15 @@ const PieChart = ({ selectedYear }) => {
         </div>
       )}
 
-      <div style={{ marginLeft: '20px', marginTop: '85px', padding: '10px', backgroundColor: '#f0f0f0', borderRadius: '5px', fontSize: '12px', color: '#333', width: '180px' }}>
-        <h3>Legend</h3>
-        <p>Total Arms Trade: {totalArmsTrade ? totalArmsTrade.toLocaleString() : '0'} billion USD</p>
+      <div style={{ marginLeft: '20px', marginTop: '120px', padding: '15px', backgroundColor: '#f0f0f0', borderRadius: '5px', fontSize: '12px', color: '#333', width: '200px' }}>
+        <p style={{ fontSize: '16px', fontWeight: 'bold' }}>
+          Total Arms Trade: {totalArmsTrade ? totalArmsTrade.toLocaleString() : '0'} billion USD
+        </p>
         {legendData.map((entry, index) => (
-          <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
+          <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '5px', fontSize: '14px' }}>
             <div
               style={{
-                width: '15px',
+                width: '20px',
                 height: '15px',
                 backgroundColor: entry.color,
                 marginRight: '10px',
@@ -163,7 +169,7 @@ const PieChart = ({ selectedYear }) => {
             ></div>
             <div>
               <span>{entry.region}</span><br />
-              <span style={{ fontSize: '10px' }}>{entry.percentage}% ({entry.armsTrade ? entry.armsTrade.toLocaleString() : '0'}B USD)</span>
+              <span style={{ fontSize: '14px' }}>{entry.percentage}% ({entry.armsTrade ? entry.armsTrade.toLocaleString() : '0'}B USD)</span>
             </div>
           </div>
         ))}
