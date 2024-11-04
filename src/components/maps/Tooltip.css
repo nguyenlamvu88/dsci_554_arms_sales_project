@@ -1,0 +1,12 @@
+.tooltip {
+    background-color: rgba(50, 50, 50, 0.9);
+    color: #fff;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    pointer-events: none; /* Prevent tooltip from interfering with mouse events */
+    transform: translate(-50%, -50%); /* Adjust tooltip position */
+    white-space: pre-line;
+    z-index: 1000;
+  }
+  
