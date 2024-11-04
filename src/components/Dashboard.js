@@ -12,7 +12,7 @@ import DifferenceChart from './layouts/DifferenceChart';
 import ZoomableCirclePacking from './layouts/ZoomableCirclePacking';
 import Sunburst from './layouts/Sunburst';
 import ForceDirectedGraph from './layouts/ForceDirectedGraph';
-import LineChart from './layouts/LineChart';
+import LineChart from './layouts/Linechart';
 import ParallelCoordinatesChart from './layouts/ParallelCoordinatesChart';
 import ChordDiagram from './layouts/ChordDiagram';
 import '../index.css';
@@ -83,7 +83,7 @@ const Dashboard = () => {
         <button onClick={() => handleMapSelection('DotMap')}>Dot Map (Conflict Hotspots)</button>
         <button onClick={() => handleMapSelection('ProportionalSymbolMap')}>Proportional Symbol Map (Arms Trade by Region)</button>
         <button onClick={() => handleMapSelection('ChoroplethMap')}>Choropleth Map (Military Expenditure Intensity)</button>
-        <button onClick={() => handleMapSelection('MigrationMap')}>Migration Map (Arms Suppliers)</button>
+        <button onClick={() => handleMapSelection('MigrationMap')}>Global Arms Trade Map</button>
       </nav>
 
       <div className="content-area">
@@ -124,7 +124,8 @@ const Dashboard = () => {
             {selectedLayout === 'ForceDirectedGraph' && <ForceDirectedGraph data={forceDirectedData} />}
             {selectedLayout === 'ParallelCoordinatesChart' && <ParallelCoordinatesChart data={migrationData} />}
             {selectedLayout === 'ChordDiagram' && <ChordDiagram data={regionalTransfersDataUrl} />}
-            {selectedLayout === 'LineChart' && <LineChart dataUrl={armsRecipientsDataUrl} />}
+            {selectedLayout === 'LineChart' && <LineChart importDataUrl={armsRecipientsDataUrl} exportDataUrl={armsSuppliersDataUrl} />}
+
           </div>
         </main>
 
@@ -140,7 +141,7 @@ const Dashboard = () => {
             {selectedMap === 'ProportionalSymbolMap' && (
               <>
                 <button onClick={() => setSelectedLayout('PieChart')}>Pie Chart (Military Expenditure by Region)</button>
-                <button onClick={() => setSelectedLayout('LineChart')}>Line Chart (Arms Imports Over Time)</button>
+                <button onClick={() => setSelectedLayout('LineChart')}>Multiline Chart (Arms Imports/Exports Over Time)</button>
               </>
             )}
             {selectedMap === 'ChoroplethMap' && (

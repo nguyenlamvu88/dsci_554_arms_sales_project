@@ -1,6 +1,6 @@
-// src/components/layouts/MigrationMap.js
 import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
+import * as topojson from 'topojson-client';
 
 const MigrationMap = () => {
   const svgRef = useRef();
@@ -9,110 +9,109 @@ const MigrationMap = () => {
 
   const [worldGeoJSON, setWorldGeoJSON] = useState(null);
   const [countryCentroids, setCountryCentroids] = useState({});
-  const [migrationData, setMigrationData] = useState([]);
+  const [tradeData, setTradeData] = useState([]);
 
-  const migrationDataUrl = 'https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_a7/main/migration_map.json';
-  const geoJSONUrl = 'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson';
+  const tradeDataUrl = 'https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_arms_trade_hierarchical_map.json';
+  const geoJSONUrl = 'https://unpkg.com/world-atlas@2/countries-110m.json';
 
-  // Enhanced normalization mapping
   const normalizeCountryName = (name) => {
     const mapping = {
       "United States of America": "United States",
-      "Russia": "Russian Federation",
-      "Czech Republic": "Czechia",
-      "South Korea": "Republic of Korea",
-      "North Korea": "Democratic People’s Republic of Korea",
-      "Côte d'Ivoire": "Ivory Coast",
-      "FYUG": "Former Yugoslavia",
-      "LUX": "Luxembourg",
       "USA": "United States",
-      "US": "United States",
-      "United States": "United States",
-      "Unknown": "Unknown",
-      // Add more mappings as needed
+      // Add more mappings as necessary
     };
     return mapping[name] || name;
   };
 
-  // Fetch Migration Data
   useEffect(() => {
-    d3.json(migrationDataUrl)
-      .then(data => setMigrationData(data))
-      .catch(error => console.error("Error loading migration data:", error));
+    d3.json(tradeDataUrl)
+      .then(data => setTradeData(data))
+      .catch(error => console.error("Error loading trade data:", error));
   }, []);
 
-  // Fetch GeoJSON Data and Calculate Centroids
   useEffect(() => {
     d3.json(geoJSONUrl)
-      .then(data => {
+      .then(worldData => {
         const centroids = {};
-        data.features.forEach(feature => {
+        topojson.feature(worldData, worldData.objects.countries).features.forEach(feature => {
           const countryName = feature.properties.name;
-          let centroid = d3.geoCentroid(feature);
-
-          // Manually set centroid for United States if necessary
-          if (countryName === "United States") {
-            centroid = [-98.5795, 39.8283]; // Approximate centroid
-            console.log("Manually set Centroid for United States:", centroid);
-          }
-
-          centroids[countryName] = centroid;
-
-          // Log the centroid for verification
-          if (countryName === "United States") {
-            console.log("Centroid for United States:", centroid);
-          }
+          centroids[normalizeCountryName(countryName)] = d3.geoCentroid(feature);
         });
-
-        // Check if "United States" is present
-        if (!centroids["United States"]) {
-          console.error("GeoJSON does not include 'United States'. Please check the country name.");
-          // Optionally, manually add the centroid
-          centroids["United States"] = [-98.5795, 39.8283];
-          console.log("Manually added Centroid for United States:", centroids["United States"]);
-        }
-
         setCountryCentroids(centroids);
-        setWorldGeoJSON(data);
+        setWorldGeoJSON(worldData);
       })
       .catch(error => console.error("Error fetching GeoJSON data:", error));
   }, []);
 
-  // Log all country names to verify GeoJSON
   useEffect(() => {
-    if (worldGeoJSON) {
-      console.log("List of Countries in GeoJSON:");
-      worldGeoJSON.features.forEach(feature => {
-        console.log(feature.properties.name);
-      });
-    }
-  }, [worldGeoJSON]);
-
-  // Log available centroids and verify "United States"
-  useEffect(() => {
-    if (worldGeoJSON) {
-      console.log("Available Centroids:", Object.keys(countryCentroids));
-      if (!countryCentroids["United States"]) {
-        console.error("Centroid for United States not found.");
-      } else {
-        console.log("Centroid for United States is available.");
-      }
-    }
-  }, [worldGeoJSON, countryCentroids]);
-
-  // Main Rendering Effect
-  useEffect(() => {
-    if (!worldGeoJSON || migrationData.length === 0) return;
+    if (!worldGeoJSON || tradeData.length === 0) return;
 
     const svg = d3.select(svgRef.current);
-    svg.selectAll("*").remove(); // Clear previous renders
+    svg.selectAll("*").remove();
 
     const projection = d3.geoMercator().scale(150).translate([width / 2, height / 1.5]);
     const path = d3.geoPath().projection(projection);
 
     const mapContainer = svg.append("g").attr("class", "map-container");
 
-    // Create a tooltip
+    // Apply zoom behavior
+    const zoom = d3.zoom()
+      .scaleExtent([1, 8])
+      .on("zoom", (event) => {
+        mapContainer.attr("transform", event.transform);
+      });
+
+    svg.call(zoom);
+
+    // Draw the world map with thicker borders
+    mapContainer.selectAll("path.country")
+      .data(topojson.feature(worldGeoJSON, worldGeoJSON.objects.countries).features)
+      .enter()
+      .append("path")
+      .attr("class", "country")
+      .attr("d", path)
+      .attr("fill", "#e0e0e0")
+      .attr("stroke", "#333")
+      .attr("stroke-width", 1.5); // Thicker borders
+
+    const validTrades = tradeData.flatMap(origin => 
+      origin.children.map(destination => {
+        const originCountry = normalizeCountryName(origin.name);
+        const destCountry = normalizeCountryName(destination.name);
+        const originCoords = countryCentroids[originCountry];
+        const destCoords = countryCentroids[destCountry];
+        
+        if (originCoords && destCoords) {
+          const [originX, originY] = projection(originCoords);
+          const [destX, destY] = projection(destCoords);
+          
+          const totalExport = destination.children.reduce((sum, yearData) => sum + yearData.amount, 0);
+          const totalImport = totalExport; // Assuming mutual import/export amounts for simplicity here
+          
+          return {
+            originCountry,
+            destCountry,
+            originX,
+            originY,
+            destX,
+            destY,
+            totalExport,
+            totalImport
+          };
+        }
+        return null;
+      })
+    ).filter(d => d !== null);
+
+    // Filter top 50 trade routes by export volume for readability
+    const topTrades = validTrades.sort((a, b) => b.totalExport - a.totalExport).slice(0, 50);
+
+    const maxTradeValue = d3.max(topTrades, d => Math.max(d.totalExport, d.totalImport));
+    const strokeScale = d3.scaleSqrt()
+      .domain([0, maxTradeValue])
+      .range([1, 4]);
+
+    // Tooltip for interactivity
     const tooltip = d3.select("body").append("div")
       .attr("class", "tooltip")
       .style("position", "absolute")
@@ -121,148 +120,71 @@ const MigrationMap = () => {
       .style("padding", "8px 12px")
       .style("border-radius", "4px")
       .style("pointer-events", "none")
-      .style("display", "none")
-      .style("font-size", "14px")
-      .style("z-index", "10");
+      .style("display", "none");
 
-    // Draw the world map
-    mapContainer.selectAll("path.country")
-      .data(worldGeoJSON.features)
-      .enter()
-      .append("path")
-      .attr("class", "country")
-      .attr("d", path)
-      .attr("fill", "#e0e0e0")
-      .attr("stroke", "#333");
-
-    // Prepare migration data with valid centroids
-    const validMigrations = migrationData.map(migration => {
-      const originCountry = normalizeCountryName(migration.origin_country);
-      const destCountry = normalizeCountryName(migration.destination_country);
-      const origin = countryCentroids[originCountry];
-      const destination = countryCentroids[destCountry];
-
-      if (!origin) {
-        console.warn(`Origin centroid not found for: ${originCountry}`);
-      }
-      if (!destination) {
-        console.warn(`Destination centroid not found for: ${destCountry}`);
-      }
-
-      if (origin && destination) {
-        const [originX, originY] = projection(origin);
-        const [destX, destY] = projection(destination);
-        return { ...migration, originX, originY, destX, destY };
-      }
-      return null;
-    }).filter(d => d !== null);
-
-    // Define a scale for stroke widths
-    const strokeScale = d3.scaleSqrt()
-      .domain([d3.min(validMigrations, d => d.number), d3.max(validMigrations, d => d.number)])
-      .range([1, 10]);
-
-    // Draw migration lines
-    mapContainer.selectAll("line.migration")
-      .data(validMigrations)
+    // Draw export lines (solid) and import lines (dashed)
+    mapContainer.selectAll("line.export")
+      .data(topTrades)
       .enter()
       .append("line")
-      .attr("class", "migration")
+      .attr("class", "export")
       .attr("x1", d => d.originX)
       .attr("y1", d => d.originY)
       .attr("x2", d => d.destX)
       .attr("y2", d => d.destY)
-      .attr("stroke", "rgba(0, 123, 255, 0.4)")
-      .attr("stroke-width", d => strokeScale(d.number))
-      .on("mouseover", function(event, d) {
-        tooltip
-          .html(`<strong>Migration:</strong> ${d.origin_country} → ${d.destination_country}<br/><strong>Number:</strong> ${Math.round(d.number).toLocaleString()}`)
-          .style("left", `${event.pageX + 10}px`)
-          .style("top", `${event.pageY - 28}px`)
-          .style("display", "block");
+      .attr("stroke", "rgba(30, 144, 255, 0.2)") // Blue for exports
+      .attr("stroke-width", d => strokeScale(d.totalExport))
+      .on("mouseover", (event, d) => {
+        d3.select(event.currentTarget).attr("stroke", "blue").attr("stroke-width", 2); // Highlight
+        tooltip.style("display", "block")
+          .html(`<strong>Export:</strong> ${d.originCountry} → ${d.destCountry}<br/><strong>Value:</strong> ${d.totalExport.toFixed(2)}B USD`);
       })
-      .on("mousemove", function(event) {
-        tooltip
-          .style("left", `${event.pageX + 10}px`)
-          .style("top", `${event.pageY - 28}px`);
-      })
-      .on("mouseout", function() {
+      .on("mousemove", (event) => tooltip.style("left", `${event.pageX + 10}px`).style("top", `${event.pageY - 28}px`))
+      .on("mouseout", (event) => {
+        d3.select(event.currentTarget).attr("stroke", "rgba(30, 144, 255, 0.2)").attr("stroke-width", d => strokeScale(d.totalExport)); // Remove highlight
         tooltip.style("display", "none");
       });
 
-    // Draw origin circles
-    mapContainer.selectAll("circle.origin")
-      .data(validMigrations)
+    mapContainer.selectAll("line.import")
+      .data(topTrades)
       .enter()
-      .append("circle")
-      .attr("class", "origin")
-      .attr("cx", d => d.originX)
-      .attr("cy", d => d.originY)
-      .attr("r", 3)
-      .attr("fill", "red");
-
-    // Draw destination circles
-    mapContainer.selectAll("circle.destination")
-      .data(validMigrations)
-      .enter()
-      .append("circle")
-      .attr("class", "destination")
-      .attr("cx", d => d.destX)
-      .attr("cy", d => d.destY)
-      .attr("r", 3)
-      .attr("fill", "blue");
-
-    // Zoom and pan functionality
-    svg.call(d3.zoom()
-      .scaleExtent([0.5, 5])
-      .on("zoom", (event) => {
-        mapContainer.attr("transform", event.transform);
+      .append("line")
+      .attr("class", "import")
+      .attr("x1", d => d.destX)
+      .attr("y1", d => d.destY)
+      .attr("x2", d => d.originX)
+      .attr("y2", d => d.originY)
+      .attr("stroke", "rgba(255, 165, 0, 0.2)") // Orange for imports
+      .attr("stroke-dasharray", "4,2") // Dashed lines for imports
+      .attr("stroke-width", d => strokeScale(d.totalImport))
+      .on("mouseover", (event, d) => {
+        d3.select(event.currentTarget).attr("stroke", "orange").attr("stroke-width", 2); // Highlight
+        tooltip.style("display", "block")
+          .html(`<strong>Import:</strong> ${d.destCountry} ← ${d.originCountry}<br/><strong>Value:</strong> ${d.totalImport.toFixed(2)}B USD`);
       })
-    );
+      .on("mousemove", (event) => tooltip.style("left", `${event.pageX + 10}px`).style("top", `${event.pageY - 28}px`))
+      .on("mouseout", (event) => {
+        d3.select(event.currentTarget).attr("stroke", "rgba(255, 165, 0, 0.2)").attr("stroke-width", d => strokeScale(d.totalImport)); // Remove highlight
+        tooltip.style("display", "none");
+      });
 
-    // Static Legend for red and blue dots
-    const legend = svg.append("g")
-      .attr("class", "legend")
-      .attr("transform", `translate(${width - 190}, ${height - 67})`);
+    // Legend
+    const legend = svg.append("g").attr("class", "legend").attr("transform", "translate(20, 20)");
+    legend.append("text").text("Legend").attr("font-size", 14).attr("font-weight", "bold");
+    legend.append("line")
+      .attr("x1", 0).attr("y1", 20).attr("x2", 20).attr("y2", 20)
+      .attr("stroke", "rgba(30, 144, 255, 0.2)").attr("stroke-width", 2);
+    legend.append("text").attr("x", 25).attr("y", 24).text("Exports (Blue - Solid)");
+    legend.append("line")
+      .attr("x1", 0).attr("y1", 40).attr("x2", 20).attr("y2", 40)
+      .attr("stroke", "rgba(255, 165, 0, 0.2)").attr("stroke-width", 2).attr("stroke-dasharray", "4,2");
+    legend.append("text").attr("x", 25).attr("y", 44).text("Imports (Orange - Dashed)");
 
-    legend.append("circle")
-      .attr("cx", 10)
-      .attr("cy", 10)
-      .attr("r", 5)
-      .attr("fill", "red");
-
-    legend.append("text")
-      .attr("x", 20)
-      .attr("y", 14)
-      .text("Origin Country")
-      .attr("fill", "#fff") // Improved contrast
-      .style("font-size", "12px");
-
-    legend.append("circle")
-      .attr("cx", 10)
-      .attr("cy", 30)
-      .attr("r", 5)
-      .attr("fill", "blue");
-
-    legend.append("text")
-      .attr("x", 20)
-      .attr("y", 34)
-      .text("Destination Country")
-      .attr("fill", "#fff") // Improved contrast
-      .style("font-size", "12px");
-
-    return () => {
-      tooltip.remove();
-    };
-  }, [worldGeoJSON, countryCentroids, migrationData]);
+    return () => tooltip.remove();
+  }, [worldGeoJSON, tradeData, countryCentroids]);
 
   return (
-    <svg
-      ref={svgRef}
-      viewBox={`0 0 ${width} ${height}`}
-      style={{ backgroundColor: '#333', width: '100%', height: 'auto' }}
-      aria-label="Migration Map"
-    ></svg>
+    <svg ref={svgRef} width={width} height={height} style={{ backgroundColor: '#333' }}></svg>
   );
 };
 
