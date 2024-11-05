@@ -83,7 +83,7 @@ const Dashboard = () => {
         <button onClick={() => handleMapSelection('DotMap')}>Dot Map (Conflict Hotspots)</button>
         <button onClick={() => handleMapSelection('ProportionalSymbolMap')}>Proportional Symbol Map (Arms Trade by Region)</button>
         <button onClick={() => handleMapSelection('ChoroplethMap')}>Choropleth Map (Military Expenditure Intensity)</button>
-        <button onClick={() => handleMapSelection('MigrationMap')}>Global Arms Trade Map</button>
+        <button onClick={() => handleMapSelection('MigrationMap')}>Arms Proliferation Map (US, Russia, China)</button>
       </nav>
 
       <div className="content-area">

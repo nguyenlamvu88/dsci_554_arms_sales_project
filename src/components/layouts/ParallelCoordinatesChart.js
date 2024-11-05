@@ -1,44 +1,68 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 
-const ParallelCoordinatesChart = ({ data }) => {
+const ParallelCoordinatesChart = () => {
   const svgRef = useRef();
-  const margin = { top: 30, right: 30, bottom: 30, left: 120 }; // Increased left margin for readability
-  const width = 800 - margin.left - margin.right;
-  const height = 400 - margin.top - margin.bottom;
+  const margin = { top: 120, right: 30, bottom: 30, left: 120 };
+  const width = 1000 - margin.left - margin.right;
+  const height = 900 - margin.top - margin.bottom;
+  const dataUrl = 'https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_recipients_of_combined_us_china_russia_arms_hierarchical.json';
+
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    // Fetch and process data from the URL
+    d3.json(dataUrl).then(rawData => {
+      const flattenedData = [];
+      rawData.data.forEach((supplierData) => {
+        const supplier = supplierData.supplier;
+        supplierData.recipients.forEach((recipientData) => {
+          const recipient = recipientData.recipient;
+          Object.entries(recipientData.years).forEach(([year, value]) => {
+            flattenedData.push({ supplier, recipient, year: +year, value });
+          });
+        });
+      });
+      setData(flattenedData);
+    });
+  }, []);
 
   useEffect(() => {
     if (!data || data.length === 0) return;
 
-    // Step 1: Aggregate total number by destination_country
+    // Aggregate total trade value by recipient
     const destinationTotals = d3.rollups(
       data,
-      v => d3.sum(v, d => d.number),
-      d => d.destination_country
+      (v) => d3.sum(v, (d) => d.value),
+      (d) => d.recipient
     );
 
-    // Step 2: Sort and take the top 10 destination countries by total number
+    // Sort and take the top 10 recipients by total trade value
     const topDestinations = destinationTotals
-      .sort((a, b) => b[1] - a[1]) // Sort descending by total number
-      .slice(0, 10) // Take top 10
-      .map(d => d[0]); // Get only the country names
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map((d) => d[0]);
 
-    // Step 3: Filter data to include only the top 10 destination countries
-    const filteredData = data.filter(d => topDestinations.includes(d.destination_country));
+    // Filter data to include only the top 10 recipients
+    const filteredData = data.filter((d) => topDestinations.includes(d.recipient));
 
-    // Define dimensions based on filtered data
-    const dimensions = ["destination_country", "origin_country", "gender", "age", "number"];
+    // Define dimensions for parallel coordinates
+    const dimensions = ["supplier", "recipient", "year", "value"];
 
     // Set up scales for each dimension
     const yScales = {};
-    dimensions.forEach(dim => {
-      if (dim === "number") {
+    dimensions.forEach((dim) => {
+      if (dim === "value") {
         yScales[dim] = d3.scaleLinear()
-          .domain(d3.extent(filteredData, d => d[dim]))
+          .domain(d3.extent(filteredData, (d) => d[dim]))
+          .range([height, 0]);
+      } else if (dim === "year") {
+        yScales[dim] = d3.scaleLinear()
+          .domain(d3.extent(filteredData, (d) => d[dim]))
           .range([height, 0]);
       } else {
         yScales[dim] = d3.scalePoint()
-          .domain([...new Set(filteredData.map(d => d[dim]))])
+          .domain([...new Set(filteredData.map((d) => d[dim]))])
           .range([height, 0]);
       }
     });
@@ -48,7 +72,7 @@ const ParallelCoordinatesChart = ({ data }) => {
       .domain(dimensions)
       .range([0, width]);
 
-    // Harmonized color scale
+    // Harmonized color scale for recipients
     const colorScale = d3.scaleOrdinal()
       .domain(topDestinations)
       .range(d3.schemeTableau10);
@@ -56,12 +80,22 @@ const ParallelCoordinatesChart = ({ data }) => {
     // Select the SVG element and clear previous content
     const svg = d3.select(svgRef.current)
       .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom);
-    svg.selectAll("*").remove(); // Clear previous content
+      .attr("height", height + margin.top + margin.bottom + 50); // Extra space for title and legend
+    svg.selectAll("*").remove();
 
     // Add a group element for margins
     const chartGroup = svg.append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+    // Add title
+    svg.append("text")
+      .attr("x", (width + margin.left + margin.right) / 2)
+      .attr("y", margin.top / 2)
+      .attr("text-anchor", "middle")
+      .style("font-size", "24px")
+      .style("font-weight", "bold")
+      .style("fill", "white")
+      .text("Top 10 Recipients of Arms Trade by Supplier, Year, and Trade Value");
 
     // Tooltip setup
     const tooltip = d3.select("body").append("div")
@@ -74,7 +108,7 @@ const ParallelCoordinatesChart = ({ data }) => {
       .style("display", "none");
 
     // Helper function to draw each line
-    const path = d => d3.line()(dimensions.map(dim => [xScale(dim), yScales[dim](d[dim])]));
+    const path = (d) => d3.line()(dimensions.map((dim) => [xScale(dim), yScales[dim](d[dim])]));
 
     // Draw each line for each data point with tooltip functionality
     chartGroup.selectAll("path")
@@ -82,31 +116,34 @@ const ParallelCoordinatesChart = ({ data }) => {
       .join("path")
       .attr("d", path)
       .style("fill", "none")
-      .style("stroke", d => colorScale(d.destination_country))
+      .style("stroke", (d) => colorScale(d.recipient))
       .style("opacity", 0.7)
       .style("stroke-width", 1.5)
       .on("mouseover", (event, d) => {
-        d3.select(event.currentTarget).style("opacity", 1); // Highlight line
+        d3.select(event.currentTarget).style("opacity", 1) // Highlight line
+        .style("opacity", 1)              // Increase opacity for visibility
+        .style("stroke-width", 8);
         tooltip.style("display", "block")
           .html(`
-            <strong>Destination Country:</strong> ${d.destination_country}<br>
-            <strong>Origin Country:</strong> ${d.origin_country}<br>
-            <strong>Gender:</strong> ${d.gender}<br>
-            <strong>Age:</strong> ${d.age}<br>
-            <strong>Number:</strong> ${d.number.toLocaleString()}
+            <strong>Supplier:</strong> ${d.supplier}<br>
+            <strong>Recipient:</strong> ${d.recipient}<br>
+            <strong>Year:</strong> ${d.year}<br>
+            <strong>Value:</strong> ${d.value.toLocaleString()} USD
           `);
       })
-      .on("mousemove", event => {
+      .on("mousemove", (event) => {
         tooltip.style("top", `${event.pageY - 10}px`)
           .style("left", `${event.pageX + 10}px`);
       })
       .on("mouseout", (event) => {
-        d3.select(event.currentTarget).style("opacity", 0.7); // Reset opacity
+        d3.select(event.currentTarget)
+          .style("opacity", 0.7)            // Reset opacity
+          .style("stroke-width", 1.5);      // Reset stroke-width
         tooltip.style("display", "none");
       });
 
     // Draw axes for each dimension
-    dimensions.forEach(dim => {
+    dimensions.forEach((dim) => {
       const axisGroup = chartGroup.append("g")
         .attr("transform", `translate(${xScale(dim)}, 0)`);
 
@@ -120,8 +157,29 @@ const ParallelCoordinatesChart = ({ data }) => {
         .attr("text-anchor", "middle")
         .text(dim.replace(/_/g, " ")) // Make labels more readable
         .style("fill", "#0db4de")
-        .style("font-size", "12px")
+        .style("font-size", "14px")
         .style("font-weight", "bold");
+    });
+
+    // Add legend
+    const legend = svg.append("g")
+      .attr("transform", `translate(${width + margin.left + 30}, ${margin.top})`);
+
+    topDestinations.forEach((recipient, i) => {
+      const legendRow = legend.append("g")
+        .attr("transform", `translate(0, ${i * 20})`);
+
+      legendRow.append("rect")
+        .attr("width", 10)
+        .attr("height", 10)
+        .attr("fill", colorScale(recipient));
+
+      legendRow.append("text")
+        .attr("x", 15)
+        .attr("y", 10)
+        .attr("text-anchor", "start")
+        .style("font-size", "10px")
+        .text(recipient);
     });
 
     // Cleanup tooltip on unmount
