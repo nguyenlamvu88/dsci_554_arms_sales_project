@@ -129,7 +129,7 @@ const ProportionalSymbolMap = ({ selectedYear }) => {
         .style('font-size', '22px')
         .style('font-weight', 'bold')
         .style('fill', 'brown')
-        .text(`Arms Imports by Region (${selectedYear}, billion USD)`);
+        .text(`Arms Imports by Region ${selectedYear} (billion USD)`);
 
       // Dynamic mini bar chart for the legend
       const regionsData = Object.keys(regions).map(region => {

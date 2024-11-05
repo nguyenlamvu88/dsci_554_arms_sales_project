@@ -82,7 +82,7 @@ const LineChart = ({ importDataUrl, exportDataUrl }) => {
       .style("font-size", "16px")
       .style("fill", "white")
       .style("font-weight", "bold")
-      .text(`Value (Billions)`);
+      .text(`Value (Billions USD)`);
 
     const tooltip = d3.select("body").append("div")
       .style("position", "absolute")

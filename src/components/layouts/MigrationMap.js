@@ -435,7 +435,7 @@ const MigrationMap = () => {
         color: 'black',          // Change text color here
         textAlign: 'center'      // Center the text within the h2
       }}>
-        Global Arms Proliferation By US, China, and Russia
+        Global Arms Proliferation By US, China, and Russia (in million USD)
       </h2>
 
       {/* Display error messages if any */}

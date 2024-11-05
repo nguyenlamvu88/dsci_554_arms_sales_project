@@ -90,12 +90,12 @@ const ParallelCoordinatesChart = () => {
     // Add title
     svg.append("text")
       .attr("x", (width + margin.left + margin.right) / 2)
-      .attr("y", margin.top / 2)
+      .attr("y", margin.top / 2 - 25)
       .attr("text-anchor", "middle")
-      .style("font-size", "24px")
+      .style("font-size", "22px")
       .style("font-weight", "bold")
       .style("fill", "white")
-      .text("Top 10 Recipients of Arms Trade by Supplier, Year, and Trade Value");
+      .text("Top 10 Recipients of Arms Trade by Supplier, Year, and Trade Value (in million USD)");
 
     // Tooltip setup
     const tooltip = d3.select("body").append("div")

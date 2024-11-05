@@ -81,7 +81,7 @@ const Dashboard = () => {
 
       <nav className="navbar">
         <button onClick={() => handleMapSelection('DotMap')}>Dot Map (Conflict Hotspots)</button>
-        <button onClick={() => handleMapSelection('ProportionalSymbolMap')}>Proportional Symbol Map (Arms Trade by Region)</button>
+        <button onClick={() => handleMapSelection('ProportionalSymbolMap')}>Proportional Symbol Map (Arms Exports by Region)</button>
         <button onClick={() => handleMapSelection('ChoroplethMap')}>Choropleth Map (Military Expenditure Intensity)</button>
         <button onClick={() => handleMapSelection('MigrationMap')}>Arms Proliferation Map (US, Russia, China)</button>
       </nav>
@@ -152,8 +152,8 @@ const Dashboard = () => {
             )}
             {selectedMap === 'MigrationMap' && (
               <>
-                                <button onClick={() => setSelectedLayout('ForceDirectedGraph')}>Force-Directed Graph (Conflict Relationships)</button>
-                <button onClick={() => setSelectedLayout('ParallelCoordinatesChart')}>Parallel Coordinates Chart (Supplier Data)</button>
+                                <button onClick={() => setSelectedLayout('ForceDirectedGraph')}>Force-Directed Graph (Global Arms Trade Network of US, China and Russia)</button>
+                <button onClick={() => setSelectedLayout('ParallelCoordinatesChart')}>Parallel Coordinates Chart (Top 10 Recipients of US, China and Russia)</button>
                 <button onClick={() => setSelectedLayout('ChordDiagram')}>Chord Diagram (Trade Dependencies)</button>
               </>
             )}

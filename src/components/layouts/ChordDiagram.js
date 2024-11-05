@@ -164,6 +164,7 @@ const ChordDiagram = () => {
 
   return (
     <div>
+      <h2>Arms Trade Flow between Major Global Suppliers and Top Recipients by Year</h2>
       <label>
         Select Year:
         <select value={selectedYear} onChange={e => setSelectedYear(parseInt(e.target.value, 10))}>
@@ -175,6 +176,7 @@ const ChordDiagram = () => {
       <svg ref={svgRef}></svg>
     </div>
   );
+  
 };
 
 export default ChordDiagram;

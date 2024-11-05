@@ -170,8 +170,11 @@ const ForceDirectedGraph = () => {
 
   return (
     <div style={{ position: 'relative' }}>
+      <h2 style={{ color: 'white', textAlign: 'center', marginBottom: '50px' }}>
+        Global Arms Trade Network: Major Suppliers and Top Recipients
+      </h2>
       <svg ref={svgRef} width={width} height={height}></svg>
-      <div style={{ position: 'absolute', top: 10, left: 10, color: 'white' }}>
+      <div style={{ position: 'absolute', top: 80, left: 10, color: 'white' }}>
         <label>Year: {selectedYear}</label>
         <input
           type="range"
@@ -183,7 +186,7 @@ const ForceDirectedGraph = () => {
         />
       </div>
     </div>
-  );
-};
-
+  );  
+  };
+  
 export default ForceDirectedGraph;
