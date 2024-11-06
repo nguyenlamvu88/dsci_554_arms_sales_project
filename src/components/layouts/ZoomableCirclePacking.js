@@ -25,11 +25,11 @@ const ZoomableCirclePacking = () => {
 
         const years = Array.from(
           new Set(
-            jsonData.children.flatMap((category) =>
-              category.children.map((yearData) => yearData.name)
+            Object.values(jsonData.Exports).flatMap((countryData) =>
+              countryData.flatMap((category) => Object.keys(category).filter(key => !isNaN(key)))
             )
           )
-        ).sort((a, b) => b - a); // Sort years descending
+        ).sort((a, b) => b - a);
         setAvailableYears(years);
         setSelectedYearIndex(0);
       } catch (error) {
@@ -40,37 +40,44 @@ const ZoomableCirclePacking = () => {
     fetchData();
   }, []);
 
-  const categoryColorScale = useMemo(() => {
+  // Color scale for countries
+  const countryColorScale = useMemo(() => {
     return data
-      ? d3.scaleOrdinal(d3.schemeTableau10).domain(data.children.map((d) => d.name)) // Changed color scheme to Tableau10
+      ? d3.scaleOrdinal(d3.schemeTableau10).domain(Object.keys(data.Exports))
       : null;
   }, [data]);
 
-  const colorScale = useMemo(() => {
-    return d3.scaleSequential(d3.interpolateViridis).domain([1, 3]); // Changed to Viridis for contrast
-  }, []);
+  // Separate color scale for weapon categories
+  const categoryColorScale = useMemo(() => {
+    const allCategories = data
+      ? Object.values(data.Exports).flatMap((countryData) =>
+          countryData.map((category) => category['Unnamed: 1'])
+        )
+      : [];
+    return d3.scaleOrdinal(d3.schemePaired).domain(allCategories);
+  }, [data]);
 
   useEffect(() => {
-    if (!data || availableYears.length === 0 || !categoryColorScale) return;
+    if (!data || availableYears.length === 0 || !countryColorScale || !categoryColorScale) return;
 
     const selectedYear = availableYears[selectedYearIndex];
-
     const yearData = {
-      name: 'Weapon Transfers by Category',
-      children: data.children
-        .map((category) => ({
-          name: category.name,
-          children: category.children
-            .filter((yearNode) => yearNode.name === selectedYear)
-            .map((yearNode) => ({ ...yearNode, year: yearNode.name })),
-        }))
-        .filter((category) => category.children.length > 0),
+      name: 'Weapon Transfers by Country',
+      children: Object.entries(data.Exports).map(([country, categories]) => ({
+        name: country,
+        children: categories
+          .map((category) => ({
+            name: category['Unnamed: 1'],
+            value: category[selectedYear] || 0,
+          }))
+          .filter((category) => category.value > 0),
+      })).filter(country => country.children.length > 0),
     };
 
     const svg = d3
       .select(svgRef.current)
       .attr('viewBox', `0 0 ${width} ${height}`)
-      .style('background', 'transparent') // Removed white background
+      .style('background', 'transparent')
       .style('cursor', 'pointer');
 
     svg.selectAll('*').remove();
@@ -140,26 +147,24 @@ const ZoomableCirclePacking = () => {
 
     node
       .append('circle')
-      .attr('fill', (d) =>
-        d.depth === 1 ? categoryColorScale(d.data.name) : colorScale(d.depth)
-      )
-      .attr('fill-opacity', (d) => (d.depth === 1 ? 1 : 0.0))
-      .attr('stroke', '#333') // Darker stroke for contrast
-      .attr('stroke-width', (d) => (d.depth === 1 ? 2 : 0.2))
+      .attr('fill', (d) => {
+        // Color countries and categories differently
+        if (d.depth === 1) return countryColorScale(d.data.name);
+        if (d.depth === 2) return categoryColorScale(d.data.name);
+        return '#ccc'; // Default color for non-country and non-category nodes
+      })
+      .attr('fill-opacity', (d) => (d.depth === 1 || d.depth === 2 ? 1 : 0.0))
+      .attr('stroke', '#333')
+      .attr('stroke-width', (d) => (d.depth === 1 || d.depth === 2 ? 2 : 0.2))
       .attr('r', (d) => d.r)
       .style('transition', 'all 0.2s ease')
       .on('mouseover', (event, d) => {
         if (!d || !d.data) return;
-        const weaponType =
-          d.depth === 1
-            ? d.data.name
-            : d.parent && d.parent.data
-            ? d.parent.data.name
-            : 'N/A';
-        const year = selectedYear;
+        const country = d.depth === 1 ? d.data.name : d.parent && d.parent.data ? d.parent.data.name : 'N/A';
+        const weaponType = d.depth === 2 ? d.data.name : 'N/A';
         const quantity = d.value ? d.value.toLocaleString() : 'N/A';
         tooltip
-          .html(`Year: ${year}<br/>Weapon Type: ${weaponType}<br/>Quantity: ${quantity}`)
+          .html(`Country: ${country}<br/>Weapon Type: ${weaponType}<br/>Quantity: ${quantity}`)
           .style('display', 'block');
       })
       .on('mousemove', (event) => {
@@ -175,17 +180,15 @@ const ZoomableCirclePacking = () => {
         }
       });
 
-    // Text labels, ensuring they appear above circles
     node
       .append('text')
-      .attr('textAnchor', 'left')
+      .attr('textAnchor', 'middle')
       .attr('dy', '.3em')
       .style('pointer-events', 'none')
-      .style('fill', '#333') // Dark text for better readability
+      .style('fill', '#333')
       .style('font-weight', 'bold')
       .style('font-size', (d) => `${Math.max(10, d.r / 4)}px`)
-      .style('z-index', 10) // Ensure text is in front
-      .text((d) => (d.depth === 1 ? d.data.name : ''));
+      .text((d) => (d.depth === 1 || d.depth === 2 ? d.data.name : ''));
 
     zoomTo([root.x, root.y, root.r * 2]);
 
@@ -194,7 +197,7 @@ const ZoomableCirclePacking = () => {
     return () => {
       tooltip.remove();
     };
-  }, [data, selectedYearIndex, availableYears, categoryColorScale, colorScale]);
+  }, [data, selectedYearIndex, availableYears, countryColorScale, categoryColorScale]);
 
   const handleSliderChange = (e) => {
     setSelectedYearIndex(Number(e.target.value));
@@ -211,7 +214,7 @@ const ZoomableCirclePacking = () => {
     },
     title: {
       textAlign: 'center',
-      color: '#0db4de', // Updated title color for better contrast
+      color: '#0db4de',
       marginBottom: '20px',
       fontSize: '1.8em',
       fontWeight: 'bold',
@@ -263,7 +266,7 @@ const ZoomableCirclePacking = () => {
   return (
     <div style={styles.container}>
       {/* Header */}
-      <h2 style={styles.title}>Weapon Transfers by Category</h2>
+      <h2 style={styles.title}>Weapon Transfers by Country</h2>
 
       {/* Conditional Rendering within JSX */}
       {error && <p style={styles.error}>{error}</p>}
@@ -299,9 +302,9 @@ const ZoomableCirclePacking = () => {
               role="img"
               aria-labelledby="title desc"
             >
-              <title id="title">Zoomable Circle Packing of Weapon Transfers</title>
+              <title id="title">Zoomable Circle Packing of Weapon Transfers by Country</title>
               <desc id="desc">
-                Visualization showing weapon transfers by category for the selected year.
+                Visualization showing weapon transfers by country and category for the selected year.
               </desc>
             </svg>
           </div>
