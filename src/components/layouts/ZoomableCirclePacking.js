@@ -123,7 +123,8 @@ const ZoomableCirclePacking = () => {
           })`
       );
       node.select('circle').attr('r', (d) => d.r * k);
-      node.select('text').attr('fontSize', (d) => Math.max(14, (d.r * k) / 4));
+      node.selectAll('text')
+        .attr('fontSize', (d) => Math.max(10, (d.r * k) / 4));
     };
 
     const zoom = (event, d) => {
@@ -180,6 +181,7 @@ const ZoomableCirclePacking = () => {
         }
       });
 
+    // Append category labels (depth === 2)
     node
       .append('text')
       .attr('textAnchor', 'middle')
@@ -188,7 +190,19 @@ const ZoomableCirclePacking = () => {
       .style('fill', '#333')
       .style('font-weight', 'bold')
       .style('font-size', (d) => `${Math.max(10, d.r / 4)}px`)
-      .text((d) => (d.depth === 1 || d.depth === 2 ? d.data.name : ''));
+      .text((d) => (d.depth === 2 ? d.data.name : ''));
+
+    // Append country labels below the circles (depth === 1)
+    node
+      .filter(d => d.depth === 1)
+      .append('text')
+      .attr('textAnchor', 'middle')
+      .attr('dy', (d) => d.r + 25) // Adjust the offset as needed
+      .style('pointer-events', 'none')
+      .style('fill', 'white')
+      .style('font-weight', 'bold')
+      .style('font-size', '17px')
+      .text(d => d.data.name);
 
     zoomTo([root.x, root.y, root.r * 2]);
 
