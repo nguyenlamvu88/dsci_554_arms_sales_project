@@ -119,7 +119,8 @@ const Dashboard = () => {
                 <DifferenceChart dataUrl={armsRecipientsDataUrl} country1={country1} country2={country2} />
               </div>
             )}
-            {selectedLayout === 'ZoomableCirclePacking' && hierarchicalData && <ZoomableCirclePacking data={hierarchicalData} />}
+            {selectedLayout === 'ZoomableCirclePacking' && hierarchicalData && hierarchicalData.length > 0 && (
+              <ZoomableCirclePacking data={hierarchicalData} />)}
             {selectedLayout === 'Sunburst' && <Sunburst dataUrl={armsRecipientsDataUrl} />}
             {selectedLayout === 'ForceDirectedGraph' && <ForceDirectedGraph data={forceDirectedData} />}
             {selectedLayout === 'ParallelCoordinatesChart' && <ParallelCoordinatesChart data={migrationData} />}
