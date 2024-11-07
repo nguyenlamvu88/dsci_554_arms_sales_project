@@ -8,7 +8,7 @@ const ZoomableCirclePacking = () => {
   const [availableYears, setAvailableYears] = useState([]);
   const [error, setError] = useState(null);
 
-  const width = 700;
+  const width = 1000;
   const height = 650;
 
   useEffect(() => {
@@ -23,15 +23,23 @@ const ZoomableCirclePacking = () => {
         const jsonData = await response.json();
         setData(jsonData);
 
+        // Extract unique years and set availableYears state
         const years = Array.from(
           new Set(
             Object.values(jsonData.Exports).flatMap((countryData) =>
               countryData.flatMap((category) => Object.keys(category).filter(key => !isNaN(key)))
             )
           )
-        ).sort((a, b) => b - a);
-        setAvailableYears(years);
-        setSelectedYearIndex(0);
+        ).sort((a, b) => a - b);
+        setAvailableYears(years); // Ensure available years are set for the slider
+        setSelectedYearIndex(0);  // Reset selectedYearIndex to 0
+        
+        // Set default year to the latest year
+        const defaultYearIndex = years.length - 1; // Assuming the latest year
+        setSelectedYearIndex(defaultYearIndex);
+
+        console.log("Data fetched successfully:", jsonData);
+        console.log("Available years:", years);
       } catch (error) {
         console.error('Error fetching data:', error);
         setError('Failed to load data. Please try again later.');
@@ -61,6 +69,8 @@ const ZoomableCirclePacking = () => {
     if (!data || availableYears.length === 0 || !countryColorScale || !categoryColorScale) return;
 
     const selectedYear = availableYears[selectedYearIndex];
+    console.log("Selected year:", selectedYear);
+
     const yearData = {
       name: 'Weapon Transfers by Country',
       children: Object.entries(data.Exports).map(([country, categories]) => ({
@@ -73,6 +83,8 @@ const ZoomableCirclePacking = () => {
           .filter((category) => category.value > 0),
       })).filter(country => country.children.length > 0),
     };
+
+    console.log("Year data for visualization:", yearData);
 
     const svg = d3
       .select(svgRef.current)
@@ -106,7 +118,7 @@ const ZoomableCirclePacking = () => {
       .sum((d) => d.value || 0)
       .sort((a, b) => b.value - a.value);
 
-    const pack = d3.pack().size([width - 10, height - 10]).padding(5);
+    const pack = d3.pack().size([width - 10, height - 10]).padding(10);
     pack(root);
 
     let focus = root;
@@ -141,6 +153,7 @@ const ZoomableCirclePacking = () => {
 
     const node = svg
       .append('g')
+      .attr("transform", "translate(0, -20)")
       .selectAll('g')
       .data(root.descendants())
       .join('g')
@@ -149,13 +162,12 @@ const ZoomableCirclePacking = () => {
     node
       .append('circle')
       .attr('fill', (d) => {
-        // Color countries and categories differently
         if (d.depth === 1) return countryColorScale(d.data.name);
         if (d.depth === 2) return categoryColorScale(d.data.name);
-        return '#ccc'; // Default color for non-country and non-category nodes
+        return '#ccc';
       })
       .attr('fill-opacity', (d) => (d.depth === 1 || d.depth === 2 ? 1 : 0.0))
-      .attr('stroke', '#333')
+      .attr('stroke', 'none')
       .attr('stroke-width', (d) => (d.depth === 1 || d.depth === 2 ? 2 : 0.2))
       .attr('r', (d) => d.r)
       .style('transition', 'all 0.2s ease')
@@ -181,7 +193,6 @@ const ZoomableCirclePacking = () => {
         }
       });
 
-    // Append category labels (depth === 2)
     node
       .append('text')
       .attr('textAnchor', 'middle')
@@ -192,12 +203,12 @@ const ZoomableCirclePacking = () => {
       .style('font-size', (d) => `${Math.max(10, d.r / 4)}px`)
       .text((d) => (d.depth === 2 ? d.data.name : ''));
 
-    // Append country labels below the circles (depth === 1)
     node
       .filter(d => d.depth === 1)
       .append('text')
-      .attr('textAnchor', 'middle')
-      .attr('dy', (d) => d.r + 25) // Adjust the offset as needed
+      .attr('textAnchor', 'start')
+      .attr('dx', 20) // Adjust this value to move the text further right
+      .attr('dy', (d) => d.r + 100) // Adjust as needed to control the vertical position)
       .style('pointer-events', 'none')
       .style('fill', 'white')
       .style('font-weight', 'bold')
@@ -215,6 +226,7 @@ const ZoomableCirclePacking = () => {
 
   const handleSliderChange = (e) => {
     setSelectedYearIndex(Number(e.target.value));
+    console.log("Slider changed to index:", e.target.value);
   };
 
   const styles = {
@@ -223,13 +235,13 @@ const ZoomableCirclePacking = () => {
       width: '100%',
       maxWidth: '800px',
       margin: '0 auto',
-      padding: '20px',
+      padding: '10px 20px',  // Adjust padding to bring everything up
       fontFamily: 'Arial, sans-serif',
     },
     title: {
       textAlign: 'center',
       color: '#0db4de',
-      marginBottom: '20px',
+      margin: '10px 0 5px', // Reduce bottom margin to bring it closer to the slider
       fontSize: '1.8em',
       fontWeight: 'bold',
     },
@@ -245,18 +257,19 @@ const ZoomableCirclePacking = () => {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      marginBottom: '20px',
+      margin: '5px 0 20px', // Reduced top margin to move it up
+      position: 'relative',  // Can use relative or absolute for finer adjustments
+      top: '-20px',          // Move the slider container up
     },
     sliderLabel: {
       fontWeight: 'bold',
-      marginBottom: '10px',
+      marginBottom: '30px',   // Reduce space between label and slider
       color: '#0db4de',
       fontSize: '1.2em',
     },
     slider: {
       width: '100%',
       maxWidth: '400px',
-      marginBottom: '10px',
       appearance: 'none',
       height: '5px',
       background: '#ddd',
@@ -266,7 +279,7 @@ const ZoomableCirclePacking = () => {
       transition: 'opacity .2s',
     },
     selectedYear: {
-      fontSize: '1.4em',
+      fontSize: '1.3em',
       color: '#0db4de',
       fontWeight: 'bold',
     },
@@ -276,21 +289,18 @@ const ZoomableCirclePacking = () => {
       alignItems: 'center',
     },
   };
+  
 
   return (
     <div style={styles.container}>
-      {/* Header */}
-      <h2 style={styles.title}>Weapon Transfers by Country</h2>
-
-      {/* Conditional Rendering within JSX */}
+      <h2 style={styles.title}>Weapon Transfers by Category</h2>
       {error && <p style={styles.error}>{error}</p>}
       {!error && !data && <p style={styles.loading}>Loading...</p>}
-      {!error && data && (
+      {!error && data && availableYears.length > 0 && (
         <>
-          {/* Slider Container */}
           <div style={styles.sliderContainer}>
             <label htmlFor="year-slider" style={styles.sliderLabel}>
-              Select Year:
+             
             </label>
             <input
               type="range"
@@ -307,7 +317,6 @@ const ZoomableCirclePacking = () => {
             </div>
           </div>
 
-          {/* SVG Visualization */}
           <div style={styles.svgContainer}>
             <svg
               ref={svgRef}
@@ -324,8 +333,6 @@ const ZoomableCirclePacking = () => {
           </div>
         </>
       )}
-
-      {/* Tooltip Div */}
       <div id="tooltip"></div>
     </div>
   );
