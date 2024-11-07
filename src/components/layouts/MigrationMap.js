@@ -18,7 +18,7 @@ const MigrationMap = () => {
       "United States": "#1f77b4",
       "Russia": "#D2691E",
       "China": "#2ca02c",
-     
+      "All": "#9467bd" // Added "All" to originColors
     },
     recipientCircle: {
       label: 'Recipient Importance',
@@ -26,7 +26,7 @@ const MigrationMap = () => {
     },
   });
 
-  // URLs for arms data by country
+  // URLs for arms data by country (using original URLs)
   const urls = {
     "United States": 'https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_recipients_of_us_arms_hierarchical.json',
     "Russia": 'https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_recipients_of_russia_arms_hierarchical.json',
@@ -52,7 +52,7 @@ const MigrationMap = () => {
     "United States": "#1f77b4",
     "Russia": "#D2691E",
     "China": "#2ca02c",
-    "All": "#9467bd" // Updated color for "All"
+    "All": "#9467bd" // Consistent color for "All"
   };
 
   // Load trade data based on selected country
@@ -60,19 +60,21 @@ const MigrationMap = () => {
     setError(null); // Reset error state
     d3.json(urls[selectedCountry])
       .then(data => {
+        console.log(`Fetched data for ${selectedCountry}:`, data); // Log fetched data
+
         if (selectedCountry === "All") {
           if (data && data.data) {
             setTradeData(data.data);
           } else {
-            console.error("Unexpected data structure for 'All'");
+            console.error("Unexpected data structure for 'All'", data);
             setError("Failed to load 'All' trade data.");
             setTradeData([]);
           }
         } else {
-          if (data && data.recipients) {
+          if (data && data.recipients && Array.isArray(data.recipients)) {
             setTradeData(data.recipients);
           } else {
-            console.error(`Unexpected data structure for ${selectedCountry}`);
+            console.error(`Unexpected data structure for ${selectedCountry}`, data);
             setError(`Failed to load ${selectedCountry} trade data.`);
             setTradeData([]);
           }
@@ -80,7 +82,8 @@ const MigrationMap = () => {
       })
       .catch(error => {
         console.error("Error loading trade data:", error);
-        setError("");
+        setError(`Error loading ${selectedCountry} trade data.`);
+        setTradeData([]);
       });
   }, [selectedCountry]);
 
@@ -88,6 +91,7 @@ const MigrationMap = () => {
   useEffect(() => {
     d3.json(geoJSONUrl)
       .then(worldData => {
+        console.log("Fetched world GeoJSON data:", worldData); // Log fetched GeoJSON data
         const centroids = {};
         topojson.feature(worldData, worldData.objects.countries).features.forEach(feature => {
           const countryName = feature.properties.name;
@@ -134,6 +138,8 @@ const MigrationMap = () => {
 
     // Prepare trade data with coordinates
     let validTrades = [];
+    let topRecipientCountries = new Set();
+
     if (selectedCountry === "All") {
       validTrades = tradeData.flatMap(supplier => {
         if (!supplier || !supplier.recipients || !Array.isArray(supplier.recipients)) return [];
@@ -163,77 +169,7 @@ const MigrationMap = () => {
       
       // Sort by trade value and get top 5 recipients for the year
       validTrades.sort((a, b) => b.tradeValue - a.tradeValue);
-      const topRecipients = validTrades.slice(0, 5);
-      const topRecipientCountries = new Set(topRecipients.map(d => d.destCountry));
-
-      const maxTradeValue = d3.max(validTrades, d => d.tradeValue) || 0;
-      const strokeScale = d3.scaleSqrt().domain([0, maxTradeValue]).range([1, 4]);
-
-      // Update legend data (Trade Value removed)
-      setLegendData(prevData => ({
-        ...prevData,
-        // tradeLine: {
-        //   label: 'Trade Value',
-        //   values: [tradeMin, tradeMax],
-        // },
-      }));
-
-      // Draw trade lines
-      mapContainer.selectAll("line.trade-line")
-        .data(validTrades)
-        .enter()
-        .append("line")
-        .attr("class", "trade-line")
-        .attr("x1", d => d.originX)
-        .attr("y1", d => d.originY)
-        .attr("x2", d => d.destX)
-        .attr("y2", d => d.destY)
-        .attr("stroke", d => originColors[d.originCountry] || "rgba(30, 144, 255, 0.5)")
-        .attr("stroke-width", d => strokeScale(d.tradeValue))
-        .on("mouseover", (event, d) => {
-          tooltip
-            .style("display", "block")
-            .html(`
-              <strong>Origin:</strong> ${d.originCountry}<br/>
-              <strong>Destination:</strong> ${d.destCountry}<br/>
-              <strong>Trade Value:</strong> ${d.tradeValue}
-            `);
-        })
-        .on("mousemove", (event) => {
-          tooltip
-            .style("left", `${event.pageX + 10}px`)
-            .style("top", `${event.pageY + 10}px`);
-        })
-        .on("mouseout", () => {
-          tooltip.style("display", "none");
-        });
-
-      // Draw trade circles
-      mapContainer.selectAll("circle.trade-circle")
-        .data(validTrades)
-        .enter()
-        .append("circle")
-        .attr("class", "trade-circle")
-        .attr("cx", d => d.destX)
-        .attr("cy", d => d.destY)
-        .attr("r", d => topRecipientCountries.has(d.destCountry) ? 6 : 3)
-        .attr("fill", d => topRecipientCountries.has(d.destCountry) ? "#8A2BE2" : "red")
-        .on("mouseover", (event, d) => {
-          tooltip
-            .style("display", "block")
-            .html(`
-              <strong>Destination:</strong> ${d.destCountry}<br/>
-              <strong>Trade Value:</strong> ${d.tradeValue}
-            `);
-        })
-        .on("mousemove", (event) => {
-          tooltip
-            .style("left", `${event.pageX + 10}px`)
-            .style("top", `${event.pageY + 10}px`);
-        })
-        .on("mouseout", () => {
-          tooltip.style("display", "none");
-        });
+      topRecipientCountries = new Set(validTrades.slice(0, 5).map(d => d.destCountry));
 
     } else {
       // Logic for individual countries
@@ -260,75 +196,70 @@ const MigrationMap = () => {
         }
       }).filter(d => d !== null && d.tradeValue > 0);
 
-      const maxTradeValue = d3.max(validTrades, d => d.tradeValue) || 0;
-      const strokeScale = d3.scaleSqrt().domain([0, maxTradeValue]).range([1, 4]);
-
-      // Update legend data (Trade Value removed)
-      setLegendData(prevData => ({
-        ...prevData,
-        // tradeLine: {
-        //   label: 'Trade Value',
-        //   values: [tradeMin, tradeMax],
-        // },
-      }));
-
-      // Draw trade lines
-      mapContainer.selectAll("line.trade-line")
-        .data(validTrades)
-        .enter()
-        .append("line")
-        .attr("class", "trade-line")
-        .attr("x1", d => d.originX)
-        .attr("y1", d => d.originY)
-        .attr("x2", d => d.destX)
-        .attr("y2", d => d.destY)
-        .attr("stroke", d => originColors[d.originCountry] || "rgba(30, 144, 255, 0.5)")
-        .attr("stroke-width", d => strokeScale(d.tradeValue))
-        .on("mouseover", (event, d) => {
-          tooltip
-            .style("display", "block")
-            .html(`
-              <strong>Origin:</strong> ${d.originCountry}<br/>
-              <strong>Destination:</strong> ${d.destCountry}<br/>
-              <strong>Trade Value:</strong> ${d.tradeValue}
-            `);
-        })
-        .on("mousemove", (event) => {
-          tooltip
-            .style("left", `${event.pageX + 10}px`)
-            .style("top", `${event.pageY + 10}px`);
-        })
-        .on("mouseout", () => {
-          tooltip.style("display", "none");
-        });
-
-      // Draw trade circles
-      mapContainer.selectAll("circle.trade-circle")
-        .data(validTrades)
-        .enter()
-        .append("circle")
-        .attr("class", "trade-circle")
-        .attr("cx", d => d.destX)
-        .attr("cy", d => d.destY)
-        .attr("r", 3)
-        .attr("fill", "red")
-        .on("mouseover", (event, d) => {
-          tooltip
-            .style("display", "block")
-            .html(`
-              <strong>Destination:</strong> ${d.destCountry}<br/>
-              <strong>Trade Value:</strong> ${d.tradeValue}
-            `);
-        })
-        .on("mousemove", (event) => {
-          tooltip
-            .style("left", `${event.pageX + 10}px`)
-            .style("top", `${event.pageY + 10}px`);
-        })
-        .on("mouseout", () => {
-          tooltip.style("display", "none");
-        });
+      // Sort by trade value and get top 5 recipients for the year
+      validTrades.sort((a, b) => b.tradeValue - a.tradeValue);
+      topRecipientCountries = new Set(validTrades.slice(0, 5).map(d => d.destCountry));
     }
+
+    const maxTradeValue = d3.max(validTrades, d => d.tradeValue) || 0;
+    const strokeScale = d3.scaleSqrt().domain([0, maxTradeValue]).range([1, 4]);
+
+    // Draw trade lines
+    mapContainer.selectAll("line.trade-line")
+      .data(validTrades)
+      .enter()
+      .append("line")
+      .attr("class", "trade-line")
+      .attr("x1", d => d.originX)
+      .attr("y1", d => d.originY)
+      .attr("x2", d => d.destX)
+      .attr("y2", d => d.destY)
+      .attr("stroke", d => originColors[d.originCountry] || "rgba(30, 144, 255, 0.5)")
+      .attr("stroke-width", d => strokeScale(d.tradeValue))
+      .on("mouseover", (event, d) => {
+        tooltip
+          .style("display", "block")
+          .html(`
+            <strong>Origin:</strong> ${d.originCountry}<br/>
+            <strong>Destination:</strong> ${d.destCountry}<br/>
+            <strong>Trade Value:</strong> ${d.tradeValue}
+          `);
+      })
+      .on("mousemove", (event) => {
+        tooltip
+          .style("left", `${event.pageX + 10}px`)
+          .style("top", `${event.pageY + 10}px`);
+      })
+      .on("mouseout", () => {
+        tooltip.style("display", "none");
+      });
+
+    // Draw trade circles
+    mapContainer.selectAll("circle.trade-circle")
+      .data(validTrades)
+      .enter()
+      .append("circle")
+      .attr("class", "trade-circle")
+      .attr("cx", d => d.destX)
+      .attr("cy", d => d.destY)
+      .attr("r", d => topRecipientCountries.has(d.destCountry) ? 6 : 3)
+      .attr("fill", d => topRecipientCountries.has(d.destCountry) ? "#8A2BE2" : "red") // Purple for top recipients
+      .on("mouseover", (event, d) => {
+        tooltip
+          .style("display", "block")
+          .html(`
+            <strong>Destination:</strong> ${d.destCountry}<br/>
+            <strong>Trade Value:</strong> ${d.tradeValue}
+          `);
+      })
+      .on("mousemove", (event) => {
+        tooltip
+          .style("left", `${event.pageX + 10}px`)
+          .style("top", `${event.pageY + 10}px`);
+      })
+      .on("mouseout", () => {
+        tooltip.style("display", "none");
+      });
 
     // Define tooltip
     const tooltip = d3.select("body").append("div")
@@ -348,32 +279,34 @@ const MigrationMap = () => {
   const Legend = ({ data, styles }) => {
     const { originColors, recipientCircle } = data;
     const { container, section, title, item, colorBox, circleExample } = styles;
-
+  
     return (
       <div style={container}>
         {/* Origin Countries */}
         <div style={section}>
           <div style={title}>Origin Countries</div>
-          {Object.entries(originColors).map(([country, color]) => (
-            <div key={country} style={item}>
-              <div style={{ ...colorBox, backgroundColor: color }}></div>
-              <div>{country}</div>
-            </div>
-          ))}
+          {Object.entries(originColors)
+            .filter(([country]) => country !== "All") // Filter out "All"
+            .map(([country, color]) => (
+              <div key={country} style={item}>
+                <div style={{ ...colorBox, backgroundColor: color }}></div>
+                <div>{country}</div>
+              </div>
+            ))}
         </div>
-
+  
         {/* Recipient Circle Sizes */}
         <div style={section}>
           <div style={title}>Recipient Importance</div>
           <div style={item}>
             <svg width="20" height="20" style={{ marginRight: '6px' }}>
-              <circle cx="10" cy="10" r={data.recipientCircle.sizes[0]} fill="red" />
+              <circle cx="10" cy="10" r={recipientCircle.sizes[0]} fill="red" />
             </svg>
             <div>Normal Recipient</div>
           </div>
           <div style={item}>
             <svg width="20" height="20" style={{ marginRight: '6px' }}>
-              <circle cx="10" cy="10" r={data.recipientCircle.sizes[1]} fill="#8A2BE2" />
+              <circle cx="10" cy="10" r={recipientCircle.sizes[1]} fill="#8A2BE2" />
             </svg>
             <div>Top Recipient</div>
           </div>
@@ -432,7 +365,7 @@ const MigrationMap = () => {
         background: '#D3D3D3', 
         borderRadius: '8px', 
         boxShadow: '0 0 5px rgba(0,0,0,0.3)',
-        color: 'black',          // Change text color here
+        color: 'black',          // Text color
         textAlign: 'center'      // Center the text within the h2
       }}>
         Global Arms Proliferation By US, China, and Russia (in million USD)
@@ -467,7 +400,16 @@ const MigrationMap = () => {
         </div>
 
         <label htmlFor="country" style={{ display: 'block', marginBottom: '5px' }}>Select Country:</label>
-        <select id="country" value={selectedCountry} onChange={(e) => setSelectedCountry(e.target.value)}>
+        <select 
+          id="country" 
+          value={selectedCountry} 
+          onChange={(e) => setSelectedCountry(e.target.value)}
+          style={{
+            fontSize: '14px',       // Increases font size
+            padding: '6px 10px',    // Adds padding for better readability
+            width: '120px'          // Adjusts the dropdown width
+          }}
+        >
           <option value="All">All</option>
           <option value="United States">United States</option>
           <option value="Russia">Russia</option>
