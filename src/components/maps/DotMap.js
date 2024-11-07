@@ -2,11 +2,11 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
-import '../maps/Tooltip.css';
 
 const DotMap = () => {
   const svgRef = useRef();
-  const [data, setData] = useState([]);
+  const containerRef = useRef(); // Added ref for the container
+  const [data, setData] = useState({ csvData: [], mapData: {} });
   const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, content: '' });
   const [selectedYear, setSelectedYear] = useState('2023');
   const [uniqueYears, setUniqueYears] = useState([]);
@@ -38,7 +38,7 @@ const DotMap = () => {
       setData({ csvData, mapData });
 
       // Extract unique years for the slider range
-      const years = Array.from(new Set(csvData.map(d => d.year))).sort();
+      const years = Array.from(new Set(csvData.map(d => d.year))).sort((a, b) => a - b);
       setUniqueYears(years);
 
       // Set the default year to the earliest available year
@@ -50,9 +50,10 @@ const DotMap = () => {
   }, []);
 
   useEffect(() => {
-    if (data.csvData && data.mapData) {
+    if (data.csvData.length > 0 && Object.keys(data.mapData).length > 0) {
       drawMap();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedYear, data]);
 
   const drawMap = () => {
@@ -86,7 +87,7 @@ const DotMap = () => {
     // Add a title to the map
     svg.append("text")
       .attr("x", width / 2)
-      .attr("y", 555)  // Position the title at the top
+      .attr("y", 553)  // Position the title near the bottom
       .attr("text-anchor", "middle")
       .style("font-size", "27px")
       .style("font-weight", "bold")
@@ -122,12 +123,25 @@ const DotMap = () => {
       .attr("stroke", "#333")
       .attr("stroke-width", 1)
       .on("mouseenter", (event, d) => {
+        const containerRect = containerRef.current.getBoundingClientRect(); // Get container position
+        const x = event.clientX - containerRect.left + 10; // Calculate relative x
+        const y = event.clientY - containerRect.top + 10;  // Calculate relative y
         setTooltip({
           visible: true,
-          x: event.clientX + 10,
-          y: event.clientY + 10,
+          x: x,
+          y: y,
           content: `Location: ${d.location}\nParty A: ${d.party_a}\nParty B: ${d.party_b}\nYear: ${d.year}\nIntensity: ${d.intensity}`
         });
+      })
+      .on("mousemove", (event) => {
+        const containerRect = containerRef.current.getBoundingClientRect(); // Get container position
+        const x = event.clientX - containerRect.left + 10; // Calculate relative x
+        const y = event.clientY - containerRect.top + 10;  // Calculate relative y
+        setTooltip(prev => ({
+          ...prev,
+          x: x,
+          y: y
+        }));
       })
       .on("mouseleave", () => {
         setTooltip({ visible: false, x: 0, y: 0, content: '' });
@@ -183,16 +197,6 @@ const DotMap = () => {
       .style("font-size", "12px")
       .attr("fill", "#333")
       .text(d => d);
-
-    svg.on("mousemove", (event) => {
-      if (tooltip.visible) {
-        setTooltip(prev => ({
-          ...prev,
-          x: event.clientX + 10,
-          y: event.clientY + 10
-        }));
-      }
-    });
   };
 
   const handleYearChange = (event) => {
@@ -200,11 +204,13 @@ const DotMap = () => {
   };
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative' }} ref={containerRef}> {/* Assigned ref here */}
       <svg ref={svgRef}></svg>
       
       <div style={{ marginTop: '10px', textAlign: 'center' }}>
-        <label htmlFor="year-slider">Year: {selectedYear}</label>
+        <label htmlFor="year-slider" style={{ fontWeight: 'bold', color: '#0db4de', fontSize: '1.2em' }}>
+          Year: {selectedYear}
+        </label>
         <input
           type="range"
           id="year-slider"
@@ -213,26 +219,40 @@ const DotMap = () => {
           value={selectedYear}
           onChange={handleYearChange}
           step="1"  // Ensure slider only selects integer years
-          style={{ width: '80%' }}
+          style={{
+            width: '80%',
+            appearance: 'none',
+            height: '8px',
+            backgroundColor: '#FFA500',
+            borderRadius: '5px',
+            outline: 'none',
+            marginTop: '5px',
+          }}
+          aria-label="Select Year"
         />
       </div>
 
       {tooltip.visible && (
-        <div className="tooltip" style={{
+        <div style={{
           position: 'absolute',
           left: tooltip.x,
           top: tooltip.y,
-          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+          backgroundColor: 'rgba(50, 50, 50, 0.9)', // Darker background for readability
           color: '#fff',
-          padding: '5px',
-          borderRadius: '3px',
-          pointerEvents: 'none',
-          whiteSpace: 'pre-line',
+          padding: '8px', // Increase padding for spacing
+          borderRadius: '6px', // Rounded corners
+          pointerEvents: 'none', // Prevents tooltip from interfering with mouse events
+          whiteSpace: 'pre-line', // Allows line breaks in the tooltip content
+          boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)', // Adds a subtle shadow
+          fontSize: '14px', // Increases font size for readability
+          maxWidth: '250px', // Limits tooltip width
+          lineHeight: '1.5', // Adjusts line height for better readability
+          zIndex: 10, // Ensure tooltip appears above other elements
         }}>
           {tooltip.content}
         </div>
       )}
-        </div>
+    </div>
   );
 };
 
