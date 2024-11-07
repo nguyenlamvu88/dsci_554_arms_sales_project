@@ -1,22 +1,23 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
-import '../maps/Tooltip.css'; // Ensure this CSS file styles the tooltip appropriately
 
 const ChoroplethMap = () => {
   const svgRef = useRef();
 
   // State Variables
-  const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, content: '' });
+  const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, content: null });
   const [modalData, setModalData] = useState(null); // For storing data to display in the modal
   const [countryData, setCountryData] = useState({});
   const [countries, setCountries] = useState([]); // Store GeoJSON features
-  const [selectedYear, setSelectedYear] = useState(null); // No default year
-  const [selectedWeaponType, setSelectedWeaponType] = useState('All'); // Set to 'All' by default
+  const [selectedYear, setSelectedYear] = useState(null); // Initialize to null
+  const [selectedWeaponType, setSelectedWeaponType] = useState(null); // Initialize to null
   const [weaponTypes, setWeaponTypes] = useState([]);
   const [maxQuantities, setMaxQuantities] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [minYear, setMinYear] = useState(1950); // Fixed minimum year
+  const [maxYear, setMaxYear] = useState(2023); // Fixed maximum year
 
   // Data URL
   const dataUrl = "https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_arms_transfer_by_weapon_types.csv";
@@ -42,14 +43,15 @@ const ChoroplethMap = () => {
       d3.csv(dataUrl, d => {
         const year = +d['year'];
         const quantity = +d['quantity'];
-        if (isNaN(year) || isNaN(quantity)) {
-          console.warn('Invalid data row:', d);
-          return null; // Skip invalid rows
+        // Validate year range
+        if (isNaN(year) || isNaN(quantity) || year < minYear || year > maxYear) {
+          console.warn('Invalid or out-of-range data row:', d);
+          return null; // Skip invalid or out-of-range rows
         }
         return {
           recipients: d['recipients'],
           suppliers: d['suppliers'],
-          year: year,
+          year: Math.round(year), // Ensure year is an integer
           quantity: quantity,
           weaponDescription: d['weapon description'],
           status: d['status'],
@@ -68,16 +70,12 @@ const ChoroplethMap = () => {
       const processedData = {};
       const uniqueWeaponTypes = new Set();
       const tempMaxQuantities = {};
-      const availableYears = new Set(); // To track available years
 
       armsDataRaw.forEach(row => {
         let country = row.recipients;
         country = countryNameMapping[country] || country; // Apply mapping
 
         const year = row.year;
-        if (!isNaN(year)) {
-          availableYears.add(year); // Track available years
-        }
         const weaponType = row.weaponDescription ? row.weaponDescription.trim() : ""; // Trim whitespace
         const quantity = row.quantity;
         const suppliers = row.suppliers;
@@ -111,23 +109,31 @@ const ChoroplethMap = () => {
         }
       });
 
-      // Set the selected year to the earliest available year
-      const yearsArray = Array.from(availableYears).filter(year => !isNaN(year));
-      const firstAvailableYear = Math.min(...yearsArray);
-
-      if (!isNaN(firstAvailableYear)) {
-        setSelectedYear(firstAvailableYear); // Set initial selected year to the first available year
-      } else {
-        console.warn('No valid years found in data.');
-        setError('No valid years found in data.');
-      }
-
       // Construct weaponTypesArray with "All" and filter out any empty entries
       const weaponTypesArray = ["All", ...Array.from(uniqueWeaponTypes).filter(wt => wt !== "" && wt !== undefined).sort()];
       setWeaponTypes(weaponTypesArray);
       setCountryData(processedData);
       setMaxQuantities(tempMaxQuantities);
       setLoading(false);
+
+      // Check if default year 1980 has data
+      const has1980Data = armsDataRaw.some(row => row.year === 1980);
+      if (!has1980Data) {
+        console.warn('No data available for the default year 1980.');
+        setError('No data available for the default year 1980.');
+      }
+
+      // Set default selectedYear and selectedWeaponType based on available data
+      const availableYears = Array.from(new Set(armsDataRaw.map(d => d.year))).sort((a, b) => a - b);
+      if (availableYears.length > 0) {
+        setSelectedYear(availableYears[0]);
+      }
+
+      if (weaponTypesArray.includes('All')) {
+        setSelectedWeaponType('All');
+      } else if (weaponTypesArray.length > 0) {
+        setSelectedWeaponType(weaponTypesArray[0]);
+      }
 
       console.log("Available Weapon Types:", weaponTypesArray);
     })
@@ -227,6 +233,39 @@ const ChoroplethMap = () => {
     // Clear previous drawings within the group
     g.selectAll('*').remove();
 
+    // Function to Handle Tooltip Content
+    const handleTooltipContent = (country, year, weaponType, data) => {
+      if (weaponType === "All") {
+        const totalQuantity = Object.values(data).reduce((acc, curr) => acc + curr.quantity, 0);
+        return (
+          <div style={{ lineHeight: '1.6', fontSize: '17px' }}>
+            <strong>{country}</strong><br/>
+            Year: {year}<br/>
+            Total Import Quantity: {totalQuantity} units<br/>
+            <br/>
+            <span style={{ fontSize: '17px', fontWeight: 'bold', cursor: 'pointer', color: '#0db4de' }}>
+              Click for Details
+            </span>
+          </div>
+        );
+      } else {
+        // Handle other weapon types if necessary
+        return (
+          <div style={{ lineHeight: '1.6', fontSize: '14px' }}>
+            <strong>{country}</strong><br/>
+            Year: {year}<br/>
+            Weapon: {weaponType}<br/>
+            Quantity: {data.quantity} units<br/>
+            Status: {data.status}<br/>
+            <br/>
+            <span style={{ fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', color: '#0db4de' }}>
+              Click for Details
+            </span>
+          </div>
+        );
+      }
+    };
+
     // Draw Country Paths with Color Based on Quantity
     g.selectAll('path')
       .data(countries)
@@ -251,56 +290,62 @@ const ChoroplethMap = () => {
       .attr('stroke-width', 0.5)
       .on('mouseenter', (event, d) => {
         const country = d.properties.name;
-        const [x, yPos] = d3.pointer(event, document.body);
 
-        // Show minimal tooltip on hover
+        let content = null;
+
         if (weaponType === "All") {
           const yearData = armsData[country]?.[year];
           if (!yearData) return; // No data to show
 
-          const totalQuantity = Object.values(yearData).reduce((acc, curr) => acc + curr.quantity, 0);
-
-          setTooltip({
-            visible: true,
-            x: event.clientX + 20,
-            y: event.clientY + 20,
-            content: `
-              <div style="font-size: 12px;">
-                <strong>Country:</strong> ${country}<br/>
-                <strong>Year:</strong> ${year}<br/>
-                <strong>Total Quantity:</strong> ${totalQuantity} units<br/>
-                <em>Click for more details</em>
-              </div>
-            `
-          });
+          content = handleTooltipContent(country, year, weaponType, yearData);
         } else {
           const data = armsData[country]?.[year]?.[weaponType];
           if (!data) return; // No data to show
 
-          setTooltip({
-            visible: true,
-            x: event.clientX + 20,
-            y: event.clientY + 20,
-            content: `
-              <div style="font-size: 12px;">
-                <strong>Country:</strong> ${country}<br/>
-                <strong>Year:</strong> ${year}<br/>
-                <strong>Quantity:</strong> ${data.quantity} units<br/>
-                <em>Click for more details</em>
-              </div>
-            `
-          });
+          content = handleTooltipContent(country, year, weaponType, data);
         }
+
+        // Use d3.pointer to get mouse position relative to the SVG
+        const [x, yPos] = d3.pointer(event, svgRef.current);
+
+        setTooltip({
+          visible: true,
+          x: x + 15, // Offset to avoid cursor overlap
+          y: yPos + 15,
+          content: content
+        });
       })
       .on('mousemove', (event) => {
+        const [x, y] = d3.pointer(event, svgRef.current);
+        const tooltipWidth = 300; // Match with Tooltip.css max-width
+        const tooltipHeight = 100; // Adjust as needed
+
+        // Calculate position with offset
+        let tooltipX = x + 15;
+        let tooltipY = y + 100;
+
+        // Get container dimensions
+        const container = svgRef.current.parentNode;
+        const containerRect = container.getBoundingClientRect();
+
+        // Adjust tooltip position if it overflows the right edge
+        if (tooltipX + tooltipWidth > containerRect.width) {
+          tooltipX = x - tooltipWidth - 15;
+        }
+
+        // Adjust tooltip position if it overflows the bottom edge
+        if (tooltipY + tooltipHeight > containerRect.height) {
+          tooltipY = y - tooltipHeight - 15;
+        }
+
         setTooltip(prev => ({
           ...prev,
-          x: event.clientX + 20,
-          y: event.clientY + 20
+          x: tooltipX,
+          y: tooltipY
         }));
       })
       .on('mouseleave', () => {
-        setTooltip({ visible: false, x: 0, y: 0, content: '' });
+        setTooltip({ visible: false, x: 0, y: 0, content: null });
       })
       .on('click', (event, d) => {
         const country = d.properties.name;
@@ -326,7 +371,7 @@ const ChoroplethMap = () => {
         }
       });
 
-    // Add Circles Over Each Country Based on Quantity
+    // Draw Circles Over Each Country Based on Quantity
     g.selectAll('circle')
       .data(countries)
       .enter()
@@ -351,56 +396,62 @@ const ChoroplethMap = () => {
       .attr('stroke-width', 0.5)
       .on('mouseenter', (event, d) => {
         const country = d.properties.name;
-        const [x, yPos] = d3.pointer(event, document.body);
 
-        // Show minimal tooltip on hover
+        let content = null;
+
         if (weaponType === "All") {
           const yearData = armsData[country]?.[year];
           if (!yearData) return; // No data to show
 
-          const totalQuantity = Object.values(yearData).reduce((acc, curr) => acc + curr.quantity, 0);
-
-          setTooltip({
-            visible: true,
-            x: event.clientX + 20,
-            y: event.clientY + 20,
-            content: `
-              <div style="font-size: 12px;">
-                <strong>Country:</strong> ${country}<br/>
-                <strong>Year:</strong> ${year}<br/>
-                <strong>Total Quantity:</strong> ${totalQuantity} units<br/>
-                <em>Click for more details</em>
-              </div>
-            `
-          });
+          content = handleTooltipContent(country, year, weaponType, yearData);
         } else {
           const data = armsData[country]?.[year]?.[weaponType];
           if (!data) return; // No data to show
 
-          setTooltip({
-            visible: true,
-            x: event.clientX + 20,
-            y: event.clientY + 20,
-            content: `
-              <div style="font-size: 12px;">
-                <strong>Country:</strong> ${country}<br/>
-                <strong>Year:</strong> ${year}<br/>
-                <strong>Quantity:</strong> ${data.quantity} units<br/>
-                <em>Click for more details</em>
-              </div>
-            `
-          });
+          content = handleTooltipContent(country, year, weaponType, data);
         }
+
+        // Use d3.pointer to get mouse position relative to the SVG
+        const [x, yPos] = d3.pointer(event, svgRef.current);
+
+        setTooltip({
+          visible: true,
+          x: x + 15, // Offset to avoid cursor overlap
+          y: yPos + 15,
+          content: content
+        });
       })
       .on('mousemove', (event) => {
+        const [x, y] = d3.pointer(event, svgRef.current);
+        const tooltipWidth = 300; // Match with Tooltip.css max-width
+        const tooltipHeight = 100; // Adjust as needed
+
+        // Calculate position with offset
+        let tooltipX = x + 15;
+        let tooltipY = y + 100;
+
+        // Get container dimensions
+        const container = svgRef.current.parentNode;
+        const containerRect = container.getBoundingClientRect();
+
+        // Adjust tooltip position if it overflows the right edge
+        if (tooltipX + tooltipWidth > containerRect.width) {
+          tooltipX = x - tooltipWidth - 15;
+        }
+
+        // Adjust tooltip position if it overflows the bottom edge
+        if (tooltipY + tooltipHeight > containerRect.height) {
+          tooltipY = y - tooltipHeight - 15;
+        }
+
         setTooltip(prev => ({
           ...prev,
-          x: event.clientX + 20,
-          y: event.clientY + 20
+          x: tooltipX,
+          y: tooltipY
         }));
       })
       .on('mouseleave', () => {
-        setTooltip({ visible: false, x: 0, y: 0, content: '' });
+        setTooltip({ visible: false, x: 0, y: 0, content: null });
       })
       .on('click', (event, d) => {
         const country = d.properties.name;
@@ -434,7 +485,7 @@ const ChoroplethMap = () => {
       .attr('font-size', '22px')
       .attr('font-weight', 'bold')
       .attr('fill', '#A52A2A')
-      .text(`Arms Exports by Country in ${year} (${weaponType})`);
+      .text(``);
   };
 
   /**
@@ -445,7 +496,7 @@ const ChoroplethMap = () => {
   };
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: 'auto' }}>
+    <div style={{ position: 'relative', width: '100%', height: 'auto', color: '#0db4de', fontSize: '17px' }}>
       <h3>Arms Imports by Weapon Type and Year</h3>
 
       {loading && <div className="loading">Loading data...</div>}
@@ -454,27 +505,41 @@ const ChoroplethMap = () => {
       {!loading && !error && (
         <>
           {/* Weapon Type Selection */}
-          <label htmlFor="weaponTypeSelect">Select Weapon Type: </label>
-          <select
-            id="weaponTypeSelect"
-            onChange={e => setSelectedWeaponType(e.target.value)}
-            value={selectedWeaponType}
-            aria-label="Select Weapon Type"
-            style={{ marginBottom: '10px', padding: '5px', fontSize: '14px' }}
-          >
-            {weaponTypes.map(type => (
-              <option key={type} value={type}>{type}</option>
-            ))}
-          </select>
+          <div style={{ marginBottom: '10px' }}>
+            <label htmlFor="weaponTypeSelect">Select Weapon Type: </label>
+            <select
+              id="weaponTypeSelect"
+              onChange={e => setSelectedWeaponType(e.target.value)}
+              value={selectedWeaponType}
+              aria-label="Select Weapon Type"
+              style={{ padding: '5px', fontSize: '14px' }}
+            >
+              {weaponTypes.map(type => (
+                <option key={type} value={type}>{type}</option>
+              ))}
+            </select>
+          </div>
 
           {/* Year Slider */}
-          <div style={{ position: 'absolute', bottom: '40px', left: '10px', width: '200px' }}>
+          <div style={{ marginBottom: '20px' }}>
+            <label
+              htmlFor="yearSlider"
+              style={{
+                display: 'block',
+                marginBottom: '5px',
+                color: '#0db4de' // Change this hex code to your desired color
+              }}
+            >
+                            
+            </label>
             <input
               type="range"
-              min="1960" // Adjusted to match the earliest year in your dataset
-              max="2023"
-              value={!isNaN(selectedYear) ? selectedYear : 2023} // Use current selected year or a fallback
-              onChange={(e) => setSelectedYear(+e.target.value)}
+              id="yearSlider"
+              min={minYear} // Fixed earliest year
+              max={maxYear} // Fixed latest year
+              step={1} // Ensure only whole numbers
+              value={selectedYear} // Use selectedYear directly
+              onChange={(e) => setSelectedYear(parseInt(e.target.value, 10))} // Ensure integer
               style={{
                 width: '100%',
                 appearance: 'none',
@@ -483,16 +548,15 @@ const ChoroplethMap = () => {
                 borderRadius: '5px',
                 outline: 'none',
               }}
+              disabled={!selectedWeaponType} // Disable until weapon type is selected
             />
             <div style={{ 
-              position: 'absolute', 
-              bottom: '-25px', 
-              left: '0px', 
+              marginTop: '5px', 
               fontWeight: 'bold', 
-              color: 'brown',
-              fontSize: '14px'
+              color: '#0db4de',
+              fontSize: '16px'
             }}>
-              Year: {!isNaN(selectedYear) ? selectedYear : 'Select a year'}
+              Year: {selectedYear}
             </div>
           </div>
 
@@ -502,23 +566,27 @@ const ChoroplethMap = () => {
           {/* Tooltip */}
           {tooltip.visible && (
             <div
-              className="tooltip"
               style={{
                 position: 'absolute',
                 top: tooltip.y,
                 left: tooltip.x,
-                whiteSpace: 'pre-line',
-                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                padding: '6px',
-                borderRadius: '6px',
-                boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.3)',
-                fontSize: '12px',
-                lineHeight: '1.4',
-                color: 'black',
-                maxWidth: '250px',
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                color: '#ffffff',
+                padding: '16px 20px',
+                borderRadius: '8px',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                fontSize: '16px',
+                pointerEvents: 'none',
+                transition: 'opacity 0.3s ease',
+                opacity: tooltip.visible ? 1 : 0,
+                zIndex: 10,
+                maxWidth: '300px',
+                width: 'auto',
+                height: 'auto',
               }}
-              dangerouslySetInnerHTML={{ __html: tooltip.content }}
-            />
+            >
+              {tooltip.content}
+            </div>
           )}
 
           {/* Modal */}
@@ -562,32 +630,34 @@ const ChoroplethMap = () => {
                     border: 'none',
                     fontSize: '18px',
                     cursor: 'pointer',
+                    color: 'black', // Ensure close button text is black
                   }}
+                  aria-label="Close modal"
                 >
                   &times;
                 </button>
-                <h2>Detailed Information</h2>
-                <p><strong>Country:</strong> {modalData.country}</p>
-                <p><strong>Year:</strong> {modalData.year}</p>
+                <h2 style={{ color: 'black' }}>Detailed Information</h2>
+                <p style={{ color: 'black' }}><strong>Country:</strong> {modalData.country}</p>
+                <p style={{ color: 'black' }}><strong>Year:</strong> {modalData.year}</p>
                 {selectedWeaponType === "All" ? (
                   <>
-                    <h3>Weapon Types and Quantities:</h3>
-                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <h3 style={{ color: 'black' }}>Weapon Types and Quantities:</h3>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', color: 'black' }}>
                       <thead>
                         <tr>
-                          <th style={{ border: '1px solid #ddd', padding: '8px' }}>Weapon Type</th>
-                          <th style={{ border: '1px solid #ddd', padding: '8px' }}>Supplier</th>
-                          <th style={{ border: '1px solid #ddd', padding: '8px' }}>Quantity</th>
-                          <th style={{ border: '1px solid #ddd', padding: '8px' }}>Status</th>
+                          <th style={{ border: '1px solid #ddd', padding: '8px', color: 'black' }}>Weapon Type</th>
+                          <th style={{ border: '1px solid #ddd', padding: '8px', color: 'black' }}>Supplier</th>
+                          <th style={{ border: '1px solid #ddd', padding: '8px', color: 'black' }}>Quantity</th>
+                          <th style={{ border: '1px solid #ddd', padding: '8px', color: 'black' }}>Status</th>
                         </tr>
                       </thead>
                       <tbody>
                         {Object.entries(modalData.data).map(([wt, data]) => (
                           <tr key={wt}>
-                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{wt}</td>
-                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{data.suppliers}</td>
-                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{data.quantity}</td>
-                            <td style={{ border: '1px solid #ddd', padding: '8px' }}>{data.status}</td>
+                            <td style={{ border: '1px solid #ddd', padding: '8px', color: 'black' }}>{wt}</td>
+                            <td style={{ border: '1px solid #ddd', padding: '8px', color: 'black' }}>{data.suppliers}</td>
+                            <td style={{ border: '1px solid #ddd', padding: '8px', color: 'black' }}>{data.quantity}</td>
+                            <td style={{ border: '1px solid #ddd', padding: '8px', color: 'black' }}>{data.status}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -595,16 +665,23 @@ const ChoroplethMap = () => {
                   </>
                 ) : (
                   <>
-                    <p><strong>Weapon Type:</strong> {modalData.weaponType}</p>
-                    <p><strong>Supplier:</strong> {modalData.data.suppliers}</p>
-                    <p><strong>Quantity:</strong> {modalData.data.quantity} units</p>
-                    <p><strong>Status:</strong> {modalData.data.status}</p>
+                    <p style={{ color: 'black' }}><strong>Weapon Type:</strong> {modalData.weaponType}</p>
+                    <p style={{ color: 'black' }}><strong>Supplier:</strong> {modalData.data.suppliers}</p>
+                    <p style={{ color: 'black' }}><strong>Quantity:</strong> {modalData.data.quantity} units</p>
+                    <p style={{ color: 'black' }}><strong>Status:</strong> {modalData.data.status}</p>
                   </>
                 )}
               </div>
             </div>
           )}
         </>
+      )}
+
+      {/* Error Handling: If no data for default selections */}
+      {error && !loading && (
+        <div style={{ textAlign: 'center', marginTop: '50px', color: 'red' }}>
+          <p>{error}</p>
+        </div>
       )}
     </div>
   );
