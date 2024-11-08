@@ -8,7 +8,7 @@ const DotMap = () => {
   const containerRef = useRef(); // Added ref for the container
   const [data, setData] = useState({ csvData: [], mapData: {} });
   const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, content: '' });
-  const [selectedYear, setSelectedYear] = useState('2023');
+  const [selectedYear, setSelectedYear] = useState('1970');
   const [uniqueYears, setUniqueYears] = useState([]);
 
   const conflictsDataUrl = 'https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_conflicts_locations_with_coordinates.csv';
@@ -44,6 +44,10 @@ const DotMap = () => {
       // Set the default year to the earliest available year
       setSelectedYear(years[0]);
 
+      // Set the default year to 1971 if it exists, otherwise use the earliest year available
+      const defaultYear = years.includes(1971) ? 1971 : years[0];
+      setSelectedYear(defaultYear);
+
       console.log("CSV Data Loaded with Intensity:", csvData);
       console.log("Map Data Loaded:", mapData);
     }).catch(error => console.error("Error loading data:", error));
@@ -58,18 +62,18 @@ const DotMap = () => {
 
   const drawMap = () => {
     const width = 1000;
-    const height = 600;
+    const height = 570;
 
     const svg = d3.select(svgRef.current)
       .attr("width", width)
       .attr("height", height)
-      .style("background-color", "#e6f7ff");
+      .style("background-color", "#F5F5DC");
 
     svg.selectAll("*").remove();
 
     const projection = d3.geoMercator()
-      .center([0, 20])
-      .scale(150)
+      .center([78, 20]) // Initial focus on South Asia
+      .scale(200) // Adjusted scale for initial zoom
       .translate([width / 2, height / 2]);
 
     const path = d3.geoPath().projection(projection);
@@ -149,7 +153,7 @@ const DotMap = () => {
 
     // Add a legend for intensity, separate from zoomable mapGroup
     const legendGroup = svg.append("g")
-      .attr("transform", `translate(50, ${height - 150})`);  // Adjust position as needed
+      .attr("transform", `translate(1100, ${height - 150})`); // Adjust position as needed
 
     // Add a title to the legend with two lines
     legendGroup.append("text")
@@ -207,7 +211,7 @@ const DotMap = () => {
     <div style={{ position: 'relative' }} ref={containerRef}> {/* Assigned ref here */}
       <svg ref={svgRef}></svg>
       
-      <div style={{ marginTop: '10px', textAlign: 'center' }}>
+      <div style={{ marginTop: '10px', textAlign: 'start' }}>
         <label htmlFor="year-slider" style={{ fontWeight: 'bold', color: '#0db4de', fontSize: '1.2em' }}>
           Year: {selectedYear}
         </label>
@@ -220,7 +224,7 @@ const DotMap = () => {
           onChange={handleYearChange}
           step="1"  // Ensure slider only selects integer years
           style={{
-            width: '80%',
+            width: '50%',
             appearance: 'none',
             height: '8px',
             backgroundColor: '#FFA500',

@@ -1,19 +1,30 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
 
-const ProportionalSymbolMap = ({ selectedYear }) => {
+const ProportionalSymbolMap = () => {
   const svgRef = useRef();
+  const [selectedYear, setSelectedYear] = useState(1971); // Set initial year
   const dataUrl = "https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_regional_transfers.csv";
 
   useEffect(() => {
     const width = 1000;
-    const height = 600;
+    const height = 570;
 
     const svg = d3.select(svgRef.current)
       .attr('width', width)
       .attr('height', height)
       .style('background-color', '#F5F5DC');
+
+    // Add zoom behavior
+    const zoom = d3.zoom()
+      .scaleExtent([1, 8])
+      .on("zoom", (event) => {
+        svg.select('.map-layer').attr("transform", event.transform);
+        svg.select('.dynamic-layer').attr("transform", event.transform);
+      });
+    
+    svg.call(zoom);
 
     // Create a static layer for the map
     const mapLayer = svg.append('g').attr('class', 'map-layer');
@@ -34,8 +45,7 @@ const ProportionalSymbolMap = ({ selectedYear }) => {
         .attr('fill', '#ccc')
         .attr('stroke', '#333');
     });
-
-  }, []); // Empty dependency array so this only runs once for the static map
+  }, []);
 
   useEffect(() => {
     const width = 1000;
@@ -143,7 +153,7 @@ const ProportionalSymbolMap = ({ selectedYear }) => {
       const maxValue = d3.max(regionsData, d => d.value);
       const barScale = d3.scaleLinear()
         .domain([0, maxValue])
-        .range([0, 50]); // Adjust height as needed for bar size
+        .range([0, 200]); // Adjust width as needed for bar size
 
       // Append mini bar chart in the legend section on the left
       const barChartLegend = dynamicLayer.append('g')
@@ -181,7 +191,39 @@ const ProportionalSymbolMap = ({ selectedYear }) => {
     });
   }, [dataUrl, selectedYear]);
 
-  return <svg ref={svgRef}></svg>;
+  const handleYearChange = (event) => {
+    setSelectedYear(event.target.value);
+  };
+
+  return (
+    <div>
+      <svg ref={svgRef}></svg>
+      <div style={{ marginTop: '10px', textAlign: 'start' }}>
+        <label htmlFor="year-slider" style={{ fontWeight: 'bold', color: '#0db4de', fontSize: '1.2em' }}>
+          Year: {selectedYear}
+        </label>
+        <input
+          type="range"
+          id="year-slider"
+          min="1950"
+          max="2023"
+          value={selectedYear}
+          onChange={handleYearChange}
+          step="1"
+          style={{
+            width: '50%',
+            appearance: 'none',
+            height: '8px',
+            backgroundColor: '#FFA500',
+            borderRadius: '5px',
+            outline: 'none',
+            marginTop: '5px',
+          }}
+          aria-label="Select Year"
+        />
+      </div>
+    </div>
+  );
 };
 
 export default ProportionalSymbolMap;

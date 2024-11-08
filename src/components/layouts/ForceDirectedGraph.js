@@ -3,12 +3,12 @@ import * as d3 from 'd3';
 
 const ForceDirectedGraph = () => {
   const svgRef = useRef();
-  const width = 900;
-  const height = 600;
+  const width = 1350;
+  const height = 720;
   const dataUrl = 'https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_recipients_of_combined_us_china_russia_arms_hierarchical.json';
   
   // State for the selected year
-  const [selectedYear, setSelectedYear] = useState(2023);
+  const [selectedYear, setSelectedYear] = useState(2011);
 
   useEffect(() => {
     // Fetch data from the provided URL
@@ -53,7 +53,7 @@ const ForceDirectedGraph = () => {
       // Define color assignments for specific suppliers
       const colorScale = d3.scaleOrdinal()
         .domain(['United States', 'Russia', 'China'])
-        .range(['#1f77b4', '#8b4513', '#2ca02c']); // Blue for US, Brown for Russia, Green for China
+        .range(['#4682B4', '#DC143C', '#FFDB58']); // Blue for US, Red for Russia, Yellow for China
 
       const nodeSizeScale = d3.scaleSqrt()
         .domain([0, d3.max(links, d => d.value)])

@@ -636,12 +636,11 @@ const ChoroplethMap = () => {
                 >
                   &times;
                 </button>
-                <h2 style={{ color: 'black' }}>Detailed Information</h2>
+                
                 <p style={{ color: 'black' }}><strong>Country:</strong> {modalData.country}</p>
                 <p style={{ color: 'black' }}><strong>Year:</strong> {modalData.year}</p>
                 {selectedWeaponType === "All" ? (
-                  <>
-                    <h3 style={{ color: 'black' }}>Weapon Types and Quantities:</h3>
+                  <>                    
                     <table style={{ width: '100%', borderCollapse: 'collapse', color: 'black' }}>
                       <thead>
                         <tr>
