@@ -12,7 +12,7 @@ const Treemap = () => {
 
   useEffect(() => {
     const width = 900;
-    const height = 900;
+    const height = 700;
 
     const svg = d3.select(svgRef.current)
                   .attr('width', width)
