@@ -4,7 +4,7 @@ import * as d3 from 'd3';
 const ForceDirectedGraph = () => {
   const svgRef = useRef();
   const width = 1200;
-  const height = 820;
+  const height = 670;
   const dataUrl = 'https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_recipients_of_combined_us_china_russia_arms_hierarchical.json';
   
   // State for the selected year
