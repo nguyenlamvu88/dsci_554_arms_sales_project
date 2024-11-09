@@ -116,8 +116,9 @@ All data originates from [Stockholm International Peace Research Institute](http
 - **Force-Directed Graph**: Illustrates network connections between arms exporters and recipients to identify the centers of gravity and linkages.
 - **Zoomable Circle Packing**: Depicts hierarchical data on weapons transfers, organized by category and year.
 - **Parallel Coordinates Chart**: Highlights the top recipients of arms from the US, China, and Russia, allowing users to identify key countries of interest and observe trade patterns over time.
-- **Line Chart**: Presents arms trade trends over time.
-- **Treemap and Pie Chart**: Visualize arms imports by category.
+- **Line Chart**: Displays arms trade trends over time for selected countries, allowing users to track export and import values and compare fluctuations across different nations. The interactive slider enables users to adjust the timeframe by moving both ends to focus on specific periods.
+- **Treemap**: Visualizes the top 20 arms companies by revenue for a selected year. Each rectangle represents a company, with the area proportional to its revenue share. The color indicates the company's country.
+- **Pie Chart**: Displays the distribution of arms trade by region for a selected year. Each slice represents a region’s percentage of total arms imports, with color coding for easy differentiation.
 
 ### Thematic Narrative Sections
 
