@@ -3,12 +3,12 @@ import * as d3 from 'd3';
 
 const ForceDirectedGraph = () => {
   const svgRef = useRef();
-  const width = 1350;
-  const height = 720;
+  const width = 1200;
+  const height = 820;
   const dataUrl = 'https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_recipients_of_combined_us_china_russia_arms_hierarchical.json';
   
   // State for the selected year
-  const [selectedYear, setSelectedYear] = useState(2011);
+  const [selectedYear, setSelectedYear] = useState(2014);
 
   useEffect(() => {
     // Fetch data from the provided URL
