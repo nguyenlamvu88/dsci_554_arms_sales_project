@@ -5,7 +5,7 @@ import 'react-range-slider-input/dist/style.css';
 
 const LineChart = () => {
   const svgRef = useRef();
-  const width = 875;
+  const width = 800;
   const height = 550;
   const margin = { top: 60, right: 100, bottom: 60, left: 100 };
   const [data, setData] = useState([]);
