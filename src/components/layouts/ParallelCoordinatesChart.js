@@ -4,8 +4,8 @@ import * as d3 from 'd3';
 const ParallelCoordinatesChart = () => {
   const svgRef = useRef();
   const margin = { top: 120, right: 30, bottom: 30, left: 120 };
-  const width = 1150 - margin.left - margin.right;
-  const height = 850 - margin.top - margin.bottom;
+  const width = 1000 - margin.left - margin.right;
+  const height = 700 - margin.top - margin.bottom;
   const dataUrl = 'https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_recipients_of_combined_us_china_russia_arms_hierarchical.json';
 
   const [data, setData] = useState(null);
