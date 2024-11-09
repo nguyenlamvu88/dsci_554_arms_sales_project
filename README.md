@@ -164,6 +164,8 @@ These design choices and interactive elements integrate **core principles** from
 
 This project is licensed under the MIT License.
 
+---
+
 #### AI Assistance
 [AI Assistance 1 – Data Wrangling and Processing]( https://chatgpt.com/c/6726a05f-a0d8-8001-8afc-98eeab6d623c)
 We processed and organized several datasets on arms trade, military expenditure, and conflicts to be analytics-ready and visualization-friendly:
