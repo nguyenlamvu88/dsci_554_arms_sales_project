@@ -6,7 +6,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',
-    publicPath: '/dsci_554_arms_sales_project/', // Adjusted for GitHub Pages deployment
+    publicPath: '/', // Use '/' for local development
   },
   module: {
     rules: [
