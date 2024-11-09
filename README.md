@@ -147,40 +147,40 @@ The dashboard's narrative structure allows exploration of global arms trade them
 ### Functionality
 
 - **Interactive Filters**: The `MigrationMap.js`, `ChoroplethMap.js`, and `ProportionalSymbolMap.js` components integrate **filters by year, country, and trade type**, allowing users to **drill down** into specific datasets for focused analysis. These filters enhance user control and interactivity, facilitating **custom views of the data**.  
-  *(Based on DSCI 554 - Lecture 7: Interactive Visualizations)*
+  *(Lecture 7: Interactive Visualizations)*
 
 - **Tooltips and Hover Effects**: Across components like `ForceDirectedGraph.js`, `LineChart.js`, and `ParallelCoordinatesChart.js`, **tooltips** display detailed information upon hovering, including **trade volumes, recipient countries, and year-specific details**. This functionality, enabled by D3.js event listeners, reduces clutter while **providing contextual data** on demand.  
-  *(Based on DSCI 554 - Lecture 7: Pre-attentive Features & Interactive Elements)*
+  *(Lecture 7: Pre-attentive Features & Interactive Elements)*
 
 - **Zoom and Pan**: The `ZoomableCirclePacking.js` and `ProportionalSymbolMap.js` components incorporate **zoom and pan features**, allowing users to **explore data hierarchies and map details** closely. This feature is essential for **examining dense data and layered networks**, giving users **control over data exploration** depth.  
-  *(Based on DSCI 554 - Lecture 9: Depth Perception & 3D Design)*
+  *(Lecture 9: Depth Perception & 3D Design)*
   
 ### Style and Layout
 
 - **Professional Color Palette**: Components like `ChoroplethMap.js` and `Treemap.js` use a **consistent, high-contrast color scheme** to visually distinguish **exporters, importers, and trade quantities**. This improves readability and **emphasizes key data points** across the dashboard.  
-  *(Based on DSCI 554 - Lecture 8: Color Theory and Pre-attentive Color Selection)*
+  *(Lecture 8: Color Theory and Pre-attentive Color Selection)*
 
 - **Responsive Design**: Using **CSS flexbox and grid layouts** in `index.css` along with **responsive D3.js scaling**, the dashboard adjusts seamlessly across screen sizes, making it **desktop- and mobile-friendly** for varied user experiences.  
-  *(Based on DSCI 554 - Lecture 5: Responsive Design for Dashboards)*
+  *(Lecture 5: Responsive Design for Dashboards)*
 
 - **Organized Layout**: The layout, structured with a **sidebar for navigation** and full-width sections for each visualization (found in `Dashboard.js`), provides a **structured flow** and **maximizes screen space**, allowing immersive data exploration.  
-  *(Based on DSCI 554 - Lecture 10: Gestalt Principles and Organized Layouts)*
+  *(Lecture 10: Gestalt Principles and Organized Layouts)*
   
 ## Interacting with the Dashboard
 
 - **Sidebar Navigation**: The **thematic structure** within `Dashboard.js` includes a sidebar, encouraging users to navigate between sections, thereby guiding them through **narratives of global arms trade**.  
-  *(Based on DSCI 554 - Lecture 10: Narrative Flow and Structured Layouts)*
+  *(Lecture 10: Narrative Flow and Structured Layouts)*
 
 - **Interactive Elements**: The `PieChart.js`, `Treemap.js`, and `DotMap.js` components feature **sliders, dropdowns, and interactive legends**. These controls **enable real-time customization**, allowing users to find specific insights **without reloading or re-navigating**.  
-  *(Based on DSCI 554 - Lecture 7: Interactive Visualizations and User Engagement)*
+  *(Lecture 7: Interactive Visualizations and User Engagement)*
 
 ### Customization
 
 - **Component Customization**: Each component in `src/components/maps` and `src/components/layouts` is **modular and easily modifiable**. Encapsulated logic within files like `ChoroplethMap.js` and `LineChart.js` allows for **tailoring of datasets or visualization styles** based on project needs.  
-  *(Based on DSCI 554 - Lecture 5: Modular Component Design for Dashboards)*
+  *(Lecture 5: Modular Component Design for Dashboards)*
 
 - **Styling**: All styles are centralized in `index.css`, with **component-specific styles scoped** within each file, allowing for **simple theme adjustments**. This setup facilitates easy changes to **colors, fonts, or layout details** while maintaining functionality.  
-  *(Based on DSCI 554 - Lecture 8: Styling and Consistent Visual Themes)*
+  *(Lecture 8: Styling and Consistent Visual Themes)*
 
 These design choices and interactive elements integrate **core principles** from data visualization best practices, ensuring the dashboard is **intuitive, engaging, and visually cohesive** across all sections.
 
