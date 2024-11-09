@@ -9,7 +9,7 @@ const ZoomableCirclePacking = () => {
   const [error, setError] = useState(null);
 
   const width = 1000;
-  const height = 650;
+  const height = 770;
 
   useEffect(() => {
     const fetchData = async () => {
