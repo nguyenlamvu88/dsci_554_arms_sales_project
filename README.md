@@ -144,29 +144,45 @@ The dashboard's narrative structure allows exploration of global arms trade them
 
 - **Interactive Visualizations**: Interactive elements such as **sliders** and **hover-over tooltips** align with principles of **user engagement** and **cognitive accessibility**. These interactive maps and charts encourage **exploration**, while **selective attention** aids users in focusing on relevant data layers, giving control over the **complexity** of information presented. *(Lecture 10)*
 
-
 ### Functionality
 
-- **Interactive Filters**: Users can filter data by year, country, and trade type for targeted insights.
-- **Tooltips and Hover Effects**: Tooltips provide context and data without cluttering the interface.
-- **Zoom and Pan**: Enables in-depth exploration of data-rich visualizations.
+- **Interactive Filters**: The `MigrationMap.js`, `ChoroplethMap.js`, and `ProportionalSymbolMap.js` components integrate **filters by year, country, and trade type**, allowing users to **drill down** into specific datasets for focused analysis. These filters enhance user control and interactivity, facilitating **custom views of the data**.  
+  *(Based on DSCI 554 - Lecture 7: Interactive Visualizations)*
 
+- **Tooltips and Hover Effects**: Across components like `ForceDirectedGraph.js`, `LineChart.js`, and `ParallelCoordinatesChart.js`, **tooltips** display detailed information upon hovering, including **trade volumes, recipient countries, and year-specific details**. This functionality, enabled by D3.js event listeners, reduces clutter while **providing contextual data** on demand.  
+  *(Based on DSCI 554 - Lecture 7: Pre-attentive Features & Interactive Elements)*
+
+- **Zoom and Pan**: The `ZoomableCirclePacking.js` and `ProportionalSymbolMap.js` components incorporate **zoom and pan features**, allowing users to **explore data hierarchies and map details** closely. This feature is essential for **examining dense data and layered networks**, giving users **control over data exploration** depth.  
+  *(Based on DSCI 554 - Lecture 9: Depth Perception & 3D Design)*
+  
 ### Style and Layout
 
-- **Professional Color Palette**: A clean, professional color scheme enhances readability and user engagement.
-- **Responsive Design**: Adjusts seamlessly across screen sizes, ensuring optimal desktop and mobile experiences.
-- **Organized Layout**: Sidebar navigation and a structured layout maximize screen space for visualizations.
+- **Professional Color Palette**: Components like `ChoroplethMap.js` and `Treemap.js` use a **consistent, high-contrast color scheme** to visually distinguish **exporters, importers, and trade quantities**. This improves readability and **emphasizes key data points** across the dashboard.  
+  *(Based on DSCI 554 - Lecture 8: Color Theory and Pre-attentive Color Selection)*
 
-### Interacting with the Dashboard
+- **Responsive Design**: Using **CSS flexbox and grid layouts** in `index.css` along with **responsive D3.js scaling**, the dashboard adjusts seamlessly across screen sizes, making it **desktop- and mobile-friendly** for varied user experiences.  
+  *(Based on DSCI 554 - Lecture 5: Responsive Design for Dashboards)*
 
-Each section offers visual insights into specific aspects of arms trade:
-- **Sidebar Navigation** allows users to explore sections.
-- **Interactive Elements** such as sliders, dropdowns, and tooltips enrich the data exploration experience.
+- **Organized Layout**: The layout, structured with a **sidebar for navigation** and full-width sections for each visualization (found in `Dashboard.js`), provides a **structured flow** and **maximizes screen space**, allowing immersive data exploration.  
+  *(Based on DSCI 554 - Lecture 10: Gestalt Principles and Organized Layouts)*
+  
+## Interacting with the Dashboard
+
+- **Sidebar Navigation**: The **thematic structure** within `Dashboard.js` includes a sidebar, encouraging users to navigate between sections, thereby guiding them through **narratives of global arms trade**.  
+  *(Based on DSCI 554 - Lecture 10: Narrative Flow and Structured Layouts)*
+
+- **Interactive Elements**: The `PieChart.js`, `Treemap.js`, and `DotMap.js` components feature **sliders, dropdowns, and interactive legends**. These controls **enable real-time customization**, allowing users to find specific insights **without reloading or re-navigating**.  
+  *(Based on DSCI 554 - Lecture 7: Interactive Visualizations and User Engagement)*
 
 ### Customization
 
-- **Component Customization**: Modify each visualization component by editing the respective `.js` file in `src/components/maps` or `src/components/layouts`.
-- **Styling**: Use `index.css` to alter themes or adjust layout aspects.
+- **Component Customization**: Each component in `src/components/maps` and `src/components/layouts` is **modular and easily modifiable**. Encapsulated logic within files like `ChoroplethMap.js` and `LineChart.js` allows for **tailoring of datasets or visualization styles** based on project needs.  
+  *(Based on DSCI 554 - Lecture 5: Modular Component Design for Dashboards)*
+
+- **Styling**: All styles are centralized in `index.css`, with **component-specific styles scoped** within each file, allowing for **simple theme adjustments**. This setup facilitates easy changes to **colors, fonts, or layout details** while maintaining functionality.  
+  *(Based on DSCI 554 - Lecture 8: Styling and Consistent Visual Themes)*
+
+These design choices and interactive elements integrate **core principles** from data visualization best practices, ensuring the dashboard is **intuitive, engaging, and visually cohesive** across all sections.
 
 ---
 
