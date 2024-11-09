@@ -3,19 +3,23 @@ import * as d3 from 'd3';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 
-const LineChart = ({ importDataUrl, exportDataUrl }) => {
+const LineChart = () => {
   const svgRef = useRef();
-  const width = 900;
-  const height = 500;
-  const margin = { top: 60, right: 30, bottom: 60, left: 100 };
+  const width = 875;
+  const height = 550;
+  const margin = { top: 60, right: 100, bottom: 60, left: 100 };
   const [data, setData] = useState([]);
   const [selectedCountries, setSelectedCountries] = useState(['India', 'China']);
   const [yearRange, setYearRange] = useState([1950, 2023]);
-  const [tradeType, setTradeType] = useState('import');
+  const [tradeType, setTradeType] = useState('export');
   const [loading, setLoading] = useState(true);
 
+  // Set URLs for arms trade data
+  const armsSuppliersDataUrl = 'https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_arms_suppliers.csv';
+  const armsRecipientsDataUrl = 'https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_arms_recipients.csv';
+
   useEffect(() => {
-    const dataUrl = tradeType === 'import' ? importDataUrl : exportDataUrl;
+    const dataUrl = tradeType === 'import' ? armsRecipientsDataUrl : armsSuppliersDataUrl;
     const countryKey = tradeType === 'import' ? 'Recipient' : 'supplier';
 
     setLoading(true);
@@ -41,10 +45,10 @@ const LineChart = ({ importDataUrl, exportDataUrl }) => {
       setData(processedData);
 
       // Set selectedCountries based on tradeType
-      if (tradeType === 'import') {
-        setSelectedCountries(['India', 'China'].filter(c => top10Countries.includes(c)));
-      } else if (tradeType === 'export') {
-        setSelectedCountries(['United States', 'Germany'].filter(c => top10Countries.includes(c)));
+      if (tradeType === 'export') {
+        setSelectedCountries(['United States', 'China', 'Russia'].filter(c => top10Countries.includes(c)));
+      } else if (tradeType === 'import') {
+        setSelectedCountries(['China', 'India'].filter(c => top10Countries.includes(c)));
       }
 
       setLoading(false);
@@ -52,7 +56,7 @@ const LineChart = ({ importDataUrl, exportDataUrl }) => {
       console.error("Error loading or processing data:", error);
       setLoading(false);
     });
-  }, [importDataUrl, exportDataUrl, tradeType]);
+  }, [tradeType]);
 
   useEffect(() => {
     if (data.length === 0) return;
@@ -64,6 +68,7 @@ const LineChart = ({ importDataUrl, exportDataUrl }) => {
 
     svg.selectAll('*').remove();
 
+    // Title
     svg.append("text")
       .attr("x", width / 2)
       .attr("y", margin.top / 2)
@@ -73,6 +78,7 @@ const LineChart = ({ importDataUrl, exportDataUrl }) => {
       .style("fill", "#333")
       .text(`Arms ${tradeType === 'import' ? 'Imports' : 'Exports'} by Country (Top 9) Over Time`);
 
+    // Y-axis Label
     svg.append("text")
       .attr("transform", "rotate(-90)")
       .attr("x", -height / 2)
@@ -84,15 +90,26 @@ const LineChart = ({ importDataUrl, exportDataUrl }) => {
       .style("font-weight", "bold")
       .text(`Value (Billions USD)`);
 
+    // Tooltip and vertical line
     const tooltip = d3.select("body").append("div")
+      .attr("class", "tooltip")
       .style("position", "absolute")
       .style("padding", "8px")
       .style("background", "rgba(0, 0, 0, 0.7)")
       .style("color", "#fff")
       .style("border-radius", "4px")
-      .style("font-size", "12px")
+      .style("font-size", "15px")
       .style("display", "none");
 
+    const verticalLine = svg.append("line")
+      .attr("y1", margin.top)
+      .attr("y2", height - margin.bottom)
+      .attr("stroke", "#aaa")
+      .attr("stroke-width", 1)
+      .attr("stroke-dasharray", "4 4")
+      .style("display", "none");
+
+    // Filter data based on selected countries and year range
     const filteredData = data
       .filter(d => selectedCountries.includes(d.country))
       .map(d => ({
@@ -100,6 +117,7 @@ const LineChart = ({ importDataUrl, exportDataUrl }) => {
         values: d.values.filter(v => v.year >= yearRange[0] && v.year <= yearRange[1])
       }));
 
+    // Define scales
     const xScale = d3.scaleLinear()
       .domain(yearRange)
       .range([margin.left, width - margin.right]);
@@ -109,10 +127,13 @@ const LineChart = ({ importDataUrl, exportDataUrl }) => {
       .domain([0, yMax])
       .range([height - margin.bottom, margin.top]);
 
+    const color = d3.scaleOrdinal(d3.schemeCategory10).domain(selectedCountries);
+
     const line = d3.line()
       .x(d => xScale(d.year))
       .y(d => yScale(d.value));
 
+    // X and Y Axes
     svg.append("g")
       .attr("transform", `translate(0, ${height - margin.bottom})`)
       .call(d3.axisBottom(xScale).tickFormat(d3.format("d")));
@@ -121,48 +142,84 @@ const LineChart = ({ importDataUrl, exportDataUrl }) => {
       .attr("transform", `translate(${margin.left}, 0)`)
       .call(d3.axisLeft(yScale).tickFormat(d => `${d}B`));
 
+    // Draw lines
     svg.selectAll(".line")
       .data(filteredData)
       .join("path")
       .attr("class", "line")
       .attr("fill", "none")
-      .attr("stroke", (d, i) => d3.schemeCategory10[i % 10])
+      .attr("stroke", d => {
+        if (d.country === 'United States') return '#4682B4'; // Color for United States
+        if (d.country === 'China') return '#DC143C';          // Color for China
+        if (d.country === 'Russia') return '#FFDB58';         // Color for Russia
+        return color(d.country);                              // Default color scale for other countries
+      })
       .attr("stroke-width", 3.25)
       .attr("d", d => line(d.values));
 
+    // Draw dots
     svg.selectAll(".dot")
       .data(filteredData.flatMap(d => d.values.map(v => ({ ...v, country: d.country }))))
       .join("circle")
       .attr("class", "dot")
       .attr("cx", d => xScale(d.year))
       .attr("cy", d => yScale(d.value))
-      .attr("r", 4)
-      .attr("fill", d => d3.schemeCategory10[selectedCountries.indexOf(d.country) % 10])
+      .attr("r", 5.5)
+      .attr("fill", d => {
+        if (d.country === 'United States') return '#4682B4'; // Color for United States
+        if (d.country === 'China') return '#DC143C';          // Color for China
+        if (d.country === 'Russia') return '#FFDB58';         // Color for Russia
+        return color(d.country);                              // Default color scale for other countries
+      })
       .on("mouseover", (event, d) => {
-        tooltip
-          .style("display", "block")
-          .html(`<strong>${d.country}</strong><br/>Year: ${d.year}<br/>Value: ${d.value.toFixed(2)} Billion`);
+        verticalLine.style("display", "block");
+        tooltip.style("display", "block");
       })
       .on("mousemove", (event) => {
+        const mouseX = event.pageX - svg.node().getBoundingClientRect().left;
+        verticalLine.attr("x1", mouseX).attr("x2", mouseX);
+
+        const tooltipData = filteredData
+          .map(countryData => {
+            const closestPoint = countryData.values.reduce((prev, curr) =>
+              Math.abs(curr.year - xScale.invert(mouseX)) < Math.abs(prev.year - xScale.invert(mouseX)) ? curr : prev
+            );
+            return `<strong>${countryData.country}</strong><br/>Year: ${closestPoint.year}<br/>Value: ${closestPoint.value.toFixed(2)} Billion`;
+          }).join("<br/><br/>");
+
         tooltip
+          .html(tooltipData)
           .style("left", `${event.pageX + 10}px`)
           .style("top", `${event.pageY - 20}px`);
       })
-      .on("mouseout", () => tooltip.style("display", "none"));
+      .on("mouseout", () => {
+        verticalLine.style("display", "none");
+        tooltip.style("display", "none");
+      });
 
+    // Country labels
     svg.selectAll(".country-label")
       .data(filteredData)
       .join("text")
       .attr("class", "country-label")
-      .attr("x", width - margin.right)
+      .attr("x", width - margin.right + 5) // Position to the right of the line
       .attr("y", d => yScale(d.values[d.values.length - 1].value))
       .attr("dy", "0.35em")
       .attr("text-anchor", "start")
       .text(d => d.country)
-      .style("fill", (d, i) => d3.schemeCategory10[i % 10])
-      .style("font-size", "10px");
+      .style("fill", d => {
+        if (d.country === 'United States') return '#4682B4'; // Color for United States
+        if (d.country === 'China') return '#DC143C';          // Color for China
+        if (d.country === 'Russia') return '#FFDB58';         // Color for Russia
+        return color(d.country);                              // Default color scale for other countries
+      })
+      .style("font-size", "12px");
 
-    return () => tooltip.remove();
+    // Cleanup on unmount
+    return () => {
+      tooltip.remove();
+      verticalLine.remove();
+    };
   }, [data, selectedCountries, yearRange, tradeType]);
 
   const handleCountryToggle = (country) => {
@@ -174,33 +231,32 @@ const LineChart = ({ importDataUrl, exportDataUrl }) => {
   const handleTradeTypeChange = (event) => {
     const newTradeType = event.target.value;
     setTradeType(newTradeType);
-    // Reset selectedCountries based on new tradeType
-    if (newTradeType === 'import') {
-      setSelectedCountries(['India', 'China']);
-    } else if (newTradeType === 'export') {
-      setSelectedCountries(['United States', 'Germany']);
+    if (newTradeType === 'export') {
+      setSelectedCountries(['United States', 'China', 'Russia']);
+    } else if (newTradeType === 'import') {
+      setSelectedCountries(['China', 'India']);
     }
   };
 
   const resetSelections = () => {
-    setTradeType('import');
+    setTradeType('export');
     setYearRange([1950, 2023]);
-    // Set selectedCountries based on 'import'
-    setSelectedCountries(['India', 'China']);
+    setSelectedCountries(['United States', 'China', 'Russia']);
   };
 
   return (
-    <div style={{ padding: '20px', backgroundColor: '#333', borderRadius: '8px' }}>
-      {loading && <p style={{ color: '#e6e6e6', textAlign: 'center' }}>Loading data...</p>}
-      
-      <div style={{ marginBottom: '20px', color: '#e6e6e6', display: 'flex', justifyContent: 'space-between' }}>
-        <div>
-          <label style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '10px' }}>Trade Type:</label>
-          <select value={tradeType} onChange={handleTradeTypeChange} style={{ margin: '10px 0', padding: '5px' }}>
-            <option value="import">Imports</option>
-            <option value="export">Exports</option>
-          </select>
-        </div>
+    <div style={{ display: 'flex', alignItems: 'flex-start', padding: '20px', backgroundColor: '#333', borderRadius: '8px' }}>
+      <div style={{ flex: '1' }}>
+        <svg ref={svgRef} width={width} height={height}></svg>
+      </div>
+
+      <div style={{ marginLeft: '20px', display: 'flex', flexDirection: 'column', color: '#e6e6e6' }}>
+        <label style={{ fontWeight: 'bold', fontSize: '16px' }}>Trade Type:</label>
+        <select value={tradeType} onChange={handleTradeTypeChange} style={{ margin: '10px 0', padding: '5px' }}>
+          <option value="import">Imports</option>
+          <option value="export">Exports</option>
+        </select>
+
         <button onClick={resetSelections}
           style={{
             backgroundColor: '#0db4de',
@@ -210,35 +266,31 @@ const LineChart = ({ importDataUrl, exportDataUrl }) => {
             borderRadius: '4px',
             cursor: 'pointer',
             fontSize: '14px',
-            alignSelf: 'center'
+            marginTop: '10px'
           }}
         >
           Reset Selections
         </button>
-      </div>
-  
-      <div style={{ marginBottom: '20px', color: '#e6e6e6' }}>
-        <label style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '15px', display: 'block' }}>
-          Year Range:
-        </label>
-        <RangeSlider
-          min={1950}
-          max={2023}
-          defaultValue={yearRange}
-          onInput={(values) => setYearRange(values)}
-          style={{ width: '100%', margin: '10px 0' }}
-        />
-        <div style={{ display: 'flex', justifyContent: 'space-between', color: '#0db4de', fontSize: '14px', marginTop: '10px' }}>
-          <span>{yearRange[0]}</span>
-          <span>{yearRange[1]}</span>
+
+        <div style={{ marginTop: '20px' }}>
+          <label style={{ fontWeight: 'bold', fontSize: '16px' }}></label>
+          <RangeSlider
+            min={1950}
+            max={2023}
+            defaultValue={yearRange}
+            onInput={(values) => setYearRange(values)}
+            style={{ width: '100%', margin: '10px 0' }}
+          />
+          <div style={{ display: 'flex', justifyContent: 'space-between', color: '#0db4de', fontSize: '14px', marginTop: '10px' }}>
+            <span>{yearRange[0]}</span>
+            <span>{yearRange[1]}</span>
+          </div>
         </div>
-      </div>
-  
-      <div style={{ marginBottom: '20px', color: '#e6e6e6' }}>
-        <label style={{ fontWeight: 'bold', fontSize: '16px' }}>Select Countries:</label>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginTop: '10px' }}>
+
+        <label style={{ fontWeight: 'bold', fontSize: '16px', marginTop: '20px' }}>Select Countries:</label>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, auto)', gap: '10px', marginTop: '10px' }}>
           {data.map(d => (
-            <div key={d.country} style={{ display: 'inline-flex', alignItems: 'center' }}>
+            <div key={d.country} style={{ display: 'flex', alignItems: 'center' }}>
               <input
                 type="checkbox"
                 value={d.country}
@@ -251,24 +303,6 @@ const LineChart = ({ importDataUrl, exportDataUrl }) => {
           ))}
         </div>
       </div>
-  
-      {/* Legend */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px', marginBottom: '20px', color: '#e6e6e6' }}>
-        {selectedCountries.map((country, index) => (
-          <div key={country} style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{
-              width: '12px',
-              height: '12px',
-              backgroundColor: d3.schemeCategory10[index % 10],
-              marginRight: '8px',
-              borderRadius: '50%'
-            }}></div>
-            <span>{country}</span>
-          </div>
-        ))}
-      </div>
-  
-      <svg ref={svgRef} width={width} height={height}></svg>
     </div>
   );
 };
