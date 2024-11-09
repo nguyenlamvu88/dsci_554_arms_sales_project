@@ -3,7 +3,9 @@
 
 ## Overview
 
-The Global Arms Trade Dashboard is a React-based, interactive web application offering an in-depth exploration of how the U.S. leverages arms trade and transfers to promote stability or further its interests. Emphasizing patterns, geopolitical dynamics, and strategic alliances, it utilizes D3.js and various visual components to present a narrative-driven analysis of arms transfers, alliances, and regional influences.
+The Global Arms Trade Dashboard is a React-based, interactive web application offering an in-depth exploration of how the U.S. leverages arms trade and transfers to promote stability or further its interests. Emphasizing patterns, geopolitical dynamics, and strategic alliances, it utilizes D3.js and various visual components to present a narrative-driven analysis of arms transfers, alliances, and regional influences. 
+
+The dashboad web application is live and can be accessed at [her](https://nguyenlamvu88.github.io/dsci_554_arms_sales_project/).
 
 ## Project Structure
 
