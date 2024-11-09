@@ -59,7 +59,7 @@ Open the application in a browser at [http://localhost:3000](http://localhost:30
 ## Data Sources
 
 Data originates from [SIPRI](https://www.sipri.org/databases/armstransfers) and [UCDP/PRIO Armed Conflict Database](https://ucdp.uu.se/downloads/index.html#ged_global), processed and accessible on GitHub:
-
+####
 | Dataset                                    | Raw File(s)                                     | Processed File                                   | Description                                                                                               |
 |--------------------------------------------|-------------------------------------------------|--------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
 | **Top Arms Exporters (1950 – 2023)**       | `suppliers_1950-2023.csv`                       | `processed_arms_suppliers.csv`                   | Data on top arms-exporting countries, organized for long-term export trend analysis.                       |
