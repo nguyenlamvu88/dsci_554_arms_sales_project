@@ -109,9 +109,9 @@ All data originates from [Stockholm International Peace Research Institute](http
 
 ### Key Visualizations
 
-- **Dot Map**: Displays conflict locations by year, using clustered bubbles to denote intensity.
-- **Choropleth Map**: Shows arms import quantities by country, with interactive tooltips and modals for deeper insights.
-- **Proportional Symbol Map**: Represents regional arms imports with circles sized by value, complemented by a dynamic mini bar chart.
+- **Dot Map**: Shows conflict hotspots by marking the locations of armed conflicts by year, using clustered dots, color, and size to denote intensity.
+- **Choropleth Map**: Displays arms import quantities by country using the size and color of bubbles, with interactive tooltips and modals providing additional details on suppliers, weapon types, quantities, and years.
+- **Proportional Symbol Map**: Represents regional arms imports with circles sized according to import value, complemented by a dynamic mini bar chart for quick reference and comparison.
 - **Migration Map**: Visualizes global arms trade migration and alliances.
 - **Force-Directed Graph**: Illustrates network connections between arms exporters and recipients.
 - **Zoomable Circle Packing**: Depicts hierarchical data on weapons transfers, organized by category.
