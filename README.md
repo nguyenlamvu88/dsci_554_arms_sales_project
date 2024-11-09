@@ -58,7 +58,7 @@ Open the application in a browser at [http://localhost:3000](http://localhost:30
 
 ## Data Sources
 
-Data originates from [SIPRI](https://www.sipri.org/databases/armstransfers) and [UCDP/PRIO Armed Conflict Database](https://ucdp.uu.se/downloads/index.html#ged_global), processed and hosted on GitHub:
+Data originates from [SIPRI](https://www.sipri.org/databases/armstransfers) and [UCDP/PRIO Armed Conflict Database](https://ucdp.uu.se/downloads/index.html#ged_global), processed with ChatGPT assistance and hosted on GitHub:
 
 <small>
 
