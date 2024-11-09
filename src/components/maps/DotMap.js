@@ -153,7 +153,7 @@ const DotMap = () => {
 
     // Add a legend for intensity, separate from zoomable mapGroup
     const legendGroup = svg.append("g")
-      .attr("transform", `translate(1000, ${height - 190})`); // Adjust position as needed
+      .attr("transform", `translate(850, ${height - 220})`); // Adjust position as needed
 
     // Add a title to the legend with two lines
     legendGroup.append("text")
