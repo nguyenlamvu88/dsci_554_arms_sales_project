@@ -7,10 +7,10 @@ const ProportionalSymbolMap = () => {
   const [selectedYear, setSelectedYear] = useState(1971); // Set initial year
   const dataUrl = "https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_regional_transfers.csv";
 
-  useEffect(() => {
-    const width = 1000;
-    const height = 570;
+  const width = 1220; // Consistent width
+  const height = 550; // Consistent height
 
+  useEffect(() => {
     const svg = d3.select(svgRef.current)
       .attr('width', width)
       .attr('height', height)
@@ -48,9 +48,6 @@ const ProportionalSymbolMap = () => {
   }, []);
 
   useEffect(() => {
-    const width = 1000;
-    const height = 600;
-
     const svg = d3.select(svgRef.current);
     const projection = d3.geoMercator()
       .center([0, 20])
@@ -73,12 +70,13 @@ const ProportionalSymbolMap = () => {
         }
       });
 
+      // Adjusted region coordinates if necessary
       const regions = {
-        "Africa": [20, 0],
-        "Americas": [-80, 0],
-        "Asia and Oceania": [100, 20],
+        "Africa": [20, 5],
+        "Americas": [-80, -10],
+        "Asia and Oceania": [100, 15],
         "Europe": [10, 50],
-        "Middle East": [45, 30],
+        "Middle East": [45, 25],
       };
 
       const colorScale = d3.scaleSequential(d3.interpolateWarm)
@@ -134,14 +132,14 @@ const ProportionalSymbolMap = () => {
       // Add the map title in the dynamic layer
       dynamicLayer.append('text')
         .attr('x', width / 2)
-        .attr('y', height - 75)
+        .attr('y', height - 50)
         .attr('text-anchor', 'middle')
         .style('font-size', '22px')
         .style('font-weight', 'bold')
         .style('fill', 'brown')
         .text(`Arms Imports by Region ${selectedYear} (billion USD)`);
 
-      // Dynamic mini bar chart for the legend
+      // Legend: Dynamic mini bar chart for arms import values
       const regionsData = Object.keys(regions).map(region => {
         const regionData = data.find(d => d['Imports by Regions'] === region);
         return {
@@ -153,20 +151,10 @@ const ProportionalSymbolMap = () => {
       const maxValue = d3.max(regionsData, d => d.value);
       const barScale = d3.scaleLinear()
         .domain([0, maxValue])
-        .range([0, 200]); // Adjust width as needed for bar size
+        .range([0, 200]);
 
-      // Append mini bar chart in the legend section on the left
       const barChartLegend = dynamicLayer.append('g')
         .attr('transform', `translate(50, ${height - 200})`);
-
-      barChartLegend.append('text')
-        .attr('x', 0)
-        .attr('y', -10)
-        .attr('text-anchor', 'start')
-        .style('font-size', '14px')
-        .style('font-weight', 'bold')
-        .style('fill', '#333')
-        .text('');
 
       barChartLegend.selectAll('.bar')
         .data(regionsData)
