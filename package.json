@@ -11,8 +11,7 @@
     "build": "webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "homepage": "https://nguyenlamvu88.github.io/dsci_554_arms_sales_project",
   "dependencies": {
     "bootstrap": "^5.3.3",
     "browser-sync": "^3.0.3",
