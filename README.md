@@ -10,7 +10,7 @@ The dashboad **web application** is live and can be accessed [here](https://nguy
 ## Project Structure
 
 ```
-DSCI_554_ARMS_SALES_PROJECT/
+dsci_554_arms_sales_project/
 ├── data/                                     # Directory containing all data files used for visualizations.
 │   ├── processed/                            # Processed datasets ready for analysis, transformed for compatibility with the visualizations.
 │   └── raw/                                  # Raw datasets, as obtained from sources, stored for reference or future processing.
