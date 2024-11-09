@@ -124,21 +124,26 @@ All data originates from [Stockholm International Peace Research Institute](http
 
 The dashboard's narrative structure allows exploration of global arms trade themes:
 
-1. **Introduction**: Strategic overview of arms trade.
-2. **Strength in Alliance & Partnership**: Examines alliances reinforced by arms trade.
-3. **Competition in Strategic Regions**: Analyzes regional rivalries and arms trade influence.
-4. **Countering Through Proxy Support**: Investigates proxy relationships supported through arms trade.
-5. **Preparing Allies for Emerging Threats**: Focuses on arming allies for future security.
-6. **Profiting from Tensions**: Discusses economic motivations driving arms sales.
-7. **Conclusion**: Summarizes implications of the global arms trade.
+1. **Introduction**: Provides a strategic overview of how arms trade is used as a tool for diplomacy and influence.
+2. **Strength in Alliance & Partnership**:  Highlights how superpowers like the U.S., Russia, and China reinforce alliances through targeted arms exports.
+3. **Competition in Strategic Regions**: Examines the multipolar rivalry in regions where arms trade impacts stability and shifts in power dynamics.
+4. **Countering Through Proxy Support**: Analyzes how countries use arms transfers to support proxy forces and maintain influence without direct involvement.
+5. **Preparing Allies for Emerging Threats**: Details how arms transfers bolster allies’ defenses, reducing reliance on direct intervention by superpowers.
+6. **Profiting from Tensions**: Explores the economic benefits of arms trade, especially during geopolitical conflicts, as defense industries expand influence and profit.
+7. **Conclusion**:  Reflects on the strategic implications of global arms trade, focusing on the balance of power and its role in shaping international order.
 
 ## Design Choices, Functionality, Style, and Layout
 
 ### Design Choices
 
-- **Narrative Structure**: Divided into thematic sections, guiding users through complex arms trade topics.
-- **Color-Coded Visuals**: Consistent color schemes distinguish data points such as exporters and regional import levels.
-- **Hierarchical and Network Representations**: Visualizations like Zoomable Circle Packing and the Force-Directed Graph highlight the layered and networked nature of arms trade data.
+- **Narrative Structure with Thematic Sections**: Organizing the dashboard into thematic sections aligns with principles from **Gestalt theory** and **semiology**, allowing users to process complex information in a structured, intuitive way. This structure enhances the overall message by making **relationships and categories** within the data clearer. *(Lecture 9, Lecture 10)*
+
+- **Color-Coded Visuals**: Consistent **color schemes** are used across maps and charts to visually distinguish data points, aiding in quick identification and comparison. This approach leverages **pre-attentive processing** and **selective attentional tuning** to help users instantly recognize categories, such as **arms exporters** or **import levels**, improving clarity and reducing **cognitive load**. *(Lecture 9, Lecture 10)*
+
+- **Depth and Hierarchical Elements**: Including depth through visual elements like the **Zoomable Circle Packing** and **Force-Directed Graph** emphasizes **hierarchical relationships** in the data. This approach, inspired by **depth perception cues** and **3D design principles** from the lectures, conveys the **layered complexity** within the global arms trade network, making the information more engaging. *(Lecture 9)*
+
+- **Interactive Visualizations**: Interactive elements such as **sliders** and **hover-over tooltips** align with principles of **user engagement** and **cognitive accessibility**. These interactive maps and charts encourage **exploration**, while **selective attention** aids users in focusing on relevant data layers, giving control over the **complexity** of information presented. *(Lecture 10)*
+
 
 ### Functionality
 
