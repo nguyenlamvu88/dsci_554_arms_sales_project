@@ -6,7 +6,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',
-    publicPath: '/dsci_554_arms_sales_project/',
+    publicPath: '/dsci_554_arms_sales_project/', // Adjusted for GitHub Pages deployment
   },
   module: {
     rules: [
@@ -37,7 +37,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html', 
-      filename: './index.html',
+      filename: 'index.html',
     }),
   ],
   devServer: {
@@ -46,5 +46,6 @@ module.exports = {
     },
     compress: true,
     port: 3000,
+    historyApiFallback: true, // Ensures routing works correctly in development
   },
 };
