@@ -4,8 +4,8 @@ import * as topojson from 'topojson-client';
 
 const MigrationMap = () => {
   const svgRef = useRef();
-  const width = 1350;
-  const height = 800;
+  const width = 1200;
+  const height = 900;
 
   const [worldGeoJSON, setWorldGeoJSON] = useState(null);
   const [countryCentroids, setCountryCentroids] = useState({});
