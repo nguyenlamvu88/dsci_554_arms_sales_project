@@ -3,32 +3,40 @@
 
 ## Overview
 
-The Global Arms Trade Dashboard is a React-based, interactive web application offering an in-depth exploration of global arms trade data. Emphasizing patterns, geopolitical dynamics, and strategic alliances, it utilizes D3.js and various visual components to present a narrative-driven analysis of arms transfers, alliances, and regional influences.
+The Global Arms Trade Dashboard is a React-based, interactive web application offering an in-depth exploration of how the U.S. leverages arms trade and transfers to promote stability or further its interests. Emphasizing patterns, geopolitical dynamics, and strategic alliances, it utilizes D3.js and various visual components to present a narrative-driven analysis of arms transfers, alliances, and regional influences.
 
 ## Project Structure
 
 ```
-├── public
-├── src
-│   ├── components
-│   │   ├── maps
-│   │   │   ├── DotMap.js
-│   │   │   ├── ChoroplethMap.js
-│   │   │   ├── ProportionalSymbolMap.js
-│   │   ├── layouts
-│   │   │   ├── MigrationMap.js
-│   │   │   ├── ForceDirectedGraph.js
-│   │   │   ├── ZoomableCirclePacking.js
-│   │   ├── charts
-│   │   │   ├── LineChart.js
-│   │   │   ├── ParallelCoordinatesChart.js
-│   │   │   ├── Treemap.js
-│   │   │   ├── PieChart.js
-│   ├── data
-│   ├── App.js
-├── package.json
-├── README.md
-└── src/index.css
+DSCI_554_ARMS_SALES_PROJECT/
+├── data/                                     # Directory containing all data files used for visualizations.
+│   ├── processed/                            # Processed datasets ready for analysis, transformed for compatibility with the visualizations.
+│   └── raw/                                  # Raw datasets, as obtained from sources, stored for reference or future processing.
+├── public/                                   # Public assets accessible by the application.
+│   └── index.html                            # Main HTML file for the application, which React injects content into.
+├── src/                                      # Main source directory for all React components and styles.
+│   ├── components/                           # Directory containing all React components for the visualizations and layout.
+│   │   ├── layouts/                          # Layout components responsible for different types of visualizations.
+│   │   │   ├── ForceDirectedGraph.js         # Force-directed graph showing connections between arms suppliers and recipients.
+│   │   │   ├── LineChart.js                  # Line chart illustrating trends in arms trade over time.
+│   │   │   ├── MigrationMap.js               # Map showing migration patterns and alliances within the arms trade network.
+│   │   │   ├── ParallelCoordinatesChart.js   # Parallel coordinates chart for comparing arms trade metrics across regions.
+│   │   │   ├── PieChart.js                   # Pie chart depicting arms imports distribution by region.
+│   │   │   ├── Treemap.js                    # Treemap visualizing top arms companies by revenue, segmented by country.
+│   │   │   └── ZoomableCirclePacking.js      # Circle packing chart for hierarchical data on weapon transfers by category.
+│   │   └── maps/                             # Components specifically for map-based visualizations.
+│   │       ├── ChoroplethMap.js              # Choropleth map showing arms imports by country with color-coding.
+│   │       ├── DotMap.js                     # Dot map visualizing conflict locations with intensity indicators.
+│   │       ├── ProportionalSymbolMap.js      # Map with symbols representing arms import volumes by region.
+│   │       └── Dashboard.js                  # Main dashboard component that integrates all visualizations.
+│   ├── index.css                             # Main CSS file for global styling, ensuring cohesive design across the dashboard.
+│   └── index.js                              # Entry point for the React application, rendering the main dashboard.
+├── .babelrc                                  # Babel configuration file for JavaScript transpilation.
+├── package-lock.json                         # Automatically generated file that locks the dependencies' versions.
+├── package.json                              # Configuration file listing project dependencies and scripts for building/running the app.
+├── README.md                                 # Project README with instructions, descriptions, and setup details.
+└── webpack.config.js                         # Webpack configuration for bundling JavaScript and other assets for the application.
+
 ```
 
 ## Installation
