@@ -58,21 +58,24 @@ Open the application in a browser at [http://localhost:3000](http://localhost:30
 
 ## Data Sources
 
-Data originates from [SIPRI](https://www.sipri.org/databases/armstransfers) and [UCDP/PRIO Armed Conflict Database](https://ucdp.uu.se/downloads/index.html#ged_global), processed and accessible on GitHub:
-####
-| Dataset                                    | Raw File(s)                                     | Processed File                                   | Description                                                                                               |
-|--------------------------------------------|-------------------------------------------------|--------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
-| **Top Arms Exporters (1950 – 2023)**       | `suppliers_1950-2023.csv`                       | `processed_arms_suppliers.csv`                   | Data on top arms-exporting countries, organized for long-term export trend analysis.                       |
-| **Top Arms Importers (1950 – 2023)**       | `recipients_1950-2023.csv`                      | `processed_arms_recipients.csv`                  | Tracks import trends and supplier dependencies for major arms-importing countries.                         |
-| **Military Expenditure by Region**         | `SIPRI-Milex-data-1948-2023.xls`                | `processed_arms_expenditure_by_regions.csv`      | Regional military spending data (1948 – 2023), enabling trend and comparative analysis.                    |
-| **Top 100 Arms Companies Revenue**         | `SIPRI-Top-100-2002-2022.xls`                   | `processed_top_100_arms_companies_consolidated.csv` | Revenue data for the top 100 arms companies, ideal for analyzing industry trends.                       |
-| **Arms Transfer by Weapon Types**          | `trade-register.csv`                            | `processed_arms_transfer_by_weapon_types.csv`    | Lists arms suppliers, recipients, and specific types of transfers.                                        |
-| **Global Total Arms Revenue**              | `Total-arms-revenue-SIPRI-Top-100-2002-2022.xls`| `processed_global_total_arms_revenue.csv`        | Total global revenue from arms sales, offering insights into spending patterns.                           |
-| **Arms Sales by Regions (1950 – 2023)**    | `regional_transfers_1950-2023.csv`              | `processed_regional_transfers.csv`               | Visualizes trade flows and dependencies between regions.                                                  |
-| **Armed Conflicts by Country**             | `UcdpPrioConflict_v24_1.csv`                    | `processed_conflicts_locations_years.csv`        | Conflict dates and parties, enabling analysis of conflict frequency and duration (1949 – 2023).           |
-| **Recipients of U.S., Russian, and Chinese Arms** | `us_import-export-values.csv`, `russia_import-export-values.csv`, `china_import-export-values.csv` | `processed_recipients_of_us_arms_hierarchical.json`, `processed_recipients_of_russia_arms_hierarchical.json`, `processed_recipients_of_china_arms_hierarchical.json` | Illustrates global network of arms trade recipients for the U.S., Russia, and China. |
-| **Weapon Transfer by Category (US, China, Russia)** | `us_export_by_category.csv`, `china_export_by_category.csv`, `russia_export_by_category.csv` | `processed_weapon_transfer_by_category.json`      | Hierarchical data detailing weapon categories transferred by major suppliers.                             |
+Data originates from [SIPRI](https://www.sipri.org/databases/armstransfers) and [UCDP/PRIO Armed Conflict Database](https://ucdp.uu.se/downloads/index.html#ged_global), processed and hosted on GitHub:
 
+<small>
+
+| **Dataset**                                | **Raw File(s)**                                | **Processed File**                               | **Description**                                                                                          |
+|--------------------------------------------|------------------------------------------------|--------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| **Top Arms Exporters (1950–2023)**         | `suppliers_1950-2023.csv`                      | `processed_arms_suppliers.csv`                   | Major arms exporters over time, for export trend analysis.                                               |
+| **Top Arms Importers (1950–2023)**         | `recipients_1950-2023.csv`                     | `processed_arms_recipients.csv`                  | Leading importers, showing trends and supplier dependencies.                                             |
+| **Military Expenditure by Region**         | `SIPRI-Milex-data-1948-2023.xls`               | `processed_arms_expenditure_by_regions.csv`      | Regional spending data (1948–2023), enabling comparative analysis.                                       |
+| **Top 100 Arms Companies Revenue**         | `SIPRI-Top-100-2002-2022.xls`                  | `processed_top_100_arms_companies_consolidated.csv` | Revenue trends of top arms companies.                           |
+| **Arms Transfer by Weapon Types**          | `trade-register.csv`                           | `processed_arms_transfer_by_weapon_types.csv`    | Details on suppliers, recipients, and types of arms transfers.                                           |
+| **Global Total Arms Revenue**              | `Total-arms-revenue-SIPRI-Top-100-2002-2022.xls`| `processed_global_total_arms_revenue.csv`       | Global arms sales revenue trends.                                                                       |
+| **Arms Sales by Regions (1950–2023)**      | `regional_transfers_1950-2023.csv`             | `processed_regional_transfers.csv`               | Visualizes regional trade flows and dependencies.                                                        |
+| **Armed Conflicts by Country**             | `UcdpPrioConflict_v24_1.csv`                   | `processed_conflicts_locations_years.csv`        | Conflict timelines and involved parties (1949–2023).                                                     |
+| **Recipients of U.S., Russian, Chinese Arms** | `us_import-export-values.csv`, `russia_import-export-values.csv`, `china_import-export-values.csv` | `processed_recipients_of_us_arms_hierarchical.json`, etc. | Shows U.S., Russian, and Chinese trade recipients.                  |
+| **Weapon Transfer by Category**            | `us_export_by_category.csv`, etc.              | `processed_weapon_transfer_by_category.json`     | Hierarchical categories of weapon transfers by major suppliers.                                         |
+
+</small>
 
 ---
 
