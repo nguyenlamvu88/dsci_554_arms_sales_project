@@ -5,7 +5,7 @@
 
 The Global Arms Trade Dashboard is a React-based, interactive web application offering an in-depth exploration of how the U.S. leverages arms trade and transfers to promote stability or further its interests. Emphasizing patterns, geopolitical dynamics, and strategic alliances, it utilizes D3.js and various visual components to present a narrative-driven analysis of arms transfers, alliances, and regional influences. 
 
-The dashboad web application is live and can be accessed at [her](https://nguyenlamvu88.github.io/dsci_554_arms_sales_project/).
+The dashboad web application is live and can be accessed [here](https://nguyenlamvu88.github.io/dsci_554_arms_sales_project/).
 
 ## Project Structure
 
@@ -56,22 +56,9 @@ Open the application in a browser at [http://localhost:3000](http://localhost:30
 
 ---
 
-## Usage
-
-### Interacting with the Dashboard
-
-Each section offers visual insights into specific aspects of arms trade:
-- **Sidebar Navigation** allows users to explore sections.
-- **Interactive Elements** such as sliders, dropdowns, and tooltips enrich the data exploration experience.
-
-### Customization
-
-- **Component Customization**: Modify each visualization component by editing the respective `.js` file in `src/components/maps` or `src/components/layouts`.
-- **Styling**: Use `index.css` to alter themes or adjust layout aspects.
-
 ## Data Sources
 
-All data originates from [https://ucdp.uu.se/downloads/index.html#ged_global](https://ucdp.uu.se/downloads/index.html#ged_global), processed and hosted on GitHub for ease of access:
+All data originates from [Stockholm International Peace Research Institute](https://www.sipri.org/databases/armstransfers)), processed with AI assistance and hosted on GitHub for ease of access:
 
 1. **Top Arms Exporters (1950 – 2023)**
    - Processed File: `processed_arms_suppliers.csv`
@@ -163,6 +150,17 @@ The dashboard's narrative structure allows exploration of global arms trade them
 - **Professional Color Palette**: A clean, professional color scheme enhances readability and user engagement.
 - **Responsive Design**: Adjusts seamlessly across screen sizes, ensuring optimal desktop and mobile experiences.
 - **Organized Layout**: Sidebar navigation and a structured layout maximize screen space for visualizations.
+
+### Interacting with the Dashboard
+
+Each section offers visual insights into specific aspects of arms trade:
+- **Sidebar Navigation** allows users to explore sections.
+- **Interactive Elements** such as sliders, dropdowns, and tooltips enrich the data exploration experience.
+
+### Customization
+
+- **Component Customization**: Modify each visualization component by editing the respective `.js` file in `src/components/maps` or `src/components/layouts`.
+- **Styling**: Use `index.css` to alter themes or adjust layout aspects.
 
 ---
 
