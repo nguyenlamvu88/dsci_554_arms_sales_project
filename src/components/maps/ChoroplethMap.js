@@ -165,8 +165,8 @@ const ChoroplethMap = () => {
    * Function to Draw the Map
    */
   const drawMap = (countries, armsData, year, weaponType) => {
-    const width = 1000;
-    const height = 600;
+    const width = 1220;
+    const height = 550;
 
     // Define Projection and Path
     const projection = d3.geoMercator()
