@@ -142,21 +142,27 @@ The dashboard's narrative structure allows exploration of global arms trade them
   
 ## Interacting with the Dashboard
 
-- **Sidebar Navigation**: The **thematic structure** within `Dashboard.js` includes a sidebar, encouraging users to navigate between sections, thereby guiding them through **narratives of global arms trade**.  
+- **Sidebar Navigation**: The **thematic structure** implemented in `Dashboard.js` provides users with a sidebar for seamless navigation across various sections, facilitating a guided exploration of **global arms trade narratives**.  
   *(Lecture 10: Narrative Flow and Structured Layouts)*
 
-- **Interactive Elements**: The `PieChart.js`, `Treemap.js`, and `DotMap.js` components feature **sliders, dropdowns, and interactive legends**. These controls **enable real-time customization**, allowing users to find specific insights **without reloading or re-navigating**.  
+- **Interactive Elements**: Components like `PieChart.js`, `Treemap.js`, and `DotMap.js` are equipped with **sliders, dropdowns, and interactive legends**. These elements enable **real-time customization** without requiring page reloads, allowing users to refine data views to gain specific insights.  
   *(Lecture 7: Interactive Visualizations and User Engagement)*
+
+- **Tooltip and Hover Effects**: Tooltips across components such as `ChoroplethMap.js` and `ProportionalSymbolMap.js` provide contextual details on hover, giving users access to supplementary data without cluttering the interface. This supports a clear visual hierarchy and efficient data comprehension.  
+  *(Lecture 7: Pre-Attentive Features and Visual Queries)*
+
+- **Zoom and Pan Features**: The `MapBox.js` and `TopoJSON.js` components incorporate pan and zoom, enabling an in-depth examination of geographic data. This functionality is essential for analyzing complex trade data spread over different regions.  
+  *(Lecture 9: Depth Perception and 3D Design in Maps)*
 
 ### Customization
 
-- **Component Customization**: Each component in `src/components/maps` and `src/components/layouts` is **modular and easily modifiable**. Encapsulated logic within files like `ChoroplethMap.js` and `LineChart.js` allows for **tailoring of datasets or visualization styles** based on project needs.  
+- **Component Modularity**: Each component under `src/components/maps` and `src/components/layouts` is designed for **easy modification**. The encapsulated structure within files like `ChordDiagram.js` and `LineChart.js` allows for **tailored adjustments to datasets and visualization styles** to align with evolving project requirements.  
   *(Lecture 5: Modular Component Design for Dashboards)*
 
-- **Styling**: All styles are centralized in `index.css`, with **component-specific styles scoped** within each file, allowing for **simple theme adjustments**. This setup facilitates easy changes to **colors, fonts, or layout details** while maintaining functionality.  
+- **Styling**: The centralized `index.css` file, along with scoped styles within each component, enables **efficient theme alterations** across the dashboard. Adjustments to colors, fonts, and layout can be made seamlessly to maintain a cohesive aesthetic.  
   *(Lecture 8: Styling and Consistent Visual Themes)*
 
-These design choices and interactive elements integrate **core principles** from data visualization best practices, ensuring the dashboard is **intuitive, engaging, and visually cohesive** across all sections.
+These interactive features and customization options reflect best practices in data visualization, ensuring the dashboard is user-friendly, visually appealing, and adaptable to different analysis needs.
 
 ---
 
@@ -209,3 +215,5 @@ We modified the narrative for the Global Arms Trade Network in the Forced Diagra
 [AI Assistance 12 – Storyboard and Narrative Improvement]( https://chatgpt.com/c/672f8c38-f3a0-8001-ae12-cfdb9451df7d)
 We refined a data visualization dashboard on the global arms trade by adjusting colors and layout for improved clarity and visual hierarchy. Key updates include moving the Pie Chart to Preparing Allies for Emerging Threats and the Zoomable Circle Packing to Countering Through Proxy Support. Additionally, we added a toggle button in Countering Through Proxy Support to switch between the Parallel Coordinates Chart and the Zoomable Circle Packing, with dynamic labels reflecting the selected view. These changes streamline user interaction and enhance the presentation of strategic alliances and trends in arms trade.
 
+[AI Assistance 13 – README Creation](https://chatgpt.com/c/672fd8a5-555c-8001-9f05-b79c0ace787f))
+We collaborated to refine the GitHub README for a Global Arms Trade Dashboard, focusing on clarity, functionality, and alignment with your DSCI 554 course. We organized data sources from SIPRI and UCDP/PRIO efficiently and developed a Design Choices section to highlight narrative structure, color-coded visuals, depth, and interactivity, drawing on principles like Gestalt theory and cognitive load reduction from your lectures. We detailed functionality for key interactive elements (sidebar navigation, tooltips, zoom/pan) and customization options, with references to the React components (.js files) that implement these features. The final document in GitHub Markdown provides a cohesive, professional summary of the dashboard’s capabilities and design rationale.
