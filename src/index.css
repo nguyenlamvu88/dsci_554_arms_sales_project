@@ -32,6 +32,7 @@ body {
   padding: 1.5rem 0;
   z-index: 10;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.8s ease-in-out; /* Fade-in for header */
 }
 
 .page-header h1 {
@@ -47,17 +48,18 @@ body {
   width: 10%; /* Sidebar width */
   background-color: #333;
   color: #e0e0e0;
-  padding: 1rem; /* Button padding */
+  padding: 1rem;
   position: fixed;
   top: 5rem;
   height: calc(100vh - 5rem);
   overflow-y: auto;
   border-right: 1px solid #444;
+  animation: fadeIn 0.8s ease-in-out; /* Fade-in for sidebar */
 }
 
 .sidebar h3 {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.2rem; /* Sidebar header size */
+  font-size: 1.1rem;
   margin-bottom: 1rem;
   color: #e74c3c;
   text-transform: uppercase;
@@ -70,35 +72,36 @@ body {
 
 .sidebar button {
   font-family: 'Bebas Neue', sans-serif;
-  width: 100%; /* Full width */
+  width: 100%;
   background-color: #444;
-  color: #eaeaea;
-  padding: 0.7rem; /* Button padding */
+  color: rgb(71, 123, 202);
+  padding: 0.7rem;
   border: none;
   cursor: pointer;
-  margin-bottom: 0.3rem; /* Space between buttons */
+  margin-bottom: 0.3rem;
   text-align: left;
-  font-size: 0.9rem; /* Button text size */
+  font-size: 0.9rem;
   border-radius: 5px;
-  transition: background-color 0.3s ease, transform 0.2s;
-  text-transform: uppercase;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-transform: capitalize;
 }
 
 .sidebar button:hover {
-  background-color: #555;
+  background-color: #666; /* Enhanced contrast for hover */
   transform: translateX(5px);
 }
 
 .sidebar button:active {
-  background-color: #e74c3c; /* Active button color */
+  background-color: #c0392b; /* Improved accessibility for active color */
   color: #fff;
 }
 
 /* Narrative Box */
 .narrative-box {
-  width: 20%; /* Adjusted width to ensure total width is 100% */
+  width: 25%; /* Increased width for narrative box */
   background-color: #2a2a2a;
-  padding: 1.5rem;
+  padding: 2rem 1.5rem; /* Improved spacing */
   margin-left: 10%; /* Align with the sidebar */
   position: fixed;
   top: 5rem;
@@ -110,42 +113,45 @@ body {
 
 .narrative-box h3 {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.2rem; /* Narrative header size */
+  font-size: 1.5em;
   color: #e74c3c;
   margin-bottom: 0.75rem;
   font-weight: bold;
-  text-transform: uppercase;
+  text-transform: capitalize;
 }
 
 .narrative-box p {
   font-family: 'Crimson Text', serif;
-  font-size: 1.15rem; /* Narrative text size */
+  font-size: 1.15rem;
   color: #cccccc;
   line-height: 1.6;
-  padding-left: 1rem; /* Padding for text */
+  padding-left: 1rem;
   border-left: 2px solid #e74c3c;
 }
 
 /* Main Content Area */
 .content-area {
-  margin-left: 30%; /* Adjusted to accommodate smaller sidebar and narrative box */
-  padding: 1.5rem; /* Reduced padding */
-  width: 70%; /* Content area width remains the same */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 35%; /* Adjusted to accommodate wider narrative box */
+  padding: 1.5rem;
+  width: 60%; /* Reduced content area width */
+  overflow: hidden; /* Prevent overflow into other sections */
 }
 
-/* Each Section */
 .content-area section {
-  margin-bottom: 1.5rem; /* Space between sections */
+  margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #555;
-  min-height: 80vh; /* Minimum height for sections */
-  width: 100%; /* Ensure section takes full width */
+  min-height: 80vh;
+  width: 100%;
 }
 
 .content-area section h2 {
   font-family: 'Oswald', sans-serif;
   text-align: center;
-  font-size: 1.5rem; /* Section title size */
+  font-size: 1.5rem;
   margin-bottom: 1rem;
   color: #eaeaea;
   font-weight: bold;
@@ -153,7 +159,7 @@ body {
 
 .content-area section p {
   font-family: 'Roboto Condensed', sans-serif;
-  font-size: 1rem; /* Paragraph text size */
+  font-size: 1rem;
   color: #cccccc;
   line-height: 1.7;
   margin-bottom: 1rem;
@@ -163,77 +169,146 @@ body {
 .stacked-maps {
   display: flex;
   flex-direction: column;
-  gap: 1rem; /* Space between stacked maps */
-  align-items: center; /* Center maps horizontally */
-  width: 100%; /* Full width for the stacked maps */
+  gap: 2rem;
+  align-items: center;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .stacked-maps > * {
-  width: 100%; /* Full width for each map */
-  height: 45vh; /* Height for each map */
-  border: 1px solid #444; /* Border for each map */
-  border-radius: 8px; /* Rounded corners */
-  overflow: hidden; /* Ensures content fits */
-  margin: 0 auto; /* Center the maps horizontally */
+  width: 100%;
+  height: 600px;
+  border: 1px solid #444;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Adjust stacked-maps for "emerging-threats" section */
+#emerging-threats .stacked-maps {
+  flex-direction: column; /* Stack vertically */
+}
+
+#emerging-threats .stacked-maps > * {
+  width: 100%; /* Full width */
+  height: 600px; /* Consistent height */
 }
 
 /* Year Slider */
 .year-slider {
   display: flex;
   align-items: center;
-  margin-top: 1rem; /* Space above slider */
+  margin-top: 1rem;
 }
 
 .year-slider label {
   font-family: 'Oswald', sans-serif;
-  font-size: 0.75rem; /* Label size */
+  font-size: 0.75rem;
   font-weight: bold;
   margin-right: 0.5rem;
   color: #e74c3c;
 }
 
 .year-slider input[type="range"] {
-  width: 100%; /* Full width for slider */
+  width: 100%;
   appearance: none;
   background-color: #e74c3c;
-  height: 8px; /* Slider track height */
-  border-radius: 5px; /* Rounded edges */
-  outline: none; /* Remove outline */
+  height: 8px;
+  border-radius: 5px;
+  outline: none;
   cursor: pointer;
 }
 
 .year-slider input[type="range"]::-webkit-slider-thumb,
 .year-slider input[type="range"]::-moz-range-thumb {
   appearance: none;
-  width: 16px; /* Thumb width */
-  height: 16px; /* Thumb height */
-  background-color: #333; /* Thumb color */
-  border-radius: 50%; /* Rounded thumb */
+  width: 16px;
+  height: 16px;
+  background-color: #333;
+  border-radius: 50%;
   cursor: pointer;
-  border: 2px solid #eaeaea; /* Border around thumb */
+  border: 2px solid #eaeaea;
 }
 
 /* Insight Cards */
 .insight-card {
-  background-color: #444; /* Card background color */
+  background-color: #444;
   color: #eaeaea;
-  padding: 1rem; /* Card padding */
-  margin-top: 1rem; /* Space above card */
-  border-radius: 8px; /* Rounded corners */
-  border-left: 4px solid #e74c3c; /* Left border */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow effect */
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #e74c3c;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .insight-card h4 {
   font-family: 'Oswald', sans-serif;
-  font-size: 1rem; /* Card header size */
-  color: #e74c3c;
-  margin-bottom: 0.5rem; /* Space below header */
+  font-size: 1rem;
+  color: #f1e4e3;
+  margin-bottom: 0.5rem;
 }
 
 .insight-card p {
   font-family: 'Roboto Condensed', sans-serif;
-  font-size: 0.9rem; /* Card paragraph size */
-  line-height: 1.5; /* Line height for paragraph */
+  font-size: 0.9rem;
+  line-height: 1.5;
   color: #cccccc;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+
+  .sidebar,
+  .narrative-box {
+    width: 100%;
+    position: static;
+    padding: 1rem;
+    height: auto;
+    box-shadow: none;
+  }
+
+  .content-area {
+    margin-left: 0;
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .stacked-maps {
+    flex-direction: column; /* Stack vertically on smaller screens */
+  }
+
+  .stacked-maps > * {
+    width: 100%;
+    height: 400px; /* Reduced height for smaller screens */
+  }
+
+  .horizontal-stack {
+    flex-direction: column; /* Stack vertically on smaller screens */
+    gap: 15px;
+  }
+
+  /* Adjust Pie Chart and Legend for Mobile */
+  #emerging-threats .stacked-maps {
+    flex-direction: column; /* Ensure vertical stacking on mobile */
+  }
+
+  #emerging-threats .stacked-maps > * {
+    width: 100%;
+    height: 400px; /* Adjust height for mobile */
+  }
+
+  .pie-chart-container {
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+  }
+
+  .legend-box {
+    margin-left: 0;
+    margin-top: 20px;
+    width: 80%;
+  }
 }
