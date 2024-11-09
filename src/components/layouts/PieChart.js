@@ -1,17 +1,17 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
-import '../maps/Tooltip.css';
 
-const PieChart = ({ selectedYear }) => {
+const PieChart = () => {
   const svgRef = useRef();
   const dataUrl = "https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_regional_transfers.csv";
+  const [selectedYear, setSelectedYear] = useState(2023); // Default year
   const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, content: '' });
   const [legendData, setLegendData] = useState([]);
   const [totalArmsTrade, setTotalArmsTrade] = useState(0);
 
   useEffect(() => {
-    const width = 500;
-    const height = 600;
+    const width = 500; // Adjust as needed
+    const height = 600; // Match the container's height
     const radius = Math.min(width, height) / 2;
 
     const svg = d3.select(svgRef.current).attr('width', width).attr('height', height);
@@ -33,7 +33,6 @@ const PieChart = ({ selectedYear }) => {
         }
       });
 
-      // Filter out the "World total" and "International organizations" rows
       const filteredData = data.filter(d => 
         d['Imports by Regions'] !== 'World total' && d['Imports by Regions'] !== 'International organizations'
       );
@@ -69,7 +68,7 @@ const PieChart = ({ selectedYear }) => {
 
       const pie = d3.pie().value(d => d.armsTrade);
       const arc = d3.arc().outerRadius(radius - 10).innerRadius(0);
-      const arcHover = d3.arc().outerRadius(radius).innerRadius(0); // Enlarged arc for hover effect
+      const arcHover = d3.arc().outerRadius(radius).innerRadius(0);
 
       svg.append('g')
         .attr('transform', `translate(${width / 2}, ${height / 2})`)
@@ -93,7 +92,7 @@ const PieChart = ({ selectedYear }) => {
           d3.select(event.currentTarget)
             .transition()
             .duration(200)
-            .attr('d', arcHover) // Enlarge on hover
+            .attr('d', arcHover)
             .attr('opacity', 1);
         })
         .on('mousemove', (event) => {
@@ -109,7 +108,7 @@ const PieChart = ({ selectedYear }) => {
           d3.select(event.currentTarget)
             .transition()
             .duration(200)
-            .attr('d', arc) // Return to original size
+            .attr('d', arc)
             .attr('opacity', 0.85);
         });
 
@@ -130,31 +129,12 @@ const PieChart = ({ selectedYear }) => {
   }, [dataUrl, selectedYear]);
 
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: '500px' }}>
       <svg ref={svgRef}></svg>
 
-      {tooltip.visible && (
-        <div
-          className="tooltip"
-          style={{
-            position: 'absolute',
-            top: tooltip.y + 10,
-            left: tooltip.x + 10,
-            whiteSpace: 'pre-line',
-            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-            padding: '5px',
-            borderRadius: '5px',
-            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
-            fontSize: '12px',
-            color: '#333'
-          }}
-        >
-          {tooltip.content}
-        </div>
-      )}
+      <div style={{ marginLeft: '40px', marginTop: '-110px', padding: '20px', backgroundColor: '#f0f0f0', borderRadius: '5px', fontSize: '14px', color: '#333', width: '250px' }}>
 
-      <div style={{ marginLeft: '20px', marginTop: '120px', padding: '15px', backgroundColor: '#f0f0f0', borderRadius: '5px', fontSize: '12px', color: '#333', width: '200px' }}>
-        <p style={{ fontSize: '16px', fontWeight: 'bold' }}>
+        <p style={{ fontSize: '16px', fontWeight: 'bold', color: '#333' }}>
           Total Arms Trade: {totalArmsTrade ? totalArmsTrade.toLocaleString() : '0'} billion USD
         </p>
         {legendData.map((entry, index) => (
@@ -173,7 +153,49 @@ const PieChart = ({ selectedYear }) => {
             </div>
           </div>
         ))}
+
+        {/* Year Slider */}
+        <div style={{ marginTop: '20px', textAlign: 'center' }}>
+          <label style={{ color: '#0db4de', fontWeight: 'bold', marginBottom: '10px' }}>Select Year: {selectedYear}</label>
+          <input
+            type="range"
+            min="1950"
+            max="2023"
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(+e.target.value)}
+            style={{
+              width: '100%',
+              marginTop: '10px',
+              appearance: 'none',
+              backgroundColor: '#e74c3c',
+              height: '8px',
+              borderRadius: '5px',
+              outline: 'none',
+              cursor: 'pointer',
+            }}
+          />
+        </div>
       </div>
+
+      {tooltip.visible && (
+        <div
+          style={{
+            position: 'absolute',
+            top: tooltip.y + 10,
+            left: tooltip.x + 10,
+            whiteSpace: 'pre-line',
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            padding: '5px',
+            borderRadius: '5px',
+            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
+            fontSize: '12px',
+            color: '#333',
+            pointerEvents: 'none',
+          }}
+        >
+          {tooltip.content}
+        </div>
+      )}
     </div>
   );
 };
