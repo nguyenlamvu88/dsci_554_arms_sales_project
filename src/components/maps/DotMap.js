@@ -61,8 +61,8 @@ const DotMap = () => {
   }, [selectedYear, data]);
 
   const drawMap = () => {
-    const width = 1000;
-    const height = 570;
+    const width = 1220;
+    const height = 550;
 
     const svg = d3.select(svgRef.current)
       .attr("width", width)
@@ -73,7 +73,7 @@ const DotMap = () => {
 
     const projection = d3.geoMercator()
       .center([78, 20]) // Initial focus on South Asia
-      .scale(200) // Adjusted scale for initial zoom
+      .scale(190) // Adjusted scale for initial zoom
       .translate([width / 2, height / 2]);
 
     const path = d3.geoPath().projection(projection);
@@ -91,12 +91,12 @@ const DotMap = () => {
     // Add a title to the map
     svg.append("text")
       .attr("x", width / 2)
-      .attr("y", 553)  // Position the title near the bottom
+      .attr("y", 510)  // Position the title near the bottom
       .attr("text-anchor", "middle")
-      .style("font-size", "27px")
+      .style("font-size", "26px")
       .style("font-weight", "bold")
       .style("fill", "brown")
-      .text("Conflict Location and Intensity Map");
+      .text("Conflict Location and Intensity");
 
     // Draw countries from TopoJSON data
     const countries = topojson.feature(data.mapData, data.mapData.objects.countries).features;
@@ -153,7 +153,7 @@ const DotMap = () => {
 
     // Add a legend for intensity, separate from zoomable mapGroup
     const legendGroup = svg.append("g")
-      .attr("transform", `translate(1100, ${height - 150})`); // Adjust position as needed
+      .attr("transform", `translate(1000, ${height - 190})`); // Adjust position as needed
 
     // Add a title to the legend with two lines
     legendGroup.append("text")
