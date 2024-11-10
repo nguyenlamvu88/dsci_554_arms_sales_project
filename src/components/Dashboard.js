@@ -24,8 +24,8 @@ const Dashboard = () => {
 
   const sectionTitles = {
     intro: "Introduction",
-    "strength-and-resilience": "Strength in Alliance & Partnership",
     "balancing-power": "Competition in Strategic Regions",
+    "strength-and-resilience": "Strength in Alliance & Partnership",    
     "countering-adversaries": "Countering through Proxy Support",
     "emerging-threats": "Preparing Allies for Emerging Threats",
     "profiting-from-tensions": "From Tensions to Strategic Economic Engines", 
@@ -36,9 +36,15 @@ const Dashboard = () => {
     intro: (
       <>
         <p style={{ marginBottom: "1.5em" }}>
-          The <span style={{ color: '#4682B4' }}>United States</span> has been leveraging arms trades/transfers as a strategic tool to bolster global stability and strengthen alliances. This analysis highlights how arms trades align with regions of strategic interest, where conflicts either serve national agendas or promote stability aligned with superpower goals. For the <span style={{ color: '#4682B4' }}>United States</span>, arms support—whether through <em style={{ color: 'orange'}}>direct involvement</em> or <em style={{ color: 'orange'}}>indirect aid</em>—has historically been a tool to advance its interests, stabilize allies, and pursue foreign policy agendas. The maps illustrate that arms trades are not merely economic transactions; they are integral to <em style={{ color: 'orange',}}>geopolitical strategy</em>, frequently used as extensions of diplomacy within broader national security <em style={{ color: 'orange',}}>Diplomatic, Informational, Military, and Economic (DIME)</em> frameworks to promote stability or serve national interests.
+          The <span style={{ color: '#4682B4' }}>United States</span> has strategically employed arms trades and transfers to enhance global stability and reinforce alliances. This analysis highlights how arms trades align with regions of strategic interest, where conflicts either serve national agendas or promote stability aligned with superpower goals. For the <span style={{ color: '#4682B4' }}>United States</span>, arms support—whether through <em style={{ color: 'orange' }}>direct involvement</em> or <em style={{ color: 'orange' }}>indirect aid</em>—has historically been a tool to advance its interests, stabilize allies, and pursue foreign policy agendas. The maps illustrate that arms trades are not merely economic transactions; they are integral to <em style={{ color: 'orange' }}>geopolitical strategy</em>, frequently used as extensions of diplomacy within broader national security <em style={{ color: 'orange' }}>Diplomatic, Informational, Military, and Economic (DIME)</em> frameworks to promote stability or serve national interests.
         </p>
-        {/* Additional narrative content */}
+
+        <p style={{ fontSize: "1.2em", margin: "1.5em 0 0.8em", color: "#e74c3c", fontWeight: "bold", borderBottom: "2px solid #e74c3c", paddingBottom: "0.2em" }}>
+          Illustrative Case: The Indo-Pacific as a New Geopolitical Center of Gravity
+        </p>
+        <p style={{ marginBottom: "1.2em" }}>
+          As you slide through the year selector, it becomes clear that <span style={{ color: '#FFDB58' }}>China</span> has steadily increased its defense budget since the late 1990s and early 2000s, surpassing <span style={{ color: '#DC143C' }}>Russia</span> and signaling its ambitions for military modernization and expanded influence, particularly in the Indo-Pacific region. In response, Indo-Pacific nations have also significantly increased their defense spending, bolstering military capabilities to address regional security concerns and counterbalance <span style={{ color: '#FFDB58' }}>China's</span> growing presence.
+        </p>     
       </>
     ),
 
@@ -222,16 +228,8 @@ const Dashboard = () => {
         </p>
 
         <p style={{ marginBottom: "1.5em" }}>
-          Ultimately, the U.S. arms trade serves as a multifaceted tool of diplomacy, economic support, and military reinforcement, advancing a vision of stability and security that aligns with national interests. By strategically directing its arms exports, the <span style={{ color: "#4682B4" }}>United States</span> continues to shape a global landscape that supports its long-term objectives and counterbalances the ambitions of its rivals.
-        </p>
-
-        {/* Move ProportionalSymbolMap to the Conclusion and remove ChoroplethMap */}
-        <div className="stacked-maps" style={{ marginTop: '2em' }}>
-          <DotMap />
-          <ProportionalSymbolMap dataUrl="https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_regional_transfers.csv" selectedYear={selectedYear} />
-          {/* Removed ChoroplethMap */}
-          {/* <ChoroplethMap /> */}
-        </div>
+          Ultimately, the <span style={{ color: "#4682B4" }}>U.S.</span> arms trade serves as a multifaceted tool of diplomacy, economic support, and military reinforcement, advancing a vision of stability and security that aligns with national interests. By strategically directing its arms exports, the <span style={{ color: "#4682B4" }}>United States</span> continues to shape a global landscape that supports its long-term objectives and counterbalances the ambitions of its rivals.
+        </p>              
       </>
     )
   };
@@ -244,7 +242,7 @@ const Dashboard = () => {
   return (
     <div className="dashboard-container">
       <header className="page-header">
-        <h1>Arming for Stability: U.S. Military Strategy Through Global Arms Trade</h1>
+        <h1>Arming for Stability: U.S. Strategy Through Global Arms Trade</h1>
       </header>
 
       <aside className="sidebar">
@@ -346,14 +344,11 @@ const Dashboard = () => {
         )}
 
         {activeSection === "conclusion" && (
-          <section id="conclusion" className="medium-section">
-            {/* Remove ChoroplethMap from Conclusion */}
-            <div className="stacked-maps" style={{ marginTop: '2em' }}>
+          <section id="conclusion" className="medium-section">           
+            <div className="stacked-maps">
               <DotMap />
               <ProportionalSymbolMap dataUrl="https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_regional_transfers.csv" selectedYear={selectedYear} />
-              {/* Removed ChoroplethMap */}
-              {/* <ChoroplethMap /> */}
-            </div>
+             </div>
           </section>
         )}
       </main>
