@@ -148,8 +148,6 @@ The dashboard's narrative structure allows exploration of global arms trade them
 
 - **Static Legend with Persistent Positioning**: To ensure consistent data interpretation, the **legend remains fixed** and is unaffected by zooming and panning, providing a stable reference for value scales.  
   *(Lecture 4: Design Space, Graphing in the Browser, D3)*  
-
-- These style and layout features contribute to a cohesive, dynamic user experience, blending visualization principles with interactive elements to create an informative, accessible dashboard across devices.
   
 ## Interacting with the Dashboard
 
