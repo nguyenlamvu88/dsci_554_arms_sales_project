@@ -59,7 +59,7 @@ Open the application in a browser at [http://localhost:3000](http://localhost:30
 
 ## Data Sources
 
-Data originates from [SIPRI](https://www.sipri.org/databases/armstransfers) and [UCDP/PRIO Armed Conflict Database](https://ucdp.uu.se/downloads/index.html#ged_global), processed with ChatGPT assistance and hosted on GitHub:
+Data originates from [SIPRI](https://www.sipri.org/databases/armstransfers), [UCDP/PRIO Armed Conflict Database](https://ucdp.uu.se/downloads/index.html#ged_global), and the [World Bank](https://data.worldbank.org/indicator/MS.MIL.XPND.CD?end=2022&start=2022&view=map), processed with ChatGPT assistance and hosted on GitHub:
 
 <small>
 
@@ -75,6 +75,7 @@ Data originates from [SIPRI](https://www.sipri.org/databases/armstransfers) and 
 | **Armed Conflicts by Country**             | `UcdpPrioConflict_v24_1.csv`                   | `processed_conflicts_locations_years.csv`        | Conflict timelines and involved parties (1949–2023).                                                     |
 | **Recipients of U.S., Russian, Chinese Arms** | `us_import-export-values.csv`, `russia_import-export-values.csv`, `china_import-export-values.csv` | `processed_recipients_of_us_arms_hierarchical.json`, etc. | Shows U.S., Russian, and Chinese trade recipients.                  |
 | **Weapon Transfer by Category**            | `us_export_by_category.csv`, etc.              | `processed_weapon_transfer_by_category.json`     | Hierarchical categories of weapon transfers by major suppliers.                                         |
+| **Defense Expenditure by Country Over Years** | `API_MS.MIL.XPND.CD_DS2_en_csv_v2_11551.csv`   | `processed_defense_expenditure_by_country.csv`   | Defense spending by country, allowing temporal and regional analysis of expenditure trends.             |
 
 </small>
 
@@ -227,3 +228,7 @@ We refined a data visualization dashboard on the global arms trade by adjusting 
 
 [AI Assistance 13 – README Creation](https://chatgpt.com/c/672fd8a5-555c-8001-9f05-b79c0ace787f))
 We collaborated to refine the GitHub README for a Global Arms Trade Dashboard, focusing on clarity, functionality, and alignment with your DSCI 554 course. We organized data sources from SIPRI and UCDP/PRIO efficiently and developed a Design Choices section to highlight narrative structure, color-coded visuals, depth, and interactivity, drawing on principles like Gestalt theory and cognitive load reduction from your lectures. We detailed functionality for key interactive elements (sidebar navigation, tooltips, zoom/pan) and customization options, with references to the React components (.js files) that implement these features. The final document in GitHub Markdown provides a cohesive, professional summary of the dashboard’s capabilities and design rationale.
+
+[AI Assistance 13]( https://chatgpt.com/c/6730dcbe-841c-8001-8926-9a0fa9dd81e0) & [AI Assistance 14]( https://chatgpt.com/c/6730ff0b-3c10-8001-9954-957a31078481)
+We worked on building Choropleth Map and Line Chart for the defense expenditure by country by year components using React, D3, and TopoJSON to display global defense expenditure data. The component features a choropleth map to show defense expenditure by country for a selected year, synchronized with a line chart showing historical expenditure trends for the United States, China, and Russia. We ensured compatibility of country names between the dataset and the map, applied a logarithmic color scale for better visual contrast, and added tooltips for detailed information on hover. Additionally, we positioned a legend for both the map and line chart, synchronized the line chart with the map’s year slider, and included highlighted points on the line chart to mark the selected year. Finally, we placed the line chart in the bottom right corner of the map for an integrated, responsive layout.
+
