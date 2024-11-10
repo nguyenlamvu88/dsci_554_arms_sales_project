@@ -1,6 +1,9 @@
+// src/components/Dashboard.js
+
 import React, { useState, useRef } from 'react';
+import DefenseExpenditure from './maps/DefenseExpenditure'; // Import DefenseExpenditure component
 import DotMap from './maps/DotMap';
-import ChoroplethMap from './maps/ChoroplethMap';
+import ChoroplethMap from './maps/ChoroplethMap'; // Retained ChoroplethMap import
 import ProportionalSymbolMap from './maps/ProportionalSymbolMap';
 import MigrationMap from './layouts/MigrationMap';
 import ForceDirectedGraph from './layouts/ForceDirectedGraph';
@@ -23,7 +26,7 @@ const Dashboard = () => {
     intro: "Introduction",
     "strength-and-resilience": "Strength in Alliance & Partnership",
     "balancing-power": "Competition in Strategic Regions",
-    "countering-adversaries": "Countering Through Proxy Support",
+    "countering-adversaries": "Countering through Proxy Support",
     "emerging-threats": "Preparing Allies for Emerging Threats",
     "profiting-from-tensions": "From Tensions to Strategic Economic Engines", 
     conclusion: "Conclusion"
@@ -33,7 +36,7 @@ const Dashboard = () => {
     intro: (
       <>
         <p style={{ marginBottom: "1.5em" }}>
-          The <span style={{ color: '#4682B4' }}>United States</span> has been leveraging arms trades/transfers as a strategic tool to bolster global stability and strengthen alliances. This analysis highlights how arms trades align with regions of strategic interest, where conflicts either serve national agendas or promote stability aligned with superpower goals. For the <span style={{ color: '#4682B4' }}>United States</span>, arms support—whether through <em style={{ color: 'orange'}}>direct involment</em> or <em style={{ color: 'orange'}}>indirect aid</em>—has historically been a tool to advance its interests, stabilize allies, and pursue foreign policy agendas. The maps illustrate that arms trades are not merely economic transactions; they are integral to <em style={{ color: 'orange',}}>geopolitical strategy</em>, frequently used as extensions of diplomacy within broader national security <em style={{ color: 'orange',}}>Diplomatic, Informational, Military, and Economic (DIME)</em> frameworks to promote stability or serve national interests.
+          The <span style={{ color: '#4682B4' }}>United States</span> has been leveraging arms trades/transfers as a strategic tool to bolster global stability and strengthen alliances. This analysis highlights how arms trades align with regions of strategic interest, where conflicts either serve national agendas or promote stability aligned with superpower goals. For the <span style={{ color: '#4682B4' }}>United States</span>, arms support—whether through <em style={{ color: 'orange'}}>direct involvement</em> or <em style={{ color: 'orange'}}>indirect aid</em>—has historically been a tool to advance its interests, stabilize allies, and pursue foreign policy agendas. The maps illustrate that arms trades are not merely economic transactions; they are integral to <em style={{ color: 'orange',}}>geopolitical strategy</em>, frequently used as extensions of diplomacy within broader national security <em style={{ color: 'orange',}}>Diplomatic, Informational, Military, and Economic (DIME)</em> frameworks to promote stability or serve national interests.
         </p>
         {/* Additional narrative content */}
       </>
@@ -221,127 +224,141 @@ const Dashboard = () => {
         <p style={{ marginBottom: "1.5em" }}>
           Ultimately, the U.S. arms trade serves as a multifaceted tool of diplomacy, economic support, and military reinforcement, advancing a vision of stability and security that aligns with national interests. By strategically directing its arms exports, the <span style={{ color: "#4682B4" }}>United States</span> continues to shape a global landscape that supports its long-term objectives and counterbalances the ambitions of its rivals.
         </p>
+
+        {/* Move ProportionalSymbolMap to the Conclusion and remove ChoroplethMap */}
+        <div className="stacked-maps" style={{ marginTop: '2em' }}>
+          <DotMap />
+          <ProportionalSymbolMap dataUrl="https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_regional_transfers.csv" selectedYear={selectedYear} />
+          {/* Removed ChoroplethMap */}
+          {/* <ChoroplethMap /> */}
+        </div>
       </>
     )
   };
 
- // Function to toggle between MigrationMap and ForceDirectedGraph views
- const toggleAllianceSection = () => {
-  setIsNetworkView(!isNetworkView);
-};
+  // Function to toggle between MigrationMap and ForceDirectedGraph views
+  const toggleAllianceSection = () => {
+    setIsNetworkView(!isNetworkView);
+  };
 
-return (
-  <div className="dashboard-container">
-    <header className="page-header">
-      <h1>Arming for Stability: U.S. Military Strategy Through Global Arms Trade</h1>
-    </header>
+  return (
+    <div className="dashboard-container">
+      <header className="page-header">
+        <h1>Arming for Stability: U.S. Military Strategy Through Global Arms Trade</h1>
+      </header>
 
-    <aside className="sidebar">
-      <h3>Explore the Story</h3>
-      <ul>
-        {Object.keys(sectionTitles).map((section) => (
-          <li key={section}>
-            <button onClick={() => setActiveSection(section)}>
-              {sectionTitles[section]}
+      <aside className="sidebar">
+        <h3>Explore the Story</h3>
+        <ul>
+          {Object.keys(sectionTitles).map((section) => (
+            <li key={section}>
+              <button onClick={() => setActiveSection(section)}>
+                {sectionTitles[section]}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </aside>
+
+      <aside className="narrative-box">
+        <h3>{sectionTitles[activeSection]}</h3>
+        {narrativeContent[activeSection]}
+      </aside>
+
+      <main className="content-area">
+        {activeSection === "intro" && (
+          <section id="intro" className="large-section">
+            <div className="stacked-maps">
+              {/* Include DefenseExpenditure map in Introduction */}
+              <DefenseExpenditure />
+              {/* Removed ProportionalSymbolMap from Introduction */}
+              {/* <ProportionalSymbolMap dataUrl="https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_regional_transfers.csv" selectedYear={selectedYear} /> */}
+            </div>
+          </section>
+        )}
+
+        {activeSection === "strength-and-resilience" && (
+          <section id="strength-and-resilience" ref={allianceRef} className="large-section">
+            {isNetworkView ? <ForceDirectedGraph /> : <MigrationMap />}
+            <button
+              onClick={toggleAllianceSection}
+              style={{
+                marginTop: '20px',
+                padding: '10px 15px',
+                fontSize: '16px',
+                cursor: 'pointer',
+                backgroundColor: '#4682B4',
+                color: 'white',
+                border: 'none',
+                borderRadius: '5px'
+              }}
+            >
+              {isNetworkView ? "Back to Alliance Map" : "View Global Arms Trade Network"}
             </button>
-          </li>
-        ))}
-      </ul>
-    </aside>
+          </section>
+        )}
 
-    <aside className="narrative-box">
-      <h3>{sectionTitles[activeSection]}</h3>
-      {narrativeContent[activeSection]}
-    </aside>
+        {activeSection === "balancing-power" && (
+          <section id="balancing-power" className="large-section">
+            <div className="stacked-maps">
+              <LineChart />
+              {/* ChoroplethMap is still used in other sections; keep it here if needed */}
+              <ChoroplethMap />
+            </div>
+          </section>
+        )}
 
-    <main className="content-area">
-      {activeSection === "intro" && (
-        <section id="intro" className="large-section">
-          <div className="stacked-maps">
-            <DotMap />
-            <ProportionalSymbolMap dataUrl="https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_regional_transfers.csv" selectedYear={selectedYear} />
-          </div>
-        </section>
-      )}
+        {activeSection === "countering-adversaries" && (
+          <section id="countering-adversaries" className="medium-section">
+            {isCirclePackingView ? <ZoomableCirclePacking /> : <ParallelCoordinatesChart />}
+            <button
+              onClick={() => setIsCirclePackingView(!isCirclePackingView)}
+              style={{
+                marginTop: '20px',
+                padding: '10px 15px',
+                fontSize: '16px',
+                cursor: 'pointer',
+                backgroundColor: '#4682B4',
+                color: 'white',
+                border: 'none',
+                borderRadius: '5px'
+              }}
+            >
+              {isCirclePackingView ? "Back to Parallel Coordinates" : "View Circle Packing"}
+            </button>
+          </section>
+        )}
 
-      {activeSection === "strength-and-resilience" && (
-        <section id="strength-and-resilience" ref={allianceRef} className="large-section">
-          {isNetworkView ? <ForceDirectedGraph /> : <MigrationMap />}
-          <button
-            onClick={toggleAllianceSection}
-            style={{
-              marginTop: '20px',
-              padding: '10px 15px',
-              fontSize: '16px',
-              cursor: 'pointer',
-              backgroundColor: '#4682B4',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px'
-            }}
-          >
-            {isNetworkView ? "Back to Alliance Map" : "View Global Arms Trade Network"}
-          </button>
-        </section>
-      )}
+        {activeSection === "emerging-threats" && (
+          <section id="emerging-threats" className="medium-section">
+            <div className="stacked-maps">
+              {/* ChoroplethMap is still used in other sections; keep it here if needed */}
+              <ChoroplethMap />
+              <PieChart selectedYear={selectedYear} />
+            </div>
+          </section>
+        )}
 
-      {activeSection === "balancing-power" && (
-        <section id="balancing-power" className="large-section">
-          <div className="stacked-maps">
-            <LineChart />
-            <ChoroplethMap />
-          </div>
-        </section>
-      )}
+        {activeSection === "profiting-from-tensions" && (
+          <section id="profiting-from-tensions" className="medium-section">
+            <Treemap selectedYear={selectedYear} setSelectedYear={setSelectedYear} />
+          </section>
+        )}
 
-      {activeSection === "countering-adversaries" && (
-        <section id="countering-adversaries" className="medium-section">
-          {isCirclePackingView ? <ZoomableCirclePacking /> : <ParallelCoordinatesChart />}
-          <button
-            onClick={() => setIsCirclePackingView(!isCirclePackingView)}
-            style={{
-              marginTop: '20px',
-              padding: '10px 15px',
-              fontSize: '16px',
-              cursor: 'pointer',
-              backgroundColor: '#4682B4',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px'
-            }}
-          >
-            {isCirclePackingView ? "Back to Parallel Coordinates" : "View Circle Packing"}
-          </button>
-        </section>
-      )}
-
-      {activeSection === "emerging-threats" && (
-        <section id="emerging-threats" className="medium-section">
-          <div className="stacked-maps">
-            <ChoroplethMap />
-            <PieChart selectedYear={selectedYear} />
-          </div>
-        </section>
-      )}
-
-      {activeSection === "profiting-from-tensions" && (
-        <section id="profiting-from-tensions" className="medium-section">
-          <Treemap selectedYear={selectedYear} setSelectedYear={setSelectedYear} />
-        </section>
-      )}
-
-{activeSection === "conclusion" && (
-  <section id="conclusion" className="medium-section">
-    <div className="horizontal-stack" style={{ width: "100%", maxWidth: "100%" }}>
-      <ForceDirectedGraph />      
+        {activeSection === "conclusion" && (
+          <section id="conclusion" className="medium-section">
+            {/* Remove ChoroplethMap from Conclusion */}
+            <div className="stacked-maps" style={{ marginTop: '2em' }}>
+              <DotMap />
+              <ProportionalSymbolMap dataUrl="https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_regional_transfers.csv" selectedYear={selectedYear} />
+              {/* Removed ChoroplethMap */}
+              {/* <ChoroplethMap /> */}
+            </div>
+          </section>
+        )}
+      </main>
     </div>
-  </section>
-)}
-
-
-    </main>
-  </div>
-);
+  );
 };
 
 export default Dashboard;
