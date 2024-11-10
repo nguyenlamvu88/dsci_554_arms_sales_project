@@ -129,16 +129,27 @@ The dashboard's narrative structure allows exploration of global arms trade them
 - **Zoom and Pan**: The `ZoomableCirclePacking.js` and `ProportionalSymbolMap.js` components incorporate **zoom and pan features**, allowing users to **explore data hierarchies and map details** closely. This feature is essential for **examining dense data and layered networks**, giving users **control over data exploration** depth.  
   *(Lecture 9: Depth Perception & 3D Design)*
   
-### Style and Layout
+## Style and Layout
 
-- **Professional Color Palette**: Components like `ChoroplethMap.js` and `Treemap.js` use a **consistent, high-contrast color scheme** to visually distinguish **exporters, importers, and trade quantities**. This improves readability and **emphasizes key data points** across the dashboard.  
-  *(Lecture 8: Color Theory and Pre-attentive Color Selection)*
+- **Professional Color Palette**: Components like `ChoroplethMap.js` and `Treemap.js` use a **high-contrast color scheme** to visually distinguish **exporters, importers, and trade quantities**. This approach, based on color theory, enhances readability and emphasizes key metrics across the dashboard.  
+  *(Lecture 8: Color, Complex Charts & Colors in D3)*
 
-- **Responsive Design**: Using **CSS flexbox and grid layouts** in `index.css` along with **responsive D3.js scaling**, the dashboard adjusts seamlessly across screen sizes, making it **desktop- and mobile-friendly** for varied user experiences.  
-  *(Lecture 5: Responsive Design for Dashboards)*
+- **Responsive Design with Flexible Layouts**: The dashboard leverages **CSS flexbox and grid layouts** in `index.css` with responsive D3.js scaling. This combination ensures seamless resizing for both desktop and mobile views, providing an optimized user experience.  
+  *(Lecture 5: Dashboards & Infographics Design)*
 
-- **Organized Layout**: The layout, structured with a **sidebar for navigation** and full-width sections for each visualization (found in `Dashboard.js`), provides a **structured flow** and **maximizes screen space**, allowing immersive data exploration.  
-  *(Lecture 10: Gestalt Principles and Organized Layouts)*
+- **Structured and Organized Flow**: A sidebar for **navigation** and full-width sections for visualizations (found in `Dashboard.js`) create a logical flow. Each visualization is spaced to maximize screen area, allowing immersive data interaction and smoother navigation.  
+  *(Lecture 3: Visualization Techniques, Web Technologies)*
+
+- **Integrated Line Chart and Choropleth Map**: A **line chart within the map container** shows temporal trends, providing a connected view of defense expenditure changes over time with geospatial data.  
+  *(Lecture 9: Depth Perception and 3D Design, Maps)*
+
+- **Stacked Map and Transition Controls**: A **stacked layout** combines interactive maps with transition buttons for toggling between years. This helps users explore temporal changes intuitively, enhancing engagement without cluttering the display.  
+  *(Lecture 10: Patterns, Gestalt, and Semiology)*
+
+- **Static Legend with Persistent Positioning**: To ensure consistent data interpretation, the **legend remains fixed** and is unaffected by zooming and panning, providing a stable reference for value scales.  
+  *(Lecture 4: Design Space, Graphing in the Browser, D3)*  
+
+- These style and layout features contribute to a cohesive, dynamic user experience, blending visualization principles with interactive elements to create an informative, accessible dashboard across devices.
   
 ## Interacting with the Dashboard
 
