@@ -28,6 +28,7 @@ dsci_554_arms_sales_project/
 │   │   │   └── ZoomableCirclePacking.js      # Circle packing chart for hierarchical data on weapon transfers by category.
 │   │   └── maps/                             # Components specifically for map-based visualizations.
 │   │       ├── ChoroplethMap.js              # Choropleth map showing arms imports by country with color-coding.
+│   │       ├── DefenseExpenditure.js         # Choropleth map showing defense expenditure by country by year.
 │   │       ├── DotMap.js                     # Dot map visualizing conflict locations with intensity indicators.
 │   │       ├── ProportionalSymbolMap.js      # Map with symbols representing arms import volumes by region.
 │   │       └── Dashboard.js                  # Main dashboard component that integrates all visualizations.
