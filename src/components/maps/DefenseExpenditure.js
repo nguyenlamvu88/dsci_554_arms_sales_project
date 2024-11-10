@@ -8,16 +8,12 @@ const DefenseExpenditure = () => {
   const svgRef = useRef();
   const lineChartRef = useRef();
 
-  // State Variables for Map Tooltip
+  // State Variables
   const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, content: null });
-  
-  // State Variables for Line Chart Tooltip
   const [lineTooltip, setLineTooltip] = useState({ visible: false, x: 0, y: 0, content: null });
-
   const [countryData, setCountryData] = useState({});
   const [countries, setCountries] = useState([]);
-  
-  const [selectedYear, setSelectedYear] = useState(2000); 
+  const [selectedYear, setSelectedYear] = useState(1960);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
@@ -25,12 +21,10 @@ const DefenseExpenditure = () => {
   const maxYear = 2022;
 
   const targetCountries = ["United States", "China", "Russia"];
-
   const countryNameMapping = {
     "United States": "United States of America",
     "Russian Federation": "Russia",
     "Vietnam": "Viet Nam",
-    // Additional mappings as needed
   };
 
   const dataUrl = "https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_defense_expenditure_by_country.csv";
@@ -67,22 +61,42 @@ const DefenseExpenditure = () => {
     });
   }, []);
 
+  // Animate year slider on initial load
+  useEffect(() => {
+    const playAnimation = () => {
+      setSelectedYear(minYear);
+      const interval = setInterval(() => {
+        setSelectedYear(prevYear => {
+          if (prevYear < maxYear) {
+            return prevYear + 1;
+          } else {
+            clearInterval(interval);
+            return prevYear;
+          }
+        });
+      }, 220); // Animation speed
+    };
+
+    playAnimation();
+    return () => clearInterval(playAnimation);
+  }, [minYear, maxYear]);
+
   useEffect(() => {
     if (loading || error || !countries.length || !Object.keys(countryData).length) return;
-  
+
     const width = 820;
     const height = 545;
     const svg = d3.select(svgRef.current)
       .attr('viewBox', `0 0 ${width} ${height}`)
       .style('width', '100%')
       .style('height', 'auto');
-  
+
     const projection = d3.geoMercator().center([0, 20]).scale(130).translate([width / 2, height / 2]);
     const path = d3.geoPath().projection(projection);
-  
+
     const minExpenditure = d3.min(Object.values(countryData), d => d[selectedYear] > 0 ? d[selectedYear] : null);
     const maxExpenditure = d3.max(Object.values(countryData), d => d[selectedYear] || 0);
-  
+
     let colorScale;
     if (minExpenditure && maxExpenditure && minExpenditure < maxExpenditure) {
       colorScale = d3.scaleSequentialLog(d3.interpolateBlues).domain([minExpenditure, maxExpenditure]);
@@ -91,15 +105,14 @@ const DefenseExpenditure = () => {
     } else {
       colorScale = () => '#ccc';
     }
-  
+
     svg.selectAll("g.map-group").remove();  // Clear any previous map group
     const g = svg.append("g").attr("class", "map-group");
-  
-    // Apply zoom only to the map group
+
     svg.call(d3.zoom().scaleExtent([1, 8]).on('zoom', (event) => {
       g.attr('transform', event.transform);
     }));
-  
+
     g.selectAll('path')
       .data(countries)
       .enter()
@@ -125,17 +138,17 @@ const DefenseExpenditure = () => {
         setTooltip(prev => ({ ...prev, x: event.clientX + 10, y: event.clientY + 10 }));
       })
       .on('mouseleave', () => setTooltip({ visible: false, x: 0, y: 0, content: null }));
-  
+
     // Add Legend outside the zoomable map group
     svg.selectAll("g.legend").remove();  // Clear any previous legend group
     const legendWidth = 200;
     const legendHeight = 10;
     const legendX = width - legendWidth - 50;
     const legendY = height - 80;
-  
+
     const legendDefs = svg.append('defs');
     const linearGradient = legendDefs.append('linearGradient').attr('id', 'legend-gradient');
-  
+
     linearGradient.selectAll('stop')
       .data([
         { offset: '0%', color: colorScale.range()[0] },
@@ -145,21 +158,21 @@ const DefenseExpenditure = () => {
       .append('stop')
       .attr('offset', d => d.offset)
       .attr('stop-color', d => d.color);
-  
+
     const legendGroup = svg.append('g')
       .attr('class', 'legend')
       .attr('transform', `translate(${legendX},${legendY})`);
-  
+
     legendGroup.append('rect')
       .attr('width', legendWidth)
       .attr('height', legendHeight)
       .style('fill', 'url(#legend-gradient)')
       .style('stroke', '#333')
       .style('stroke-width', '1px');
-  
+
     const legendScale = d3.scaleLinear().domain(colorScale.domain()).range([0, legendWidth]);
     const legendAxis = d3.axisBottom(legendScale).ticks(5).tickFormat(d => `$${d}B`);
-  
+
     legendGroup.append('g')
       .attr('transform', `translate(0, ${legendHeight})`)
       .call(legendAxis)
@@ -169,7 +182,7 @@ const DefenseExpenditure = () => {
   
   }, [countries, countryData, selectedYear, loading, error]);
 
-  // Render line chart for target countries with legend
+  // Render line chart for target countries
   useEffect(() => {
     if (!lineChartRef.current || !Object.keys(countryData).length) return;
 
@@ -288,7 +301,7 @@ const DefenseExpenditure = () => {
     legend.append("text")
       .attr("x", 6)
       .attr("y", 1)
-      .text(d => displayNameMap[d] || d)  // Use abbreviation if available
+      .text(d => displayNameMap[d] || d)
       .attr("text-anchor", "start")
       .style("font-size", "8px")
       .style("fill", 'silver');
@@ -298,14 +311,14 @@ const DefenseExpenditure = () => {
     <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
       <div style={{ position: 'relative', width: '100%', height: '100%' }}>
         <div style={{ width: '100%', height: '100%' }}>
-        <h3 style={{
-          textAlign: 'center',
-          fontSize: '24px',          // Adjusts the size of the text
-          color: 'rgb(71, 123, 202)',          // Sets the text color to dark red
-          paddingTop: '20px',        // Adds top padding for spacing
-        }}>
-          Defense Expenditure by Country and Year
-        </h3>
+          <h3 style={{
+            textAlign: 'center',
+            fontSize: '24px',
+            color: 'rgb(71, 123, 202)',
+            paddingTop: '20px',
+          }}>
+            Defense Expenditure by Country and Year
+          </h3>
           {loading && <div style={{ textAlign: 'center' }}>Loading data...</div>}
           {error && <div style={{ color: 'red', textAlign: 'center' }}>{error}</div>}
 
@@ -318,14 +331,14 @@ const DefenseExpenditure = () => {
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(+e.target.value)}
                 style={{
-                  width: '80%',               // Sets slider width to 80% of the container
-                  appearance: 'none',          // Removes default styling for customization
-                  height: '8px',               // Slider height
-                  backgroundColor: 'gray)',  // Track color (orange in this case)
-                  borderRadius: '5px',         // Rounded edges for the track
-                  outline: 'none',             // Removes outline on focus
-                  margin: '20px auto 10px',        // Centers horizontally with top margin of 5px
-                  display: 'block',            // Ensures it's centered as a block-level element
+                  width: '80%',
+                  appearance: 'none',
+                  height: '8px',
+                  backgroundColor: 'gray)',
+                  borderRadius: '5px',
+                  outline: 'none',
+                  margin: '20px auto 10px',
+                  display: 'block',
                 }}
               />
               <div style={{ textAlign: 'center', fontSize: '18px', fontWeight: 'bold', color: 'rgb(71, 123, 202)' }}>Year: {selectedYear}</div>
@@ -356,8 +369,8 @@ const DefenseExpenditure = () => {
         {/* Line Chart Overlay */}
         <div style={{
           position: 'fixed',
-          top: '720px',
-          right: '980px',
+          top: '680px',
+          right: '950px',
           backgroundColor: '',
           padding: '8px',
           borderRadius: '6px',
