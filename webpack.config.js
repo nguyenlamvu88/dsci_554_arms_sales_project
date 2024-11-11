@@ -6,7 +6,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',
-    publicPath: '/', // Use '/' for local development
+    publicPath: process.env.NODE_ENV === 'production' ? '/dsci_554_arms_sales_project/' : '/', // Switch based on environment
   },
   module: {
     rules: [
@@ -36,7 +36,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './public/index.html', 
+      template: './public/index.html',
       filename: 'index.html',
     }),
   ],
