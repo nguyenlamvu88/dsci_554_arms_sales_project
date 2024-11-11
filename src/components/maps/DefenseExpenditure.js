@@ -186,7 +186,7 @@ const DefenseExpenditure = () => {
   
     // Legend setup
     svg.selectAll("g.legend").remove();
-    const legendX = width - 100;
+    const legendX = width - 85;
     const legendY = height - 110;
   
     const legendGroup = svg.append('g')
@@ -195,9 +195,9 @@ const DefenseExpenditure = () => {
   
     // Add background rectangle for the legend once, before the loop
     legendGroup.append("rect")
-      .attr("x", -25)  // Adjust positioning to add padding
+      .attr("x", 0)  // Adjust positioning to add padding
       .attr("y", -20)  // Adjust positioning to add padding above the title
-      .attr("width", 120)  // Set the desired width of the legend background
+      .attr("width", 70)  // Set the desired width of the legend background
       .attr("height", thresholds.length * 20 + 40)  // Set height to cover all legend items
       .style("fill", "black")  // Change to desired background color
       .style("opacity", 0.4)  // Adjust opacity if needed
@@ -214,14 +214,14 @@ const DefenseExpenditure = () => {
     // Add color boxes and labels
     thresholds.forEach((threshold, i) => {
       legendGroup.append("rect")
-        .attr("x", 0)
+        .attr("x", -20)
         .attr("y", i * 20)
         .attr("width", 20)
         .attr("height", 20)
         .style("fill", colors[i]);
   
       legendGroup.append("text")
-        .attr("x", 30)
+        .attr("x", 10)
         .attr("y", i * 20 + 15)
         .text(i === 0 ? `< ${threshold}` : `${thresholds[i - 1]} - ${threshold}`)
         .style("font-size", "9px")
@@ -230,14 +230,14 @@ const DefenseExpenditure = () => {
   
     // Add the last range in the legend
     legendGroup.append("rect")
-      .attr("x", 0)
+      .attr("x", -20)
       .attr("y", thresholds.length * 20)
       .attr("width", 20)
       .attr("height", 20)
       .style("fill", colors[thresholds.length]);
   
     legendGroup.append("text")
-      .attr("x", 30)
+      .attr("x", 10)
       .attr("y", thresholds.length * 20 + 15)
       .text(`> ${thresholds[thresholds.length - 1]}`)
       .style("font-size", "9px")
