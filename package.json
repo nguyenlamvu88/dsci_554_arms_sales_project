@@ -1,15 +1,11 @@
 {
   "name": "a7",
   "version": "1.0.0",
-  "homepage": "https://nguyenlamvu88.github.io/dsci_554_arms_sales_project/",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "serve": "browser-sync start ./ -s --files './' --directory --watch --port 2000",
     "start": "webpack serve --mode development",
-    "build": "cross-env NODE_ENV=production webpack --mode production",
+    "serve": "browser-sync start ./ -s --files './' --directory --watch --port 2000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -30,13 +26,11 @@
     "@babel/preset-react": "^7.25.7",
     "babel-loader": "^9.2.1",
     "css-loader": "^7.1.2",
-    "gh-pages": "^6.1.1",
     "html-loader": "^5.1.0",
     "html-webpack-plugin": "^5.6.0",
     "style-loader": "^4.0.0",
     "webpack": "^5.95.0",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.1.0",
-    "cross-env": "^7.0.3"
+    "webpack-dev-server": "^5.1.0"
   }
 }
