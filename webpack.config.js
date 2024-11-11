@@ -6,7 +6,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',
-    publicPath: process.env.NODE_ENV === 'production' ? '/dsci_554_arms_sales_project/' : '/', // Switch based on environment
+    publicPath: process.env.NODE_ENV === 'production' ? '/dsci_554_arms_sales_project/' : '/',
   },
   module: {
     rules: [
@@ -42,10 +42,11 @@ module.exports = {
   ],
   devServer: {
     static: {
-      directory: path.join(__dirname, 'build'),
+      directory: path.join(__dirname, 'public'), // Use `public` during development
     },
     compress: true,
     port: 3000,
-    historyApiFallback: true, // Ensures routing works correctly in development
+    historyApiFallback: true,
   },
+  devtool: process.env.NODE_ENV === 'production' ? 'source-map' : 'eval-source-map', // Optional for debugging
 };
