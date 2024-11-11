@@ -11,8 +11,8 @@ const Treemap = () => {
   const dataUrl = "https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_top_100_arms_companies_consolidated.csv";
 
   useEffect(() => {
-    const width = 900;
-    const height = 700;
+    const width = 950;
+    const height = 750;
 
     const svg = d3.select(svgRef.current)
                   .attr('width', width)
@@ -230,13 +230,12 @@ const Treemap = () => {
         padding: '20px', // Increase padding for larger box size
         backgroundColor: '#f0f0f0',
         borderRadius: '8px',
-        fontSize: '16px',
+        fontSize: '14px',
         color: '#333',
         width: '250px', // Increase width for larger legend box
         boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.2)',
       }}>
-        <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}>Legend</h3>
-        <p style={{ fontSize: '16px', marginBottom: '10px', color: '#FF8C00' }}>
+        <p style={{ fontSize: '16px', marginBottom: '10px', fontWeight: 'bold', color: '#FF8C00' }}>
           Total Revenue: ${(totalRevenue / 1000).toLocaleString()} billion USD
         </p>
         {legendData.map((entry, index) => (
