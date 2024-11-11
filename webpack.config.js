@@ -6,7 +6,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',
-    publicPath: '/dsci_554_arms_sales_project/', // Always use deployment path
+    publicPath: process.env.NODE_ENV === 'production' ? '/dsci_554_arms_sales_project/' : '/', // Toggle based on environment
   },
   module: {
     rules: [
@@ -48,5 +48,5 @@ module.exports = {
     port: 3000,
     historyApiFallback: true,
   },
-  devtool: 'source-map', // Optional: source maps for debugging
+  devtool: process.env.NODE_ENV === 'production' ? 'source-map' : 'eval-source-map', // Optional: source maps for debugging
 };
