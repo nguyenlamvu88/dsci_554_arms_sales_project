@@ -15,18 +15,95 @@ const DefenseExpenditure = () => {
   const [selectedYear, setSelectedYear] = useState(1960);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const minYear = 1960;
   const maxYear = 2022;
 
   const targetCountries = ["United States", "China", "Russia"];
   const countryNameMapping = {
-    "United States": "United States of America",
+    // Corrected Mappings
+    "Bahamas, The": "Bahamas",
+    "Congo, Dem. Rep.": "Democratic Republic of the Congo",
+    "Congo, Rep.": "Republic of the Congo",
+    "Côte d'Ivoire": "Ivory Coast",
+    "Egypt, Arab Rep.": "Egypt",
+    "Gambia, The": "Gambia",
+    "Hong Kong SAR, China": "Hong Kong",
+    "Iran, Islamic Rep.": "Iran",
+    "Korea, Dem. People's Rep.": "North Korea",
+    "Korea, Rep.": "South Korea",
+    "Kyrgyz Republic": "Kyrgyzstan",
+    "Lao PDR": "Laos",
+    "Micronesia, Fed. Sts.": "Federated States of Micronesia",
     "Russian Federation": "Russia",
-    "Vietnam": "Viet Nam",
+    "Sint Maarten (Dutch part)": "Sint Maarten",
+    "Slovak Republic": "Slovakia",
+    "Syrian Arab Republic": "Syria",
+    "Venezuela, RB": "Venezuela",
+    "Yemen, Rep.": "Yemen",
+    "United States": "United States of America",
+    "Viet Nam": "Vietnam",
+    "Vietnam": "Vietnam",
+    "Turkiye": "Turkey",
+    "West Bank and Gaza": "Palestine",
+    
+    // Added Mappings for Consistency
+    "Brunei Darussalam": "Brunei",
+    "Bolivia": "Bolivia",
+    "Cape Verde": "Cabo Verde",
+    "Czechia": "Czech Republic",
+    "Faroe Islands": "Faroe Islands",
+    "Faeroe Islands": "Faroe Islands", // Corrected typo
+    "Macao SAR, China": "Macau",
+    "North Macedonia": "North Macedonia",
+    "Palestinian Territories": "Palestine",
+    "Timor-Leste": "Timor-Leste",
+    "East Timor": "Timor-Leste", // Added alternative name
+    "Palestine": "Palestine",
+    
+    // Additional Common Variants
+    "Myanmar": "Myanmar",
+    "Burma": "Myanmar",
+    "Czech Republic": "Czech Republic",
+    "Ivory Coast": "Côte d'Ivoire",
+    "South Sudan": "South Sudan",
+    "Sao Tome and Principe": "São Tomé and Principe",
+    "Eswatini": "Eswatini",
+    "Taiwan": "Taiwan",
+    "Republic of the Congo": "Republic of the Congo",
+    "Democratic Republic of the Congo": "Democratic Republic of the Congo",
+    "Cabo Verde": "Cabo Verde",
+    "Faeroe Islands": "Faroe Islands",
+    "North Korea": "North Korea",
+    "South Korea": "South Korea",
+    "Russia": "Russia",
+    "Laos": "Laos",
+    "Macedonia": "North Macedonia", 
+    "East Timor": "Timor-Leste",
+    
+    // Ensure Standardization
+    "United States of America": "United States of America",
+    "United Kingdom": "United Kingdom",
+    "Czech Republic": "Czech Republic",
+    "Slovakia": "Slovakia",
+    "Bolivia": "Bolivia",
+    "Venezuela": "Venezuela",
+    "Syria": "Syria",
+    "Turkey": "Turkey",
+    "Iran": "Iran",
+    "Egypt": "Egypt",
+    "Gambia": "Gambia",
+    "Ghana": "Ghana",
+    "Guyana": "Guyana",
+    "Guatemala": "Guatemala",
   };
-
+    
   const dataUrl = "https://raw.githubusercontent.com/nguyenlamvu88/dsci_554_arms_sales_project/main/data/processed/processed_defense_expenditure_by_country.csv";
+
+  const parseValue = (value) => {
+    if (value === "$-") return 0;
+    return parseFloat(value.replace(/[$,]/g, '')) || 0;
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -35,7 +112,7 @@ const DefenseExpenditure = () => {
       d3.csv(dataUrl, d => {
         const parsedData = { Country: d.Country };
         for (let year = minYear; year <= maxYear; year++) {
-          parsedData[year] = +d[year] || 0;
+          parsedData[year] = parseValue(d[year]);
         }
         return parsedData;
       })
@@ -73,7 +150,7 @@ const DefenseExpenditure = () => {
             return prevYear;
           }
         });
-      }, 220); // Animation speed
+      }, 200); // Animation speed
     };
 
     playAnimation();
@@ -97,12 +174,17 @@ const DefenseExpenditure = () => {
     const maxExpenditure = d3.max(Object.values(countryData), d => d[selectedYear] || 0);
 
     let colorScale;
+    let legendColors = ['#ccc', '#ccc']; // Default colors for constant scale
+
     if (minExpenditure && maxExpenditure && minExpenditure < maxExpenditure) {
       colorScale = d3.scaleSequentialLog(d3.interpolateBlues).domain([minExpenditure, maxExpenditure]);
+      legendColors = [colorScale(minExpenditure), colorScale(maxExpenditure)];
     } else if (maxExpenditure > 0) {
       colorScale = d3.scaleSequential(d3.interpolateBlues).domain([0, maxExpenditure]);
+      legendColors = [colorScale(0), colorScale(maxExpenditure)];
     } else {
       colorScale = () => '#ccc';
+      // legendColors already set to ['#ccc', '#ccc']
     }
 
     svg.selectAll("g.map-group").remove();  // Clear any previous map group
@@ -150,8 +232,8 @@ const DefenseExpenditure = () => {
 
     linearGradient.selectAll('stop')
       .data([
-        { offset: '0%', color: colorScale.range()[0] },
-        { offset: '100%', color: colorScale.range()[1] }
+        { offset: '0%', color: legendColors[0] },
+        { offset: '100%', color: legendColors[1] }
       ])
       .enter()
       .append('stop')
@@ -169,16 +251,27 @@ const DefenseExpenditure = () => {
       .style('stroke', '#333')
       .style('stroke-width', '1px');
 
-    const legendScale = d3.scaleLinear().domain(colorScale.domain()).range([0, legendWidth]);
-    const legendAxis = d3.axisBottom(legendScale).ticks(5).tickFormat(d => `$${d}B`);
+    // Only create legend scale if colorScale is not a constant function
+    if (colorScale.domain) {
+      const legendScale = d3.scaleLinear().domain(colorScale.domain()).range([0, legendWidth]);
+      const legendAxis = d3.axisBottom(legendScale).ticks(5).tickFormat(d => `$${d}B`);
 
-    legendGroup.append('g')
-      .attr('transform', `translate(0, ${legendHeight})`)
-      .call(legendAxis)
-      .selectAll("text")
-      .style("font-size", "10px")
-      .style("fill", 'white');
-  
+      legendGroup.append('g')
+        .attr('transform', `translate(0, ${legendHeight})`)
+        .call(legendAxis)
+        .selectAll("text")
+        .style("font-size", "10px")
+        .style("fill", 'white');
+    } else {
+      // If colorScale is constant, display a single label or skip axis
+      legendGroup.append('text')
+        .attr('x', 0)
+        .attr('y', legendHeight + 10)
+        .text(`$0B`)
+        .style("font-size", "10px")
+        .style("fill", 'white');
+    }
+
   }, [countries, countryData, selectedYear, loading, error]);
 
   // Render line chart for target countries
@@ -219,7 +312,7 @@ const DefenseExpenditure = () => {
 
     chartGroup.append('g')
       .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(xScale).tickFormat(d3.format("d")))
+      .call(d3.axisBottom(xScale).tickFormat(d => d))
       .selectAll("text")
       .style("font-size", "8px")
       .style("fill", 'silver');
@@ -333,7 +426,7 @@ const DefenseExpenditure = () => {
                   width: '80%',
                   appearance: 'none',
                   height: '8px',
-                  backgroundColor: 'gray)',
+                  backgroundColor: 'gray',
                   borderRadius: '5px',
                   outline: 'none',
                   margin: '20px auto 10px',
@@ -368,8 +461,8 @@ const DefenseExpenditure = () => {
         {/* Line Chart Overlay */}
         <div style={{
           position: 'fixed',
-          top: '680px',
-          right: '950px',
+          top: '700px',
+          right: '970px',
           backgroundColor: '',
           padding: '8px',
           borderRadius: '6px',
@@ -389,7 +482,7 @@ const DefenseExpenditure = () => {
               top: lineTooltip.y,
               left: lineTooltip.x,
               backgroundColor: 'rgba(0, 0, 0, 0.8)',
-              color: '#ff0',
+              color: 'white',
               padding: '6px 8px',
               borderRadius: '4px',
               pointerEvents: 'none',
