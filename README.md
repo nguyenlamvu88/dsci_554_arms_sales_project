@@ -1,11 +1,59 @@
 
-# Global Arms Trade Dashboard
+# DSCI 554 Group Project - Global Arms Trade Dashboard
 
 ## Overview
 
 The Global Arms Trade Dashboard is a React-based, interactive web application offering an in-depth exploration of how the U.S. leverages arms trade and transfers to promote stability or further its interests. Emphasizing patterns, geopolitical dynamics, and strategic alliances, it utilizes D3.js and various visual components to present a narrative-driven analysis of arms transfers, alliances, and regional influences. 
 
 The dashboad **web application** is live and can be accessed [here](https://nguyenlamvu88.github.io/dsci_554_arms_sales_project/).
+
+## Project Information
+
+### Group Name
+TEAM SMURF
+
+### Team Members
+- **Member 1** - vulnguye@usc.edu
+- **Member 2** - kwparker@usc.edu
+- **Member 3** - dlee8267@usc.edu
+- 
+---
+
+## Artifacts
+
+- **[Demonstration URL](<demo-url>)**
+- **[Presentation URL](<presentation-pdf-url>)**
+- **[Paper PDF](<article-pdf-url>)** and **[Paper Overleaf URL](<overleaf-article-url>)**
+- **[YouTube Video Link](<youtube-video-url>)**
+
+---
+
+## Team Contributions
+
+### Demonstration
+- **Member 1**: [Brief contribution in ≤250 characters]
+- **Member 2**: [Brief contribution in ≤250 characters]
+- **Member 3**: [Brief contribution in ≤250 characters]
+- **Member 4**: [Brief contribution in ≤250 characters]
+
+### Presentation
+- **Member 1**: [Brief contribution in ≤250 characters]
+- **Member 2**: [Brief contribution in ≤250 characters]
+- **Member 3**: [Brief contribution in ≤250 characters]
+- **Member 4**: [Brief contribution in ≤250 characters]
+
+### Paper
+- **Member 1**: [Brief contribution in ≤250 characters]
+- **Member 2**: [Brief contribution in ≤250 characters]
+- **Member 3**: [Brief contribution in ≤250 characters]
+- **Member 4**: [Brief contribution in ≤250 characters]
+
+### YouTube Video
+- **Member 1**: [Brief contribution in ≤250 characters]
+- **Member 2**: [Brief contribution in ≤250 characters]
+- **Member 3**: [Brief contribution in ≤250 characters]
+- **Member 4**: [Brief contribution in ≤250 characters]
+
 
 ## Project Structure
 
