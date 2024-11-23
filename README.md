@@ -20,11 +20,9 @@
   - [Key Visualizations](#key-visualizations)
   - [Thematic Narrative Sections](#thematic-narrative-sections)
 - [Future Enhancements](#future-enhancements)
-- [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgements](#acknowledgements)
 - [Contact](#contact)
-- [FAQs](#faqs)
 - [AI Assistance](#ai-assistance)
 - [References](#references)
 
@@ -333,29 +331,7 @@ Feel free to suggest further enhancements or report issues!
 
 ## Contact
 
-For any inquiries or feedback, please contact [your-email@example.com](mailto:your-email@example.com).
-
----
-
-## FAQs
-
-**Q1: What prerequisites are needed to run the project?**  
-**A:** Ensure you have Node.js and npm installed on your machine.
-
-**Q2: I encounter an error while running `npm install`. What should I do?**  
-**A:** Try deleting the `node_modules` folder and the `package-lock.json` file, then run `npm install` again.
-
-**Q3: How can I contribute to the project?**  
-**A:** Please refer to the [Contributing](#contributing) section for detailed guidelines.
-
-**Q4: How do I report bugs or request features?**  
-**A:** You can open an issue on the GitHub repository detailing the bug or feature request.
-
-**Q5: Where can I find the project documentation?**  
-**A:** Comprehensive documentation is available within the repository, including this README and additional docs in the `/docs` directory.
-
-**Q6: Can I use the project's visualizations for my own work?**  
-**A:** Yes, the project is licensed under the MIT License, allowing for reuse with proper attribution.
+For any inquiries or feedback, please contact [Vu Nguyen](mailto:nguyenlamvu88@gmail.com).
 
 ---
 
