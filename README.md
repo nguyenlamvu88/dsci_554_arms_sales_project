@@ -1,63 +1,73 @@
+# Arming for Stability: U.S. Strategy Through Global Arms Trade
 
-# DSCI 554 Group Project - Global Arms Trade Dashboard
+## Table of Contents
 
-## Overview
+- [Project Overview](#project-overview)
+- [Project Information](#project-information)
+  - [Group Name](#group-name)
+  - [Team Members](#team-members)
+  - [Artifacts](#artifacts)
+- [Project Structure](#project-structure)
+- [Data Sources](#data-sources)
+- [Installation](#installation)
+- [Design Choices](#design-choices)
+  - [Technology Stack](#technology-stack)
+  - [Visualization Libraries](#visualization-libraries)
+  - [Design Principles](#design-principles)
+  - [Design Methodology](#design-methodology)
+- [UX & UI Design](#ux--ui-design)
+- [Features and Components](#features-and-components)
+  - [Key Visualizations](#key-visualizations)
+  - [Thematic Narrative Sections](#thematic-narrative-sections)
+- [Future Enhancements](#future-enhancements)
+- [Contributing](#contributing)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
+- [Contact](#contact)
+- [FAQs](#faqs)
+- [AI Assistance](#ai-assistance)
+- [References](#references)
 
-The Global Arms Trade Dashboard is a React-based, interactive web application offering an in-depth exploration of how the U.S. leverages arms trade and transfers to promote stability or further its interests. Emphasizing patterns, geopolitical dynamics, and strategic alliances, it utilizes D3.js and various visual components to present a narrative-driven analysis of arms transfers, alliances, and regional influences. 
+---
 
-The dashboad **web application** is live and can be accessed [here](https://nguyenlamvu88.github.io/dsci_554_arms_sales_project/).
+## Project Overview
+
+**Arming for Stability: U.S. Strategy Through Global Arms Trade** is a comprehensive React-based application that visualizes the complexities of global arms trade and its geopolitical implications. By integrating cutting-edge libraries like D3.js, Three.js, and @deck.gl, the project provides an interactive and visually compelling exploration of how arms exports shape alliances, counter rivals, and influence geopolitics.
+
+### Relevance in Current Context
+
+- **Russia-Ukraine Conflict:** U.S. military aid to Ukraine highlights the strategic use of arms trade in countering adversaries.
+- **Taiwan Defense Strategy:** U.S. arms exports to Taiwan underscore efforts to balance power in the Asia-Pacific.
+- **NATO Expansion:** Increased arms transfers to Eastern Europe signal U.S. efforts to strengthen alliances.
+
+This project connects data to real-world geopolitical shifts, offering a dynamic way to explore these themes.
+
+---
 
 ## Project Information
 
 ### Group Name
-TEAM SMURF
+
+**TEAM SMURF**
 
 ### Team Members
-- **Member 1** - vulnguye@usc.edu
-- **Member 2** - kwparker@usc.edu
-- **Member 3** - dlee8267@usc.edu
-- 
+
+- **Member 1** - [vulnguye@usc.edu](mailto:vulnguye@usc.edu)
+- **Member 2** - [kwparker@usc.edu](mailto:kwparker@usc.edu)
+- **Member 3** - [dlee8267@usc.edu](mailto:dlee8267@usc.edu)
+
+### Artifacts
+
+- **Demonstration URL:** [Insert Link Here](#)
+- **Presentation URL:** [Insert Link Here](#)
+- **Paper PDF and Paper Overleaf URL:** [Insert Links Here](#)
+- **YouTube Video Link:** [Insert Link Here](#)
+
 ---
-
-## Artifacts
-
-- **[Demonstration URL](<demo-url>)**
-- **[Presentation URL](<presentation-pdf-url>)**
-- **[Paper PDF](<article-pdf-url>)** and **[Paper Overleaf URL](<overleaf-article-url>)**
-- **[YouTube Video Link](<youtube-video-url>)**
-
----
-
-## Team Contributions
-
-### Demonstration
-- **Member 1**: [Brief contribution in ≤250 characters]
-- **Member 2**: [Brief contribution in ≤250 characters]
-- **Member 3**: [Brief contribution in ≤250 characters]
-- **Member 4**: [Brief contribution in ≤250 characters]
-
-### Presentation
-- **Member 1**: [Brief contribution in ≤250 characters]
-- **Member 2**: [Brief contribution in ≤250 characters]
-- **Member 3**: [Brief contribution in ≤250 characters]
-- **Member 4**: [Brief contribution in ≤250 characters]
-
-### Paper
-- **Member 1**: [Brief contribution in ≤250 characters]
-- **Member 2**: [Brief contribution in ≤250 characters]
-- **Member 3**: [Brief contribution in ≤250 characters]
-- **Member 4**: [Brief contribution in ≤250 characters]
-
-### YouTube Video
-- **Member 1**: [Brief contribution in ≤250 characters]
-- **Member 2**: [Brief contribution in ≤250 characters]
-- **Member 3**: [Brief contribution in ≤250 characters]
-- **Member 4**: [Brief contribution in ≤250 characters]
-
 
 ## Project Structure
 
-```
+```plaintext
 dsci_554_arms_sales_project/
 ├── data/                                     # Directory containing all data files used for visualizations.
 │   ├── processed/                            # Processed datasets ready for analysis, transformed for compatibility with the visualizations.
@@ -87,7 +97,6 @@ dsci_554_arms_sales_project/
 ├── package.json                              # Configuration file listing project dependencies and scripts for building/running the app.
 ├── README.md                                 # Project README with instructions, descriptions, and setup details.
 └── webpack.config.js                         # Webpack configuration for bundling JavaScript and other assets for the application.
-
 ```
 
 ## Installation
@@ -129,99 +138,127 @@ Data originates from [SIPRI](https://www.sipri.org/databases/armstransfers), [UC
 
 ---
 
-## Features and Components
+## Design Choices
 
-### Key Visualizations
+Selecting the right technology stack is crucial for building a scalable, maintainable, and high-performance application. The chosen technologies for this project are based on their robustness, community support, and compatibility with the project's requirements.
 
-- **Dot Map**: Shows conflict hotspots by marking the locations of armed conflicts by year, using clustered dots, color, and size to denote intensity.
-- **Choropleth Map**: Displays arms import quantities by country using the size and color of bubbles, with interactive tooltips and modals providing additional details on suppliers, weapon types, quantities, and years.
-- **Proportional Symbol Map**: Represents regional arms imports with circles sized according to import value, complemented by a dynamic mini bar chart for quick reference and comparison.
-- **Migration Map**: Visualizes global arms trade flows from major suppliers (United States, Russia, and China) to recipient countries, with color-coded lines representing each origin country. Line thickness indicates trade volume, and colored circles highlight the importance of recipient countries.
-- **Force-Directed Graph**: Illustrates network connections between arms exporters and recipients to identify the centers of gravity and linkages.
-- **Zoomable Circle Packing**: Depicts hierarchical data on weapons transfers, organized by category and year.
-- **Parallel Coordinates Chart**: Highlights the top recipients of arms from the US, China, and Russia, allowing users to identify key countries of interest and observe trade patterns over time.
-- **Line Chart**: Displays arms trade trends over time for selected countries, allowing users to track export and import values and compare fluctuations across different nations. The interactive slider enables users to adjust the timeframe by moving both ends to focus on specific periods.
-- **Treemap**: Visualizes the top 20 arms companies by revenue for a selected year. Each rectangle represents a company, with the area proportional to its revenue share. The color indicates the company's country.
-- **Pie Chart**: Displays the distribution of arms trade by region for a selected year. Each slice represents a region’s percentage of total arms imports, with color coding for easy differentiation.
+### Technology Stack
 
-### Thematic Narrative Sections
-
-The dashboard's narrative structure allows exploration of global arms trade themes:
-
-1. **Introduction**: Provides a strategic overview of how arms trade is used as a tool for diplomacy and influence.
-2. **Strength in Alliance & Partnership**:  Highlights how superpowers like the U.S., Russia, and China reinforce alliances through targeted arms exports.
-3. **Competition in Strategic Regions**: Examines the multipolar rivalry in regions where arms trade impacts stability and shifts in power dynamics.
-4. **Countering Through Proxy Support**: Analyzes how countries use arms transfers to support proxy forces and maintain influence without direct involvement.
-5. **Preparing Allies for Emerging Threats**: Details how arms transfers bolster allies’ defenses, reducing reliance on direct intervention by superpowers.
-6. **Profiting from Tensions**: Explores the economic benefits of arms trade, especially during geopolitical conflicts, as defense industries expand influence and profit.
-7. **Conclusion**:  Reflects on the strategic implications of global arms trade, focusing on the balance of power and its role in shaping international order.
-
-## Design Choices, Functionality, Style, and Layout
-
-### Design Choices
-
-- **Narrative Structure with Thematic Sections**: Organizing the dashboard into thematic sections aligns with principles from **Gestalt theory** and **semiology**, allowing users to process complex information in a structured, intuitive way. This structure enhances the overall message by making **relationships and categories** within the data clearer. *(Lecture 9, Lecture 10)*
-
-- **Color-Coded Visuals**: Consistent **color schemes** are used across maps and charts to visually distinguish data points, aiding in quick identification and comparison. This approach leverages **pre-attentive processing** and **selective attentional tuning** to help users instantly recognize categories, such as **arms exporters** or **import levels**, improving clarity and reducing **cognitive load**. *(Lecture 9, Lecture 10)*
-
-- **Depth and Hierarchical Elements**: Including depth through visual elements like the **Zoomable Circle Packing** and **Force-Directed Graph** emphasizes **hierarchical relationships** in the data. This approach, inspired by **depth perception cues** and **3D design principles** from the lectures, conveys the **layered complexity** within the global arms trade network, making the information more engaging. *(Lecture 9)*
-
-- **Interactive Visualizations**: Interactive elements such as **sliders** and **hover-over tooltips** align with principles of **user engagement** and **cognitive accessibility**. These interactive maps and charts encourage **exploration**, while **selective attention** aids users in focusing on relevant data layers, giving control over the **complexity** of information presented. *(Lecture 10)*
-
-### Functionality
-
-- **Interactive Filters**: The `MigrationMap.js`, `ChoroplethMap.js`, and `ProportionalSymbolMap.js` components integrate **filters by year, country, and trade type**, allowing users to **drill down** into specific datasets for focused analysis. These filters enhance user control and interactivity, facilitating **custom views of the data**.  
-  *(Lecture 7: Interactive Visualizations)*
-
-- **Tooltips and Hover Effects**: Across components like `ForceDirectedGraph.js`, `LineChart.js`, and `ParallelCoordinatesChart.js`, **tooltips** display detailed information upon hovering, including **trade volumes, recipient countries, and year-specific details**. This functionality, enabled by D3.js event listeners, reduces clutter while **providing contextual data** on demand.  
-  *(Lecture 7: Pre-attentive Features & Interactive Elements)*
-
-- **Zoom and Pan**: The `ZoomableCirclePacking.js` and `ProportionalSymbolMap.js` components incorporate **zoom and pan features**, allowing users to **explore data hierarchies and map details** closely. This feature is essential for **examining dense data and layered networks**, giving users **control over data exploration** depth.  
-  *(Lecture 9: Depth Perception & 3D Design)*
+- **React:**
+  - **Reason for Choice:** React's component-based architecture allows for building reusable UI components, enhancing maintainability and scalability. Its virtual DOM ensures efficient rendering, which is essential for interactive and dynamic visualizations. *(See Lecture 3: Visualization Techniques, Web Technologies; Lecture 4: Graphing in the Browser, D3)*
   
-## Style and Layout
-
-- **Professional Color Palette**: Components like `ChoroplethMap.js` and `Treemap.js` use a **high-contrast color scheme** to visually distinguish **exporters, importers, and trade quantities**. This approach, based on color theory, enhances readability and emphasizes key metrics across the dashboard.  
-  *(Lecture 8: Color, Complex Charts & Colors in D3)*
-
-- **Responsive Design with Flexible Layouts**: The dashboard leverages **CSS flexbox and grid layouts** in `index.css` with responsive D3.js scaling. This combination ensures seamless resizing for both desktop and mobile views, providing an optimized user experience.  
-  *(Lecture 5: Dashboards & Infographics Design)*
-
-- **Structured and Organized Flow**: A sidebar for **navigation** and full-width sections for visualizations (found in `Dashboard.js`) create a logical flow. Each visualization is spaced to maximize screen area, allowing immersive data interaction and smoother navigation.  
-  *(Lecture 3: Visualization Techniques, Web Technologies)*
-
-- **Integrated Line Chart and Choropleth Map**: A **line chart within the map container** shows temporal trends, providing a connected view of defense expenditure changes over time with geospatial data.  
-  *(Lecture 9: Depth Perception and 3D Design, Maps)*
-
-- **Stacked Map and Transition Controls**: A **stacked layout** combines interactive maps with transition buttons for toggling between years. This helps users explore temporal changes intuitively, enhancing engagement without cluttering the display.  
-  *(Lecture 10: Patterns, Gestalt, and Semiology)*
-
-- **Static Legend with Persistent Positioning**: To ensure consistent data interpretation, the **legend remains fixed** and is unaffected by zooming and panning, providing a stable reference for value scales.  
-  *(Lecture 4: Design Space, Graphing in the Browser, D3)*  
+- **Webpack:**
+  - **Reason for Choice:** Webpack is a powerful module bundler that efficiently manages and bundles assets, ensuring optimized load times and performance. Its extensive plugin ecosystem allows for customizing the build process to suit project-specific needs. *(Aligned with Lecture 5: Use frameworks with large community support to ensure scalability and efficient debugging)*
   
-## Interacting with the Dashboard
+- **Babel:**
+  - **Reason for Choice:** Babel transpiles modern JavaScript and JSX, ensuring compatibility across various browsers. It allows developers to use the latest language features without worrying about browser support.
 
-- **Sidebar Navigation**: The **thematic structure** implemented in `Dashboard.js` provides users with a sidebar for seamless navigation across various sections, facilitating a guided exploration of **global arms trade narratives**.  
-  *(Lecture 10: Narrative Flow and Structured Layouts)*
+### Visualization Libraries
 
-- **Interactive Elements**: Components like `PieChart.js`, `Treemap.js`, and `DotMap.js` are equipped with **sliders, dropdowns, and interactive legends**. These elements enable **real-time customization** without requiring page reloads, allowing users to refine data views to gain specific insights.  
-  *(Lecture 7: Interactive Visualizations and User Engagement)*
+- **D3.js:**
+  - **Reason for Choice:** D3.js is renowned for its versatility in creating dynamic and interactive data visualizations. Its powerful data-driven approach allows for detailed and customized charting solutions, making it ideal for representing complex arms trade data. *(See Lecture 4: Graphing in the Browser, D3; Lecture 7: Interactive Visualizations)*
+  
+- **Three.js:**
+  - **Reason for Choice:** Three.js enables the rendering of sophisticated 3D graphics within the browser. It's leveraged for immersive animations, such as the jet fleet visualization, providing a more engaging user experience. *(See Lecture 11: 3D Data Visualization; Lecture 9: Depth Perception and 3D Design)*
+  
+- **@deck.gl:**
+  - **Reason for Choice:** @deck.gl is a WebGL-powered framework for visual exploratory data analysis of large datasets. It's used for advanced geospatial visualizations, enhancing the depth and interactivity of maps and spatial data representations. *(See Lecture 8: Maps and Choropleths)*
+  
+- **Mermaid.js:**
+  - **Reason for Choice:** Mermaid.js facilitates the creation of dynamic and interactive workflow diagrams, enhancing the project's documentation and visualization aspects by allowing the generation of diagrams from text definitions, facilitating easier updates and maintenance.
 
-- **Tooltip and Hover Effects**: Tooltips across components such as `ChoroplethMap.js` and `ProportionalSymbolMap.js` provide contextual details on hover, giving users access to supplementary data without cluttering the interface. This supports a clear visual hierarchy and efficient data comprehension.  
-  *(Lecture 7: Pre-Attentive Features and Visual Queries)*
+### Design Principles
 
-- **Zoom and Pan Features**: The `MapBox.js` and `TopoJSON.js` components incorporate pan and zoom, enabling an in-depth examination of geographic data. This functionality is essential for analyzing complex trade data spread over different regions.  
-  *(Lecture 9: Depth Perception and 3D Design in Maps)*
+- **Clarity and Simplicity:** Ensuring that visualizations are easy to understand, avoiding unnecessary complexity while effectively conveying the intended message. *(See Lecture 10: Gestalt and Semiology)*
+  
+- **Interactivity:** Providing users with interactive elements such as tooltips, sliders, and clickable regions to explore data dynamically. *(See Lecture 7: Interactive Visualizations)*
+  
+- **Accessibility:** Designing with accessibility in mind, including ARIA labels, keyboard navigation, and sufficient color contrast to support all users. *(See Lecture 6: The Eye and the Visual Brain)*
+  
+- **Responsiveness:** Creating a layout that adapts seamlessly to various screen sizes and devices, ensuring a consistent user experience.
+  
+- **Performance:** Optimizing rendering and data processing to maintain smooth interactions and quick load times, even with large datasets. *(See Lectures 3: Visualization Techniques, Web Technologies; 5: Loading Data with D3)*
+  
+- **Maintainability:** Building a modular and well-documented codebase to facilitate easy updates and scalability.
 
-### Customization
+### Design Methodology
 
-- **Component Modularity**: Each component under `src/components/maps` and `src/components/layouts` is designed for **easy modification**. The encapsulated structure within files like `ChordDiagram.js` and `LineChart.js` allows for **tailored adjustments to datasets and visualization styles** to align with evolving project requirements.  
-  *(Lecture 5: Modular Component Design for Dashboards)*
+The project follows an iterative and user-centered design approach, ensuring that each aspect of the application aligns with user needs and project goals. The integration of interactivity, functionality, style and layouts, typography, and responsive design are meticulously crafted to support this methodology.
 
-- **Styling**: The centralized `index.css` file, along with scoped styles within each component, enables **efficient theme alterations** across the dashboard. Adjustments to colors, fonts, and layout can be made seamlessly to maintain a cohesive aesthetic.  
-  *(Lecture 8: Styling and Consistent Visual Themes)*
+#### Steps Involved:
 
-These interactive features and customization options reflect best practices in data visualization, ensuring the dashboard is user-friendly, visually appealing, and adaptable to different analysis needs.
+- **Research and Data Collection:**
+  - **Objective:** Gather comprehensive data on global arms trade, focusing on key players, historical events, and geopolitical shifts.
+  - **Method:** Utilize reputable sources such as SIPRI datasets, government reports, and academic studies to ensure data accuracy and reliability.
+  
+- **Wireframing and Prototyping:**
+  - **Objective:** Create initial layouts and prototypes to establish the structure and flow of information.
+  - **Method:** Develop low-fidelity wireframes to outline the placement of visualizations and textual content, followed by high-fidelity prototypes incorporating design elements and interactivity.
+  
+- **Component Development:**
+  - **Objective:** Build reusable React components for different sections and visualizations.
+  - **Method:** Employ a modular approach, creating components like charts, maps, and animations that can be easily maintained and scaled.
+  
+- **Visualization Implementation:**
+  - **Objective:** Integrate D3.js, Three.js, and @deck.gl to create interactive and dynamic charts that align with the project's narrative. *(Inspired by Lecture 5: Loading Data with D3)*
+  
+- **Interactivity and Functionality Integration:**
+  - **Objective:** Enhance user engagement through interactive elements and seamless functionality.
+  - **Method:** Implement features like year selection buttons, tooltips, hover effects, and dynamic animations to allow users to explore data insights deeply. *(See Lecture 7: Interactive Visualizations)*
+  
+- **Style and Layout Refinement:**
+  - **Objective:** Ensure that the application's aesthetic elements support usability and readability.
+  - **Method:** Apply consistent color schemes, typography, and responsive design principles to create a cohesive and accessible user interface. *(See Lectures 6: The Eye and the Visual Brain; 8: Color and Complex Charts)*
+  
+- **User Testing and Feedback:**
+  - **Objective:** Validate design decisions and functionality through real user interactions.
+  - **Method:** Conduct usability testing sessions, gather feedback, and iterate on designs to address any usability issues or enhance user experience.
+  
+- **Optimization and Deployment:**
+  - **Objective:** Fine-tune performance, ensure accessibility standards are met, and deploy the application for public access.
+  - **Method:** Optimize asset loading, implement caching strategies, and deploy using platforms like Netlify or Vercel for efficient delivery.
+
+#### Supporting Elements:
+
+- **Interactivity:** Enhances user engagement by allowing dynamic exploration of data.
+- **Functionality:** Provides essential features that facilitate data analysis and comprehension.
+- **Style and Layout:** Ensures that visual and structural elements are aligned with usability and aesthetic standards.
+- **Typography:** Improves readability and emphasizes key information through thoughtful font choices.
+- **Responsive Design:** Guarantees that the application is accessible and functional across a wide range of devices and screen sizes.
+
+By ensuring that each of these elements supports the overarching design methodology, the application delivers a seamless and insightful user experience, effectively communicating the complexities of global arms trade and geopolitical strategies.
+
+## UX & UI Design
+
+Upon launching the application, you will be greeted with an interactive interface featuring a fixed header and a sidebar for navigation. Here's how to navigate and utilize the application:
+
+### Sidebar Navigation
+
+- **Sections:** The sidebar lists different sections of the project, such as Introduction, Strength in Alliance & Partnership, Competition in Strategic Regions, etc.
+- **Navigation:** Click on any section to navigate to it. The main content area will update accordingly.
+
+### Exploring Visualizations
+
+- **Interactive Controls:** Use buttons and sliders within each section to interact with the visualizations, such as selecting different years or categories.
+- **Hover Effects:** Hover over elements within the charts and maps to view detailed tooltips and information.
+- **Animations:** Engage with dynamic animations to visualize arms trade flows and conflict distributions.
+- **Workflow Diagrams:** View and understand the application's data processing and component interaction workflows through Mermaid.js diagrams.
+
+### Responsive Design
+
+- **Adaptability:** The application is optimized for various screen sizes. Resize your browser or access the application on different devices to experience the responsive layout. *(See Lecture 3: Visualization Techniques, Web Technologies)*
+
+### Accessibility Features
+
+- **Keyboard Navigation:** Navigate the application using keyboard inputs.
+- **Screen Readers:** The content is accessible to screen readers due to proper ARIA labels and semantic HTML elements.
+- **Color Scheme:** The application of a color palette is rooted in Lecture 8 (Color Theory), ensuring appropriate use of hues and contrasts for interpretability.
+- **Typography:** Guidelines from Lecture 6 informed font selection to enhance readability and maintain consistency across visual elements. *(See Lecture 2: Statistical Graphics; Lecture 6: Pre-attentive Features)*
+
+**Expanded Insights:**
+
+- **Lecture 2:** Emphasis on statistical graphics informs the project's focus on user-friendly visualizations.
+- **Lecture 6:** Exploration of pre-attentive features shaped the choice of colors and layouts to effectively draw users' attention.
 
 ---
 
@@ -231,7 +268,92 @@ This project is licensed under the MIT License.
 
 ---
 
-#### AI Assistance
+## Acknowledgements
+
+This project integrates insights from multiple lectures:
+
+- **React:** A JavaScript library for building user interfaces.
+- **D3.js:** A powerful library for producing dynamic, interactive data visualizations.
+- **Three.js:** A 3D library that makes WebGL simpler.
+- **@deck.gl:** WebGL-powered framework for visual exploratory data analysis of large datasets.
+- **Bootstrap:** For responsive design and pre-styled components.
+- **Mermaid.js:** For creating dynamic and interactive workflow diagrams.
+- **SIPRI:** For providing comprehensive datasets on global arms transfers.
+- **OpenAI's ChatGPT:** Assistance in generating and refining project documentation.
+- **Lecture 1:** Inspiration for aligning visualization goals with user needs.
+- **Lecture 3:** Guidance on selecting robust visualization tools.
+
+Feel free to suggest further enhancements or report issues!
+
+---
+
+## Contact
+
+For any inquiries or feedback, please contact [your-email@example.com](mailto:your-email@example.com).
+
+---
+
+## FAQs
+
+**Q1: What prerequisites are needed to run the project?**  
+**A:** Ensure you have Node.js and npm installed on your machine.
+
+**Q2: I encounter an error while running `npm install`. What should I do?**  
+**A:** Try deleting the `node_modules` folder and the `package-lock.json` file, then run `npm install` again.
+
+**Q3: How can I contribute to the project?**  
+**A:** Please refer to the [Contributing](#contributing) section for detailed guidelines.
+
+**Q4: How do I report bugs or request features?**  
+**A:** You can open an issue on the GitHub repository detailing the bug or feature request.
+
+**Q5: Where can I find the project documentation?**  
+**A:** Comprehensive documentation is available within the repository, including this README and additional docs in the `/docs` directory.
+
+**Q6: Can I use the project's visualizations for my own work?**  
+**A:** Yes, the project is licensed under the MIT License, allowing for reuse with proper attribution.
+
+---
+
+## AI Assistance
+
+We leveraged AI tools to enhance various aspects of the project. Below are the specific contributions:
+
+- **Data Wrangling and Processing:** Processed and organized datasets to be analytics-ready and visualization-friendly, ensuring data accuracy and reliability.
+- **Dot Map Enhancements:** Improved legend readability, defined intensity levels, added map title, customized colors, implemented tooltips, and integrated a year slider for dynamic filtering.
+- **Tree Map Modifications:** Enhanced interactivity with top 20 companies filtering, year-selection slider, hover opacity adjustments, text wrapping, and dynamic color scaling.
+- **Multiline Chart Development:** Converted Y-axis values to billions, added titles and labels, implemented tooltips, enabled country selection, and created a responsive legend.
+- **Proportional Symbol Map and Pie Chart Improvements:** Added dynamic year sliders, enhanced tooltip functionality, filtered out irrelevant data, increased pie chart size, and implemented 3D appearance enhancements.
+- **Arms Trade Directional Map Construction:** Integrated hierarchical JSON data, set up GeoJSON maps, calculated country centroids, added interactive color-coded lines, scaled line thickness, and improved visibility with color opacity adjustments.
+- **Visualizations Refinement:** Built and refined multiple D3.js visualizations, including migration maps, parallel coordinates charts, force-directed graphs, and chord diagrams with dynamic filtering and interactive elements.
+- **Choropleth Map for Suppliers and Weapon Types:** Created an interactive map with weapon type dropdowns, year sliders, dynamic country color and size, and tooltips for comprehensive arms trade patterns.
+- **Zoomable Circle Packing Customization:** Enhanced readability with scaled labels, increased bubble sizes, refined color schemes, resolved background issues, positioned tooltips, and improved overall styling.
+- **Storyboard Framework Development:** Refined CSS styling, centered map positioning, enhanced migration maps with distinct colors, improved legends, integrated tooltips, and expanded narrative emphasizing U.S. strategic countermeasures.
+- **Global Arms Trade Network Narrative Modification:** Updated the force-directed diagram with color-coded superpowers, highlighted key regions and multilateral partners, and applied styling for a cohesive geopolitical narrative.
+- **Storyboard and Narrative Improvement:** Adjusted visualization colors and layout, moved visualizations to appropriate sections, added toggle buttons for view switching, and streamlined user interaction for enhanced presentation.
+- **README Creation:** Collaborated to refine the README, focusing on clarity, functionality, and alignment with course objectives, organizing data sources, detailing design choices, and providing comprehensive project summaries.
+- **Choropleth Map and Line Chart for Defense Expenditure:** Built Choropleth Map and Line Chart components using React, D3, and TopoJSON to display global defense expenditure data with synchronized interactivity and responsive design.
+
+---
+
+## References
+
+- **Lecture 1:** Statistical Graphics; Storytelling and Aligning Data with User Needs.
+- **Lecture 2:** Statistical Graphics; Multi-dimensional Data Analysis.
+- **Lecture 3:** Visualization Techniques, Web Technologies; Loading Data with D3; Understanding Data Pipelines and Ensuring Data Integrity.
+- **Lecture 4:** Graphing in the Browser, D3; Selecting Frameworks with Large Community Support.
+- **Lecture 5:** Loading Data with D3; Dashboards Design; Simplifying User Interaction with Tools.
+- **Lecture 6:** The Eye and the Visual Brain; Pre-attentive Features; Contrast Ratios and Keyboard Navigation.
+- **Lecture 7:** Interactive Visualizations; Enhancing User Engagement through Interactivity; Data Preparation for Filters and Sliders.
+- **Lecture 8:** Color and Complex Charts; Maps and Choropleths; Hierarchical Data Representation.
+- **Lecture 9:** Maps and Depth Perception; Geospatial Representation Techniques; 3D Visualizations.
+- **Lecture 10:** Gestalt and Semiology; Hierarchical Data Visualization.
+- **Lecture 11:** 3D Data Visualization; Designing Effective Dashboards; Emerging Technologies in Data Visualization.
+
+---
+
+
+#### AI Links
 [AI Assistance 1 – Data Wrangling and Processing]( https://chatgpt.com/c/6726a05f-a0d8-8001-8afc-98eeab6d623c)
 We processed and organized several datasets on arms trade, military expenditure, and conflicts to be analytics-ready and visualization-friendly:
 •	Top Arms Exporters and Importers (1950-2023): Showcasing major arms suppliers and recipients over time.
