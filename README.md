@@ -262,6 +262,50 @@ Upon launching the application, you will be greeted with an interactive interfac
 
 ---
 
+## Features and Components
+
+### Key Visualizations
+
+Each visualization reflects best practices from Lectures 7 and 8:
+
+- **Dot Map:** Shows conflict hotspots by marking the locations of armed conflicts by year, using clustered dots, color, and size to denote intensity. *(Highlights conflict intensity, leveraging pre-attentive features like size and color.)*
+
+- **Choropleth Map:** Displays arms import quantities by country using the size and color of bubbles, with interactive tooltips and modals providing additional details on suppliers, weapon types, quantities, and years. *(Applies Lecture 9's principles on color gradients for effective spatial analysis.)*
+
+- **Proportional Symbol Map:** Represents regional arms imports with circles sized according to import value, complemented by a dynamic mini bar chart for quick reference and comparison.
+
+- **Migration Map:** Visualizes global arms trade flows from major suppliers (United States, Russia, and China) to recipient countries, with color-coded lines representing each origin country. Line thickness indicates trade volume, and colored circles highlight the importance of recipient countries.
+
+- **Force-Directed Graph:** Illustrates network connections between arms exporters and recipients to identify the centers of gravity and linkages.
+
+- **Zoomable Circle Packing:** Depicts hierarchical data on weapons transfers, organized by category and year. *(Uses Lecture 8's guidelines on hierarchical data representation.)*
+
+- **Parallel Coordinates Chart:** Highlights the top recipients of arms from the US, China, and Russia, allowing users to identify key countries of interest and observe trade patterns over time. *(Reflects multi-dimensional data analysis techniques from Lecture 2.)*
+
+- **Line Chart:** Displays arms trade trends over time for selected countries, allowing users to track export and import values and compare fluctuations across different nations. The interactive slider enables users to adjust the timeframe by moving both ends to focus on specific periods.
+
+- **Treemap:** Visualizes the top 20 arms companies by revenue for a selected year. Each rectangle represents a company, with the area proportional to its revenue share. The color indicates the company's country. *(Applies Lecture 10's strategies for hierarchical data visualization.)*
+
+- **Pie Chart:** Displays the distribution of arms trade by region for a selected year. Each slice represents a region’s percentage of total arms imports, with color coding for easy differentiation.
+
+### Thematic Narrative Sections
+
+The dashboard's narrative structure allows exploration of global arms trade themes:
+
+- **Introduction:** Provides a strategic overview of how arms trade is used as a tool for diplomacy and influence.
+- **Strength in Alliance & Partnership:** Highlights how superpowers like the U.S., Russia, and China reinforce alliances through targeted arms exports.
+- **Competition in Strategic Regions:** Examines the multipolar rivalry in regions where arms trade impacts stability and shifts in power dynamics.
+- **Countering Through Proxy Support:** Analyzes how countries use arms transfers to support proxy forces and maintain influence without direct involvement.
+- **Preparing Allies for Emerging Threats:** Details how arms transfers bolster allies’ defenses, reducing reliance on direct intervention by superpowers.
+- **Profiting from Tensions:** Explores the economic benefits of arms trade, especially during geopolitical conflicts, as defense industries expand influence and profit.
+- **Conclusion:** Reflects on the strategic implications of global arms trade, focusing on the balance of power and its role in shaping international order.
+
+**Expanded Insights:**
+
+- **Lecture 1:** Emphasis on storytelling shapes the narrative sections, connecting visualizations to real-world implications. These narratives help contextualize data for better comprehension and impact.
+
+---
+
 ## License
 
 This project is licensed under the MIT License.
